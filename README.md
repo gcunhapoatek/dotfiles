@@ -79,14 +79,37 @@ zsh/
 
 Then `stow zsh`. Same pattern works for `.gitconfig`, `.tmux.conf`, etc.
 
+## Per-machine overrides (`*.local` files)
+
+Personal identity, secrets, and host-specific tweaks don't belong in a
+shared dotfiles repo. The configs here source local override files if
+they exist, all of which are gitignored:
+
+| Config | Override file | Loaded via |
+| --- | --- | --- |
+| `git/.gitconfig` | `~/.gitconfig.local` | `[include] path = ~/.gitconfig.local` |
+| `zsh/.zshrc` | `~/.zshrc.local` | `if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi` |
+| `zsh/.zprofile` | `~/.zprofile.local` | same pattern |
+
+Use these for things like:
+
+- `~/.gitconfig.local` — `[user]` block (name, email, signingkey),
+  `commit.gpgSign`, work-specific `includeIf` paths
+- `~/.zshrc.local` — private aliases, API keys exported as env vars,
+  per-machine PATH entries
+- `~/.zprofile.local` — login-shell-only secrets or host setup
+
+If the override file doesn't exist, the parent config is a no-op for
+that section. New forkers get a working baseline and add their own
+identity/secrets without ever touching the tracked files.
+
 ## Notes
 
 - **`gh/hosts.yml`** is intentionally excluded — it contains auth tokens. It
   stays in `~/.config/gh/` as a real file and stow only links `config.yml`.
-- **`git/.gitconfig`** uses `~/Developer/clients/best-western/` (tilde form)
-  for the per-client `includeIf` override, so it stays portable across
-  machines/usernames. Requires git ≥ 2.27. The include is a no-op on
-  machines where the override file doesn't exist.
+- **`git/.gitconfig`** is identity-free. Personal `[user]`, `commit.gpgSign`,
+  and per-client `includeIf` directives live in `~/.gitconfig.local`
+  (gitignored). See the "Per-machine overrides" section above.
 - **`--no-folding`** is enabled so each file becomes its own symlink (rather
   than letting stow collapse a whole directory into one symlink). This makes
   it safe for tools that write extra runtime files into `~/.config/<tool>/`.

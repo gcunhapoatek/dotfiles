@@ -77,3 +77,9 @@ if command -v fastfetch &> /dev/null; then
 fi
 export GPG_TTY=$(tty)
 export PATH="$HOME/.local/bin:$PATH"
+
+# Per-machine overrides: secrets, work-specific paths, host quirks.
+# Not tracked in the dotfiles repo.
+if [[ -f ~/.zshrc.local ]]; then
+  source ~/.zshrc.local
+fi

@@ -6,5 +6,12 @@
 # Sensitive files (auth tokens, secrets)
 gh/.config/gh/hosts.yml
 
+# Per-machine override files (sourced by their parent config if present).
+# These should never be committed; they hold personal/work-specific values.
+.gitconfig.local
+.zshrc.local
+.zprofile.local
+*.local
+
 # Tool-managed runtime state we don't want to track
 **/configstore/

@@ -1,13 +1,7 @@
-[user]
-	name = gcunhapoatek
-	email = gabriel.cunha@poatek.com
-	signingkey = 8ACC167923E3F225
-
-[includeIf "gitdir:~/Developer/clients/best-western/"]
-	path = ~/Developer/clients/best-western/.gitconfig-bwh
-
-[commit]
-	gpgSign = true
+# Personal identity, signing key, and per-client includeIf overrides
+# live in ~/.gitconfig.local (not tracked in the dotfiles repo).
+[include]
+	path = ~/.gitconfig.local
 
 [pull]
 	rebase = true
