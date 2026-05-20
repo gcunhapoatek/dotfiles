@@ -105,6 +105,13 @@ identity/secrets without ever touching the tracked files.
 
 ## Notes
 
+- **`yazi`** uses the official [`yazi-rs/flavors:catppuccin-mocha`](https://github.com/yazi-rs/flavors)
+  flavor pack. The pack lives at `yazi/.config/yazi/flavors/catppuccin-mocha.yazi/`
+  and is tracked in `yazi/.config/yazi/package.toml`. On a new machine,
+  after stowing run `ya pkg install` to refresh the flavor (or use
+  `ya pkg upgrade` to pull updates from upstream). `theme.toml` is just a
+  two-line `[flavor] dark = "catppuccin-mocha"` declaration; add override
+  sections below it if you want to tweak specific styles.
 - **`gh/hosts.yml`** is intentionally excluded — it contains auth tokens. It
   stays in `~/.config/gh/` as a real file and stow only links `config.yml`.
 - **`git/.gitconfig`** is identity-free. Personal `[user]`, `commit.gpgSign`,
