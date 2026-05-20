@@ -83,11 +83,10 @@ Then `stow zsh`. Same pattern works for `.gitconfig`, `.tmux.conf`, etc.
 
 - **`gh/hosts.yml`** is intentionally excluded — it contains auth tokens. It
   stays in `~/.config/gh/` as a real file and stow only links `config.yml`.
-- **`git/.gitconfig`** has a hardcoded `includeIf` path to a per-client
-  override under `~/Developer/clients/best-western/`. That absolute path won't
-  resolve on a different machine; either keep it (no-op when the dir is
-  absent) or replace with `~/Developer/...` if your future setup follows
-  the same layout.
+- **`git/.gitconfig`** uses `~/Developer/clients/best-western/` (tilde form)
+  for the per-client `includeIf` override, so it stays portable across
+  machines/usernames. Requires git ≥ 2.27. The include is a no-op on
+  machines where the override file doesn't exist.
 - **`--no-folding`** is enabled so each file becomes its own symlink (rather
   than letting stow collapse a whole directory into one symlink). This makes
   it safe for tools that write extra runtime files into `~/.config/<tool>/`.

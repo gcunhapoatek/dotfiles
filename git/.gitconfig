@@ -3,8 +3,8 @@
 	email = gabriel.cunha@poatek.com
 	signingkey = 8ACC167923E3F225
 
-[includeIf "gitdir:/Users/gabrieldacunha/Developer/clients/best-western/"]
-	path = /Users/gabrieldacunha/Developer/clients/best-western/.gitconfig-bwh
+[includeIf "gitdir:~/Developer/clients/best-western/"]
+	path = ~/Developer/clients/best-western/.gitconfig-bwh
 
 [commit]
 	gpgSign = true
