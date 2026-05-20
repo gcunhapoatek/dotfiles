@@ -11,6 +11,7 @@ matching path under `$HOME`.
 ```
 dotfiles/
 ├── .stowrc                 # default stow options (target=$HOME, --no-folding)
+├── Brewfile                # tool dependencies for `brew bundle`
 ├── install.sh              # bootstrap: installs stow + stows everything
 ├── aerospace/.config/aerospace/aerospace.toml
 ├── bat/.config/bat/{config,themes/}
@@ -23,10 +24,8 @@ dotfiles/
 ├── lazygit/.config/lazygit/config.yml
 ├── nvim/.config/nvim/{init.lua,lua/,lazy-lock.json}
 ├── spotify-player/.config/spotify-player/{app.toml,theme.toml}
-├── yazi/.config/yazi/{yazi.toml,keymap.toml,theme.toml}
-├── bash/.bash_profile                    # top-level dotfile
-├── git/.gitconfig                        # top-level dotfile
-└── zsh/{.zshrc,.zprofile}                # top-level dotfiles
+├── git/.gitconfig                    # top-level dotfile
+└── zsh/{.zshrc,.zprofile}            # top-level dotfiles
 ```
 
 `stow aerospace` creates the symlink
@@ -40,10 +39,20 @@ dotfiles/
 ```bash
 git clone <this-repo> ~/Developer/dotfiles
 cd ~/Developer/dotfiles
+
+# 1. Install tool dependencies (Homebrew + Brewfile)
+brew bundle --file=Brewfile
+
+# 2. Stow every package into $HOME
 ./install.sh
+
+# 3. Drop your personal info into the gitignored *.local files
+#    (see "Per-machine overrides" below)
 ```
 
-That's it. `install.sh` will install stow via Homebrew if needed and stow every package.
+`install.sh` will install GNU stow via Homebrew if needed and then symlink
+every package. The `Brewfile` handles everything else (fzf, zoxide, neovim,
+ghostty, fonts, etc.) — see the file itself for the annotated list.
 
 ## Day-to-day usage
 
@@ -103,15 +112,28 @@ If the override file doesn't exist, the parent config is a no-op for
 that section. New forkers get a working baseline and add their own
 identity/secrets without ever touching the tracked files.
 
+## Tool dependencies (`Brewfile`)
+
+Every brew formula and cask the configs in this repo depend on is declared
+in `Brewfile` at the repo root. To install or refresh them:
+
+```bash
+brew bundle --file=Brewfile        # install everything that's missing
+brew bundle check --file=Brewfile  # show what's not installed yet
+brew bundle cleanup --file=Brewfile --force  # uninstall things not in Brewfile
+```
+
+A few things aren't brew-managed and are installed separately on a fresh
+machine (run these after `brew bundle`):
+
+- **oh-my-zsh** + plugins (`zsh-autosuggestions`, `zsh-syntax-highlighting`)
+  referenced by `zsh/.zshrc`
+- **nvm** (Node version manager) — used by `.zshrc` for the `load-nvmrc`
+  hook
+- **sdkman** — used by `.zshrc` and `.zprofile` for JVM tooling
+
 ## Notes
 
-- **`yazi`** uses the official [`yazi-rs/flavors:catppuccin-mocha`](https://github.com/yazi-rs/flavors)
-  flavor pack. The pack lives at `yazi/.config/yazi/flavors/catppuccin-mocha.yazi/`
-  and is tracked in `yazi/.config/yazi/package.toml`. On a new machine,
-  after stowing run `ya pkg install` to refresh the flavor (or use
-  `ya pkg upgrade` to pull updates from upstream). `theme.toml` is just a
-  two-line `[flavor] dark = "catppuccin-mocha"` declaration; add override
-  sections below it if you want to tweak specific styles.
 - **`gh/hosts.yml`** is intentionally excluded — it contains auth tokens. It
   stays in `~/.config/gh/` as a real file and stow only links `config.yml`.
 - **`git/.gitconfig`** is identity-free. Personal `[user]`, `commit.gpgSign`,
@@ -120,5 +142,5 @@ identity/secrets without ever touching the tracked files.
 - **`--no-folding`** is enabled so each file becomes its own symlink (rather
   than letting stow collapse a whole directory into one symlink). This makes
   it safe for tools that write extra runtime files into `~/.config/<tool>/`.
-- **Pre-stow backup** of the original `~/.config/` is at `~/.config.bak/` (if
-  `install.sh` migrated for you). Delete it once you're confident things work.
+- **`yazi/`** is currently dropped from the repo (its config is being
+  reworked). Add it back as a stow package when ready.
