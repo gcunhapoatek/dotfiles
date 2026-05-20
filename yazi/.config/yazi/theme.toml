@@ -1,6 +1,3 @@
-# Use the official catppuccin-mocha flavor pack at flavors/catppuccin-mocha.yazi/.
-# Managed via `ya pkg`; reinstall on a new machine with `ya pkg install`
-# (reads package.toml in this directory). Override individual styles by
-# adding sections below the [flavor] block.
 [flavor]
-dark = "catppuccin-mocha"
+dark  = "catppuccin-mocha"
+light = "catppuccin-mocha"
