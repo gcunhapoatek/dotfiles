@@ -1,0 +1,100 @@
+[user]
+	name = gcunhapoatek
+	email = gabriel.cunha@poatek.com
+	signingkey = 8ACC167923E3F225
+
+[includeIf "gitdir:/Users/gabrieldacunha/Developer/clients/best-western/"]
+	path = /Users/gabrieldacunha/Developer/clients/best-western/.gitconfig-bwh
+
+[commit]
+	gpgSign = true
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+
+[push]
+	default = current
+	autoSetupRemote = true
+
+[branch]
+	autosetupmerge = always
+
+[rebase]
+	autoStash = true
+
+[status]
+	showUntrackedFiles = all
+
+[log]
+	date = relative
+
+[core]
+	autocrlf = input
+	editor = nvim
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
+	dark = true
+	blame-palette = "#1e1e2e #181825 #11111b #313244 #45475a"
+	commit-decoration-style = "#6c7086" bold box ul
+	file-decoration-style = "#6c7086"
+	file-style = "#cdd6f4"
+	hunk-header-decoration-style = "#6c7086" box ul
+	hunk-header-file-style = bold
+	hunk-header-line-number-style = bold "#a6adc8"
+	hunk-header-style = file line-number syntax
+	line-numbers-left-style = "#6c7086"
+	line-numbers-minus-style = bold "#f38ba8"
+	line-numbers-plus-style = bold "#a6e3a1"
+	line-numbers-right-style = "#6c7086"
+	line-numbers-zero-style = "#6c7086"
+	# 25% red 75% base
+	minus-emph-style = bold syntax "#53394c"
+	# 10% red 90% base
+	minus-style = syntax "#34293a"
+	# 25% green 75% base
+	plus-emph-style = bold syntax "#404f4a"
+	# 10% green 90% base
+	plus-style = syntax "#2c3239"
+	map-styles = \
+		bold purple => syntax "#494060", \
+		bold blue => syntax "#384361", \
+		bold cyan => syntax "#384d5d", \
+		bold yellow => syntax "#544f4e"
+	# Should match the name of the bat theme
+	syntax-theme = Catppuccin Mocha
+
+[color]
+	ui = auto
+
+[help]
+	autocorrect = 1
+
+[credential]
+	helper = osxkeychain
+
+[alias]
+	s = status --short
+	st = stash
+	co = checkout
+	br = branch
+	ci = commit
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	logs = log --oneline --graph --decorate --all
+	amend = commit --amend --no-edit
+	undo = reset --soft HEAD~1
+	wip = commit -am "chore: wip"
+	cleanup = "!git branch --merged | \
+		sed 's/^..//' | \
+		grep -vE '^(main|develop)$' | \
+		xargs -n 1 git branch -d"

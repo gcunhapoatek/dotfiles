@@ -24,7 +24,9 @@ dotfiles/
 ├── nvim/.config/nvim/{init.lua,lua/,lazy-lock.json}
 ├── spotify-player/.config/spotify-player/{app.toml,theme.toml}
 ├── yazi/.config/yazi/{yazi.toml,keymap.toml,theme.toml}
-└── zsh/{.zshrc,.zprofile}                # top-level dotfiles, not under .config
+├── bash/.bash_profile                    # top-level dotfile
+├── git/.gitconfig                        # top-level dotfile
+└── zsh/{.zshrc,.zprofile}                # top-level dotfiles
 ```
 
 `stow aerospace` creates the symlink
@@ -81,6 +83,11 @@ Then `stow zsh`. Same pattern works for `.gitconfig`, `.tmux.conf`, etc.
 
 - **`gh/hosts.yml`** is intentionally excluded — it contains auth tokens. It
   stays in `~/.config/gh/` as a real file and stow only links `config.yml`.
+- **`git/.gitconfig`** has a hardcoded `includeIf` path to a per-client
+  override under `~/Developer/clients/best-western/`. That absolute path won't
+  resolve on a different machine; either keep it (no-op when the dir is
+  absent) or replace with `~/Developer/...` if your future setup follows
+  the same layout.
 - **`--no-folding`** is enabled so each file becomes its own symlink (rather
   than letting stow collapse a whole directory into one symlink). This makes
   it safe for tools that write extra runtime files into `~/.config/<tool>/`.
