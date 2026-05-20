@@ -10,9 +10,10 @@ matching path under `$HOME`.
 
 ```
 dotfiles/
-├── .stowrc                 # default stow options (target=$HOME, --no-folding)
+├── .stowrc                 # portable stow defaults (--no-folding, --verbose=1)
 ├── Brewfile                # tool dependencies for `brew bundle`
-├── install.sh              # bootstrap: installs stow + stows everything
+├── Makefile                # day-to-day interface (`make help`)
+├── install.sh              # one-shot bootstrap (brew bundle + stow everything)
 ├── aerospace/.config/aerospace/aerospace.toml
 ├── bat/.config/bat/{config,themes/}
 ├── btop/.config/btop/{btop.conf,themes/}
@@ -40,32 +41,37 @@ dotfiles/
 git clone <this-repo> ~/Developer/dotfiles
 cd ~/Developer/dotfiles
 
-# 1. Install tool dependencies (Homebrew + Brewfile)
-brew bundle --file=Brewfile
+# 1. One command: brew bundle + symlink every package into $HOME.
+make install
 
-# 2. Stow every package into $HOME
-./install.sh
-
-# 3. Drop your personal info into the gitignored *.local files
-#    (see "Per-machine overrides" below)
+# 2. Drop personal info into the gitignored *.local files
+#    (see "Per-machine overrides" below).
 ```
 
-`install.sh` will install GNU stow via Homebrew if needed and then symlink
-every package. The `Brewfile` handles everything else (fzf, zoxide, neovim,
-ghostty, fonts, etc.) — see the file itself for the annotated list.
+`make install` runs `brew bundle --file=Brewfile` and then re-stows every
+package. If you don't have `make` (or just prefer the script), `./install.sh`
+does the same thing.
 
 ## Day-to-day usage
 
-| Action | Command |
-| --- | --- |
-| Stow everything | `./install.sh` (uses `stow --restow`, idempotent) |
-| Stow one package | `stow nvim` |
-| Unstow (remove symlinks) one package | `stow -D nvim` |
-| Re-stow after adding files | `stow -R nvim` |
-| Dry run (preview) | `stow -n -v nvim` |
+The `Makefile` is the friendly interface. Run `make help` to list targets.
 
-`.stowrc` configures `--target=$HOME --dir=~/Developer/dotfiles --no-folding`,
-so you can run `stow <pkg>` from anywhere inside the repo.
+| Target | What it does |
+| --- | --- |
+| `make` / `make help` | Print all targets |
+| `make install` | Full bootstrap: `brew bundle` + restow everything |
+| `make brew` | Install/refresh Homebrew deps from `Brewfile` |
+| `make restow` | Re-symlink every package (idempotent) |
+| `make stow PKG=nvim` | Stow a single package |
+| `make unstow PKG=nvim` | Unstow a single package |
+| `make check` | Dry-run stow + `brew bundle check` |
+| `make status` | Show discovered packages, target dir |
+| `make clean` | Unstow every package |
+
+Both `install.sh` and the Makefile pass `--target=$HOME` and `--dir=<repo>`
+explicitly, so the repo works for any user on any machine — no path
+hardcoding. `.stowrc` only carries portable defaults (`--no-folding`,
+`--verbose=1`).
 
 ## Adding a new tool
 
