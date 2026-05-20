@@ -1,0 +1,16 @@
+# Appearance
+theme = catppuccin-mocha.conf
+background-opacity = 0.8
+font-family = FiraCode
+
+# Window Settings
+window-height = 34
+window-width = 140
+window-decoration = none
+window-padding-x = 10
+window-padding-y = 10
+macos-window-shadow = false
+
+# Cursor Settings
+cursor-style = block
+shell-integration-features = no-cursor
