@@ -18,11 +18,16 @@ if ! command -v stow >/dev/null 2>&1; then
   fi
 fi
 
-# Every top-level dir that contains a `.config` subdir is a stow package.
+# Every top-level dir is a stow package, except for repo metadata.
+EXCLUDE=(.git .github)
 PACKAGES=()
 for dir in */; do
   pkg="${dir%/}"
-  [[ -d "$pkg/.config" ]] && PACKAGES+=("$pkg")
+  skip=false
+  for ex in "${EXCLUDE[@]}"; do
+    [[ "$pkg" == "$ex" ]] && skip=true && break
+  done
+  $skip || PACKAGES+=("$pkg")
 done
 
 if [[ ${#PACKAGES[@]} -eq 0 ]]; then

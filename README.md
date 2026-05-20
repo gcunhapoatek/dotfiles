@@ -23,7 +23,8 @@ dotfiles/
 ├── lazygit/.config/lazygit/config.yml
 ├── nvim/.config/nvim/{init.lua,lua/,lazy-lock.json}
 ├── spotify-player/.config/spotify-player/{app.toml,theme.toml}
-└── yazi/.config/yazi/{yazi.toml,keymap.toml,theme.toml}
+├── yazi/.config/yazi/{yazi.toml,keymap.toml,theme.toml}
+└── zsh/{.zshrc,.zprofile}                # top-level dotfiles, not under .config
 ```
 
 `stow aerospace` creates the symlink
@@ -62,17 +63,19 @@ so you can run `stow <pkg>` from anywhere inside the repo.
 3. Stow it: `stow newtool`.
 4. Commit.
 
-## Adding non-`.config` dotfiles (e.g. `~/.zshrc`)
+## Adding non-`.config` dotfiles
 
-Stow doesn't care that this repo currently only mirrors `~/.config`. To track
-top-level dotfiles, create a package whose contents sit at the package root:
+Stow packages can mirror any path relative to `$HOME`, not just `.config/`.
+The `zsh/` package is the example — it puts files at the package root so
+they land directly in `$HOME`:
 
 ```
 zsh/
-└── .zshrc        # will become ~/.zshrc
+├── .zshrc        # → ~/.zshrc
+└── .zprofile     # → ~/.zprofile
 ```
 
-Then `stow zsh`.
+Then `stow zsh`. Same pattern works for `.gitconfig`, `.tmux.conf`, etc.
 
 ## Notes
 
