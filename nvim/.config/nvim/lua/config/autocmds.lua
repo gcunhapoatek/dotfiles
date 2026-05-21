@@ -34,12 +34,16 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
--- Trim trailing whitespace on save (except for some filetypes)
+-- Trim trailing whitespace on save (except for some filetypes, and skip when
+-- conform has a formatter configured for this buffer — conform already
+-- handles trailing whitespace via the underlying formatter).
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = augroup("trim_whitespace"),
-  callback = function()
+  callback = function(args)
     local exclude = { "markdown", "diff", "gitcommit" }
     if vim.tbl_contains(exclude, vim.bo.filetype) then return end
+    local ok, conform = pcall(require, "conform")
+    if ok and #conform.list_formatters(args.buf) > 0 then return end
     local view = vim.fn.winsaveview()
     vim.cmd([[keepjumps %s/\s\+$//e]])
     vim.fn.winrestview(view)

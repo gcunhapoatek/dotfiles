@@ -78,6 +78,10 @@ opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
 
+-- Per-project config: nvim 0.11+ prompts to trust .nvim.lua / .nvimrc / .exrc
+-- on first load and remembers the choice via :trust.
+opt.exrc = true
+
 -- System
 opt.clipboard = "unnamedplus"
 opt.mouse = "a"
