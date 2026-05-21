@@ -1,13 +1,5 @@
 fpath=("/opt/homebrew/share/zsh/site-functions" $fpath)
 
-export EDITOR="nvim"
-
-# XDG Base Directory specification
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
-
 # Oh-My-Zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="fox"
@@ -40,11 +32,8 @@ export FZF_CTRL_T_OPTS="
 export NVM_DIR="$HOME/.nvm"
 export SDKMAN_DIR="$HOME/.sdkman"
 
-# Tool initializations
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# NVM configuration
+# NVM lazy-load: defer sourcing nvm.sh (~200-500ms) until first use of
+# nvm/node/npm/npx, or when entering a directory tree containing .nvmrc.
 autoload -U add-zsh-hook
 
 load-nvmrc() {
@@ -66,19 +55,44 @@ load-nvmrc() {
   fi
 }
 
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
+_nvm_has_nvmrc_in_tree() {
+  local dir=$PWD
+  while [[ -n $dir ]]; do
+    [[ -f $dir/.nvmrc ]] && return 0
+    dir=${dir%/*}
+  done
+  return 1
+}
+
+_nvm_lazy_load() {
+  unset -f nvm node npm npx _nvm_lazy_load _nvm_chpwd_check _nvm_has_nvmrc_in_tree
+  add-zsh-hook -d chpwd _nvm_chpwd_check
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  add-zsh-hook chpwd load-nvmrc
+  load-nvmrc
+}
+
+_nvm_chpwd_check() {
+  _nvm_has_nvmrc_in_tree && _nvm_lazy_load
+}
+
+nvm()  { _nvm_lazy_load; nvm  "$@"; }
+node() { _nvm_lazy_load; node "$@"; }
+npm()  { _nvm_lazy_load; npm  "$@"; }
+npx()  { _nvm_lazy_load; npx  "$@"; }
+
+add-zsh-hook chpwd _nvm_chpwd_check
+_nvm_chpwd_check
 
 eval "$(zoxide init zsh)"
 
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-# Conditional executions
-if command -v fastfetch &> /dev/null; then
+# Fastfetch only on top-level shells (skip nested tmux/zellij panes and subshells)
+if [[ -z "$TMUX" && -z "$ZELLIJ" && $SHLVL -eq 1 ]] && command -v fastfetch &> /dev/null; then
   fastfetch
 fi
-export GPG_TTY=$(tty)
-export PATH="$HOME/.local/bin:$PATH"
 
 # Per-machine overrides: secrets, work-specific paths, host quirks.
 # Not tracked in the dotfiles repo.

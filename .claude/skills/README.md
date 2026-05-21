@@ -11,6 +11,7 @@ Per-tool editing workflows for this dotfiles repo. Each subdirectory is one skil
 ## Current skills
 
 - `nvim-edit/` — editing `nvim/.config/nvim/`, plugin doc URLs, lazy.nvim/snacks pitfalls.
+- `zsh-edit/` — editing `zsh/.zshrc` and `zsh/.zprofile`, startup-file order, secrets policy, tool init validation.
 
 ## How skills trigger
 
