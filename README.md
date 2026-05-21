@@ -69,9 +69,7 @@ The `Makefile` is the friendly interface. Run `make help` to list targets.
 | `make clean` | Unstow every package |
 
 Both `install.sh` and the Makefile pass `--target=$HOME` and `--dir=<repo>`
-explicitly, so the repo works for any user on any machine — no path
-hardcoding. `.stowrc` only carries portable defaults (`--no-folding`,
-`--verbose=1`).
+explicitly. `.stowrc` only carries `--no-folding` and `--verbose=1`.
 
 ## Adding a new tool
 
