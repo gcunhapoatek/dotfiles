@@ -57,6 +57,14 @@ Active plugins: **snacks.nvim** (explorer + picker + notifier + many extras), **
 
 The picker and explorer sources (`files`, `grep`, `smart`, `explorer`) all have `hidden = true` and `ignored = true` — essential since all configs live under `.config/` which would otherwise be excluded.
 
+## Editing rules
+
+**Ground every config edit in upstream docs.** Before editing or adding to any package in this repo, fetch the relevant tool/plugin's current documentation via `WebFetch`. Do not rely on memory or training-data recall — config schemas, plugin APIs, and CLI flags drift between releases.
+
+Tool-specific workflows and canonical doc URLs live in `.claude/skills/<tool>-edit/SKILL.md` when the tool is non-trivial (e.g. `nvim-edit`). For tools without a dedicated skill, resolve the doc URL from the upstream repo/site and fetch before writing.
+
+**When adding a new tool/package**: confirm the tool isn't already in `Brewfile` and that its config path matches the target layout under `$HOME` before stowing.
+
 ## Not tracked (intentional)
 
 - `gh/hosts.yml` — contains auth tokens; only `config.yml` is stowed
