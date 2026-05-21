@@ -77,5 +77,3 @@ map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open location list" })
 map("n", "]q", "<cmd>cnext<cr>", { desc = "Next quickfix" })
 map("n", "[q", "<cmd>cprevious<cr>", { desc = "Prev quickfix" })
 
--- Disable highlights on Esc, but also map a dedicated key
-map("n", "<leader>uh", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
