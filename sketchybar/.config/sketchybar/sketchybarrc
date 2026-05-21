@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# SketchyBar config. Docs: https://felixkratz.github.io/SketchyBar/setup
+# Catppuccin Mocha. AeroSpace drives workspace highlight via custom event.
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+source "$CONFIG_DIR/colors.sh"
+
+FONT="FiraCode Nerd Font"
+
+##### Bar Appearance #####
+# https://felixkratz.github.io/SketchyBar/config/bar
+sketchybar --bar position=top \
+                 height=36 \
+                 margin=8 \
+                 y_offset=6 \
+                 corner_radius=10 \
+                 border_width=2 \
+                 border_color=$SURFACE0 \
+                 blur_radius=20 \
+                 color=$BAR_COLOR \
+                 padding_left=8 \
+                 padding_right=8 \
+                 shadow=on \
+                 sticky=on \
+                 topmost=off \
+                 notch_width=200
+
+##### Defaults #####
+# https://felixkratz.github.io/SketchyBar/config/items
+default=(
+  padding_left=4
+  padding_right=4
+  icon.font="$FONT:Bold:16.0"
+  label.font="$FONT:Semibold:13.0"
+  icon.color=$TEXT
+  label.color=$TEXT
+  icon.padding_left=8
+  icon.padding_right=4
+  label.padding_left=4
+  label.padding_right=8
+  background.corner_radius=6
+  background.height=22
+)
+sketchybar --default "${default[@]}"
+
+##### AeroSpace Workspaces #####
+# Driven by `exec-on-workspace-change` in aerospace.toml.
+# Docs: https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
+sketchybar --add event aerospace_workspace_change
+
+for sid in 1 2 3 4 5 6 7 8 9; do
+  sketchybar --add item space.$sid left \
+             --subscribe space.$sid aerospace_workspace_change \
+             --set space.$sid \
+                background.color=$SURFACE0 \
+                background.corner_radius=6 \
+                background.height=22 \
+                background.drawing=off \
+                label="$sid" \
+                label.padding_left=8 \
+                label.padding_right=8 \
+                icon.drawing=off \
+                click_script="aerospace workspace $sid" \
+                script="$PLUGIN_DIR/aerospace.sh $sid"
+done
+
+##### Left Items #####
+sketchybar --add item space_sep left \
+           --set space_sep icon="" \
+                           icon.color=$OVERLAY0 \
+                           icon.font="$FONT:Bold:14.0" \
+                           label.drawing=off \
+           --add item front_app left \
+           --set front_app icon="" \
+                           icon.color=$MAUVE \
+                           label.color=$TEXT \
+                           script="$PLUGIN_DIR/front_app.sh" \
+           --subscribe front_app front_app_switched
+
+##### Right Items (rendered right-to-left in declaration order) #####
+# https://felixkratz.github.io/SketchyBar/config/events
+sketchybar --add item clock right \
+           --set clock update_freq=10 \
+                       icon="" \
+                       icon.color=$BLUE \
+                       script="$PLUGIN_DIR/clock.sh" \
+           \
+           --add item battery right \
+           --set battery update_freq=120 \
+                         script="$PLUGIN_DIR/battery.sh" \
+           --subscribe battery system_woke power_source_change \
+           \
+           --add item volume right \
+           --set volume icon.color=$PEACH \
+                        script="$PLUGIN_DIR/volume.sh" \
+           --subscribe volume volume_change \
+           \
+           --add item wifi right \
+           --set wifi update_freq=30 \
+                      icon.color=$SAPPHIRE \
+                      script="$PLUGIN_DIR/wifi.sh" \
+           --subscribe wifi system_woke \
+           \
+           --add item weather right \
+           --set weather update_freq=900 \
+                         icon.color=$YELLOW \
+                         script="$PLUGIN_DIR/weather.sh" \
+           --subscribe weather system_woke
+
+##### Initial paint #####
+sketchybar --update

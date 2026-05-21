@@ -12,6 +12,8 @@ Per-tool editing workflows for this dotfiles repo. Each subdirectory is one skil
 
 - `nvim-edit/` — editing `nvim/.config/nvim/`, plugin doc URLs, lazy.nvim/snacks pitfalls.
 - `zsh-edit/` — editing `zsh/.zshrc` and `zsh/.zprofile`, startup-file order, secrets policy, tool init validation.
+- `sketchybar-edit/` — editing `sketchybar/.config/sketchybar/`, bar/item/event flags, plugin chmod + abs-path rules, AeroSpace integration.
+- `aerospace-edit/` — editing `aerospace/.config/aerospace/aerospace.toml`, workspace/mode/binding patterns, callback wiring, AeroSpace-vs-MC-spaces gotchas.
 
 ## How skills trigger
 

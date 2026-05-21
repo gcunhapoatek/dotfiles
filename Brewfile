@@ -4,6 +4,7 @@
 
 # ----- Taps -----
 tap "nikitabobko/tap"               # provides the aerospace cask
+tap "FelixKratz/formulae"           # provides sketchybar
 
 # ----- Core dotfile management -----
 brew "stow"                         # symlink farm — drives this repo
@@ -35,6 +36,7 @@ brew "pinentry-mac"                 # macOS-native passphrase prompt for gpg-age
 cask "aerospace"                    # tiling window manager → aerospace/ package
 cask "ghostty"                      # terminal emulator → ghostty/ package
 cask "cursor"                       # IDE → cursor/ package
+brew "sketchybar"                   # macOS status bar → sketchybar/ package
 
 # ----- Fonts (referenced by ghostty/.config/ghostty/config) -----
 cask "font-fira-code-nerd-font"
