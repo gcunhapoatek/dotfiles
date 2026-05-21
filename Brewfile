@@ -37,6 +37,7 @@ cask "aerospace"                    # tiling window manager → aerospace/ packa
 cask "ghostty"                      # terminal emulator → ghostty/ package
 cask "cursor"                       # IDE → cursor/ package
 brew "sketchybar"                   # macOS status bar → sketchybar/ package
+brew "borders"                      # JankyBorders — focused-window borders, launched by aerospace after-startup-command
 
 # ----- Fonts (referenced by ghostty/.config/ghostty/config) -----
 cask "font-fira-code-nerd-font"
