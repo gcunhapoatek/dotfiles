@@ -71,7 +71,7 @@ sketchybar --add item space_sep left \
                            icon.font="$FONT:Bold:14.0" \
                            label.drawing=off \
            --add item front_app left \
-           --set front_app icon="" \
+           --set front_app icon.font="sketchybar-app-font:Regular:16.0" \
                            icon.color=$MAUVE \
                            label.color=$TEXT \
                            script="$PLUGIN_DIR/front_app.sh" \
@@ -81,7 +81,7 @@ sketchybar --add item space_sep left \
 # https://felixkratz.github.io/SketchyBar/config/events
 sketchybar --add item clock right \
            --set clock update_freq=10 \
-                       icon="" \
+                       icon="󰸘" \
                        icon.color=$BLUE \
                        script="$PLUGIN_DIR/clock.sh" \
            \
@@ -89,6 +89,14 @@ sketchybar --add item clock right \
            --set battery update_freq=120 \
                          script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change \
+           \
+           --add item cpu right \
+           --set cpu update_freq=5 \
+                     script="$PLUGIN_DIR/cpu.sh" \
+           \
+           --add item mem right \
+           --set mem update_freq=10 \
+                     script="$PLUGIN_DIR/mem.sh" \
            \
            --add item volume right \
            --set volume icon.color=$PEACH \
@@ -105,7 +113,14 @@ sketchybar --add item clock right \
            --set weather update_freq=900 \
                          icon.color=$YELLOW \
                          script="$PLUGIN_DIR/weather.sh" \
-           --subscribe weather system_woke
+           --subscribe weather system_woke \
+           \
+           --add item media right \
+           --set media update_freq=10 \
+                       drawing=off \
+                       label.max_chars=30 \
+                       scroll_texts=on \
+                       script="$PLUGIN_DIR/media.sh"
 
 ##### Initial paint #####
 sketchybar --update

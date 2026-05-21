@@ -38,6 +38,8 @@ cask "ghostty"                      # terminal emulator → ghostty/ package
 cask "cursor"                       # IDE → cursor/ package
 brew "sketchybar"                   # macOS status bar → sketchybar/ package
 brew "borders"                      # JankyBorders — focused-window borders, launched by aerospace after-startup-command
+brew "nowplaying-cli"               # used by sketchybar media plugin (media_change event deprecated on macOS 26)
 
 # ----- Fonts (referenced by ghostty/.config/ghostty/config) -----
 cask "font-fira-code-nerd-font"
+cask "font-sketchybar-app-font"     # ligature glyphs for sketchybar front_app icon

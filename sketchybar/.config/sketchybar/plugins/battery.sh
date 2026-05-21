@@ -9,15 +9,15 @@ if [ -z "$PERCENTAGE" ]; then
 fi
 
 case "$PERCENTAGE" in
-  100|9[0-9]) ICON=""; COLOR=$GREEN ;;
-  [6-8][0-9]) ICON=""; COLOR=$GREEN ;;
-  [3-5][0-9]) ICON=""; COLOR=$YELLOW ;;
-  [1-2][0-9]) ICON=""; COLOR=$PEACH ;;
-  *)          ICON=""; COLOR=$RED ;;
+  100|9[0-9]) ICON="󰁹"; COLOR=$GREEN ;;
+  [6-8][0-9]) ICON="󰂀"; COLOR=$GREEN ;;
+  [3-5][0-9]) ICON="󰁾"; COLOR=$YELLOW ;;
+  [1-2][0-9]) ICON="󰁻"; COLOR=$PEACH ;;
+  *)          ICON="󰂃"; COLOR=$RED ;;
 esac
 
 if [ -n "$CHARGING" ]; then
-  ICON=""
+  ICON="󰂄"
   COLOR=$TEAL
 fi
 

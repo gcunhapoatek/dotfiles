@@ -7,8 +7,11 @@ PACKAGES     := $(filter-out $(EXCLUDE),$(patsubst %/,%,$(wildcard */)))
 
 STOW         := stow --target=$(HOME) --dir=$(DOTFILES_DIR)
 
+SKETCHYBAR_FONT_CASK := font-sketchybar-app-font
+SKETCHYBAR_ICON_MAP  := $(DOTFILES_DIR)/sketchybar/.config/sketchybar/icon_map.sh
+
 .DEFAULT_GOAL := help
-.PHONY: help install brew restow stow unstow check status clean
+.PHONY: help install brew restow stow unstow check status clean sketchybar-icon-map
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n\nTargets:\n"} \
@@ -46,3 +49,14 @@ status: ## List discovered packages
 clean: ## Unstow every package (removes all symlinks)
 	@echo "Unstowing: $(PACKAGES)"
 	@$(STOW) -D $(PACKAGES)
+
+sketchybar-icon-map: ## Refresh sketchybar app-font icon map to match installed cask version
+	@v=$$(brew list --cask --versions $(SKETCHYBAR_FONT_CASK) 2>/dev/null | awk '{print $$2}'); \
+	if [ -z "$$v" ]; then \
+	  echo "$(SKETCHYBAR_FONT_CASK) not installed; run: brew install --cask $(SKETCHYBAR_FONT_CASK)" >&2; \
+	  exit 1; \
+	fi; \
+	url="https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v$$v/icon_map.sh"; \
+	echo "==> fetching $$url"; \
+	curl -sSfL "$$url" -o "$(SKETCHYBAR_ICON_MAP)" && \
+	echo "Wrote $(SKETCHYBAR_ICON_MAP) (v$$v) — review with git diff, then reload sketchybar"
