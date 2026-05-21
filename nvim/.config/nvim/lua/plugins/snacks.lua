@@ -9,7 +9,18 @@ return {
     explorer = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+      sources = {
+        explorer = {
+          -- Show dotfiles and gitignored files (essential when editing
+          -- this dotfiles repo: every config lives under .config/).
+          hidden = true,
+          ignored = true,
+          exclude = { ".git", ".DS_Store" },
+        },
+      },
+    },
     notifier = { enabled = true },
     quickfile = { enabled = true },
     scope = { enabled = true },
