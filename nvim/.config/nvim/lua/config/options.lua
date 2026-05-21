@@ -20,7 +20,13 @@ opt.linebreak = true
 opt.breakindent = true
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-opt.fillchars = { eob = " ", fold = " ", foldopen = "", foldsep = " ", foldclose = "" }
+opt.fillchars = {
+  eob = " ",
+  fold = " ",
+  foldopen = "\xe2\x96\xbe", -- ▾
+  foldsep = " ",
+  foldclose = "\xe2\x96\xb8", -- ▸
+}
 
 -- Editing
 opt.expandtab = true

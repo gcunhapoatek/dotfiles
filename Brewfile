@@ -19,6 +19,8 @@ brew "btop"                         # → btop/ package
 brew "eza"                          # → eza/ package
 brew "lazygit"                      # → lazygit/ package
 brew "neovim"                       # → nvim/ package, also $EDITOR
+brew "tree-sitter-cli"              # CLI used by nvim-treesitter main branch to build parsers
+brew "ripgrep"                      # required by snacks.picker grep + vim grepprg
 brew "spotify_player"               # → spotify-player/ package
 
 # ----- Git stack -----
@@ -28,9 +30,6 @@ brew "git-delta"                    # diff pager (referenced by [core] pager = d
 # ----- GPG signing (used by ~/.gitconfig.local: commit.gpgSign = true) -----
 brew "gnupg"
 brew "pinentry-mac"                 # macOS-native passphrase prompt for gpg-agent
-
-# ----- Misc dev tooling -----
-brew "taplo"                        # TOML linter/formatter
 
 # ----- GUI apps -----
 cask "aerospace"                    # tiling window manager → aerospace/ package

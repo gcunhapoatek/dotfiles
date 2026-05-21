@@ -13,7 +13,7 @@ return {
   config = function()
     local ensure_installed = {
       "bash", "c", "css", "diff", "dockerfile", "gitcommit", "gitignore",
-      "go", "html", "javascript", "json", "jsonc", "lua", "luadoc", "luap",
+      "go", "html", "javascript", "json", "lua", "luadoc", "luap",
       "markdown", "markdown_inline", "python", "query", "regex", "rust",
       "toml", "tsx", "typescript", "vim", "vimdoc", "yaml",
     }
