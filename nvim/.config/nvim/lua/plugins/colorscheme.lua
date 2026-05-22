@@ -9,6 +9,8 @@ return {
         transparent_background = true,
         integrations = {
           snacks = { enabled = true },
+          mason = true,
+          which_key = true,
         },
       })
       vim.cmd.colorscheme("catppuccin-mocha")
