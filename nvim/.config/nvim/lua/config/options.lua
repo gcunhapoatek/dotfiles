@@ -12,7 +12,6 @@ opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.termguicolors = true
 opt.showmode = false
-opt.cmdheight = 1
 opt.laststatus = 3
 opt.pumheight = 10
 opt.wrap = false
@@ -23,9 +22,9 @@ opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 opt.fillchars = {
   eob = " ",
   fold = " ",
-  foldopen = "\xe2\x96\xbe", -- ▾
+  foldopen = "▾",
   foldsep = " ",
-  foldclose = "\xe2\x96\xb8", -- ▸
+  foldclose = "▸",
 }
 
 -- Editing
@@ -33,7 +32,6 @@ opt.expandtab = true
 opt.shiftwidth = 2
 opt.tabstop = 2
 opt.softtabstop = 2
-opt.smartindent = true
 opt.autoindent = true
 opt.shiftround = true
 
@@ -41,7 +39,6 @@ opt.shiftround = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.inccommand = "split"
-opt.hlsearch = true
 opt.grepprg = "rg --vimgrep --smart-case"
 opt.grepformat = "%f:%l:%c:%m"
 
@@ -49,9 +46,7 @@ opt.grepformat = "%f:%l:%c:%m"
 opt.undofile = true
 opt.undolevels = 10000
 opt.swapfile = false
-opt.backup = false
 opt.confirm = true
-opt.autoread = true
 opt.autowrite = true
 
 -- Splits
@@ -64,12 +59,11 @@ opt.updatetime = 200
 opt.timeoutlen = 300
 opt.ttimeoutlen = 10
 opt.redrawtime = 1500
-opt.lazyredraw = false
 
 -- Completion / wildmenu
-opt.completeopt = { "menu", "menuone", "noselect" }
+opt.completeopt = { "menu", "menuone", "noselect", "fuzzy" }
 opt.wildmode = "longest:full,full"
-opt.shortmess:append({ W = true, I = true, c = true, C = true })
+opt.shortmess:append({ W = true, I = true, c = true })
 
 -- Folding (treesitter-driven; disabled by default)
 opt.foldmethod = "expr"
