@@ -20,11 +20,11 @@ opt.breakindent = true
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 opt.fillchars = {
-  eob = " ",
-  fold = " ",
-  foldopen = "▾",
-  foldsep = " ",
-  foldclose = "▸",
+	eob = " ",
+	fold = " ",
+	foldopen = "▾",
+	foldsep = " ",
+	foldclose = "▸",
 }
 
 -- Editing
