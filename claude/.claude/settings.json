@@ -1,0 +1,142 @@
+{
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "codex@openai-codex": true,
+    "lua-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "theme": "dark-ansi",
+  "includeCoAuthoredBy": true,
+  "env": {
+    "PAGER": "cat",
+    "GIT_PAGER": "cat",
+    "LESS": "-FRX"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/plugins/marketplaces/caveman/hooks/caveman-statusline.sh\""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(which:*)",
+      "Bash(tree:*)",
+      "Bash(jq:*)",
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git blame:*)",
+      "Bash(git stash list:*)"
+    ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(chmod *777*)",
+      "Bash(eval:*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.aws/credentials*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*id_rsa*)",
+      "Read(**/*id_ed25519*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/pre-tool-use.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/pre-tool-use-fs.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/post-tool-use-shell-lint.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/pre-compact.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/stop-rotate.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
