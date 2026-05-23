@@ -15,3 +15,7 @@ gh/.config/gh/hosts.yml
 
 # Tool-managed runtime state we don't want to track
 **/configstore/
+
+# Claude Code local overrides and logs
+.claude/settings.local.json
+.claude/**/*.log

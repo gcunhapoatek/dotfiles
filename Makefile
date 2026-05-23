@@ -2,7 +2,7 @@
 # Run `make help` to see available targets.
 
 DOTFILES_DIR := $(CURDIR)
-EXCLUDE      := .git .github
+EXCLUDE      := .git .github .claude
 PACKAGES     := $(filter-out $(EXCLUDE),$(patsubst %/,%,$(wildcard */)))
 
 STOW         := stow --target=$(HOME) --dir=$(DOTFILES_DIR)
