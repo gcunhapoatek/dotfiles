@@ -58,7 +58,7 @@
     {
       "key": "│ {#31}  term   {#keys} │",
       "type": "terminal",
-      "format": "{exe-name}",
+      "format": "{exe-name} {version}",
     },
     {
       "key": "├────────────┤",
