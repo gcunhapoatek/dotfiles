@@ -3,21 +3,39 @@
 [include]
 	path = ~/.gitconfig.local
 
+[init]
+	defaultBranch = main
+
 [pull]
 	rebase = true
 
 [fetch]
 	prune = true
+	fsckObjects = true
+	writeCommitGraph = true
 
 [push]
 	default = current
 	autoSetupRemote = true
+	followTags = true
 
 [branch]
 	autosetupmerge = always
+	sort = -committerdate
 
 [rebase]
 	autoStash = true
+	updateRefs = true
+	missingCommitsCheck = error
+
+[merge]
+	conflictStyle = zdiff3
+
+[commit]
+	verbose = true
+
+[tag]
+	sort = version:refname
 
 [status]
 	showUntrackedFiles = all
@@ -25,10 +43,32 @@
 [log]
 	date = relative
 
+[diff]
+	algorithm = histogram
+	colorMoved = default
+	colorMovedWS = allow-indentation-change
+	mnemonicPrefix = true
+	renames = copies
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[column]
+	ui = auto
+
+[transfer]
+	fsckObjects = true
+
+[receive]
+	fsckObjects = true
+
 [core]
 	autocrlf = input
 	editor = nvim
 	pager = delta
+	fsmonitor = true
+	untrackedCache = true
 
 [interactive]
 	diffFilter = delta --color-only
@@ -70,7 +110,7 @@
 	ui = auto
 
 [help]
-	autocorrect = 1
+	autocorrect = prompt
 
 [credential]
 	helper = osxkeychain
@@ -85,10 +125,17 @@
 	last = log -1 HEAD
 	visual = !gitk
 	logs = log --oneline --graph --decorate --all
+	lg = log --graph --abbrev-commit --pretty=format:'%C(auto)%h%d %s %C(dim)(%cr) <%an>'
+	staged = diff --staged
+	aliases = config --get-regexp ^alias\\.
+	recent = for-each-ref --sort=-committerdate refs/heads --format='%(refname:short)' --count=15
+	root = rev-parse --show-toplevel
 	amend = commit --amend --no-edit
 	undo = reset --soft HEAD~1
 	wip = commit -am "chore: wip"
+	please = push --force-with-lease --force-if-includes
 	cleanup = "!git branch --merged | \
+		grep -v '^\\*' | \
 		sed 's/^..//' | \
-		grep -vE '^(main|develop)$' | \
+		grep -vE '^(main|master|develop)$' | \
 		xargs -n 1 git branch -d"
