@@ -97,15 +97,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- Disable conceal in markdown by default
-vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("markdown_conceal"),
-	pattern = { "markdown" },
-	callback = function()
-		vim.opt_local.conceallevel = 0
-	end,
-})
-
 -- Spell + wrap for text-like buffers
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("wrap_spell"),

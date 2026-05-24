@@ -14,6 +14,7 @@ return {
 		local ensure_installed = {
 			"bash",
 			"c",
+			"comment",
 			"css",
 			"diff",
 			"dockerfile",

@@ -117,15 +117,17 @@ return {
 			"saghen/blink.cmp",
 		},
 		config = function()
+			local virtual_text_opts = {
+				spacing = 4,
+				source = "if_many",
+				prefix = "●",
+			}
 			vim.diagnostic.config({
 				severity_sort = true,
 				underline = true,
 				update_in_insert = false,
-				virtual_text = {
-					spacing = 4,
-					source = "if_many",
-					prefix = "●",
-				},
+				virtual_text = virtual_text_opts,
+				virtual_lines = false,
 				float = { border = "rounded", source = "if_many" },
 				signs = {
 					text = {
@@ -136,6 +138,20 @@ return {
 					},
 				},
 			})
+
+			-- Toggle between inline virtual_text and expanded virtual_lines.
+			-- virtual_lines.current_line = true keeps noise low: only the
+			-- diagnostic for the cursor's line is expanded.
+			vim.keymap.set("n", "<leader>ux", function()
+				local cfg = vim.diagnostic.config() or {}
+				if cfg.virtual_lines then
+					vim.diagnostic.config({ virtual_text = virtual_text_opts, virtual_lines = false })
+					vim.notify("Diagnostics: virtual_text", vim.log.levels.INFO)
+				else
+					vim.diagnostic.config({ virtual_text = false, virtual_lines = { current_line = true } })
+					vim.notify("Diagnostics: virtual_lines (current line)", vim.log.levels.INFO)
+				end
+			end, { desc = "Toggle diagnostic virtual_lines" })
 
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 			vim.lsp.config("*", { capabilities = capabilities })
