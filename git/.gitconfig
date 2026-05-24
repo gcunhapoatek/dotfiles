@@ -3,6 +3,12 @@
 [include]
 	path = ~/.gitconfig.local
 
+[user]
+	# Refuse commit if user.email is not set anywhere — prevents
+	# committing as $USER@$HOSTNAME on a fresh machine before
+	# ~/.gitconfig.local exists.
+	useConfigOnly = true
+
 [init]
 	defaultBranch = main
 
@@ -62,6 +68,31 @@
 
 [receive]
 	fsckObjects = true
+
+[grep]
+	lineNumber = true
+	patternType = perl
+
+[blame]
+	coloring = highlightRecent
+	markIgnoredLines = true
+	markUnblamables = true
+	# Per-repo file listing refactor SHAs to skip during blame.
+	# Missing file is non-fatal on recent git.
+	ignoreRevsFile = .git-blame-ignore-revs
+
+[apply]
+	whitespace = fix
+
+[maintenance]
+	# Default strategy applied to repos registered via
+	# `git maintenance register`. Activation = `git maintenance start`
+	# (installs launchd timer on macOS) + register per repo.
+	# Per-machine `repo = <abs-path>` lines live in ~/.gitconfig.local.
+	strategy = incremental
+
+[gc]
+	writeCommitGraph = true
 
 [core]
 	autocrlf = input
@@ -133,6 +164,10 @@
 	amend = commit --amend --no-edit
 	undo = reset --soft HEAD~1
 	wip = commit -am "chore: wip"
+	fixup = commit --fixup
+	autosquash = rebase -i --autosquash --autostash
+	current = branch --show-current
+	untrack = rm --cached --
 	please = push --force-with-lease --force-if-includes
 	cleanup = "!git branch --merged | \
 		grep -v '^\\*' | \
