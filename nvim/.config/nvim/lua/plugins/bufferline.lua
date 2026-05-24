@@ -2,7 +2,7 @@ return {
 	"akinsho/bufferline.nvim",
 	version = "*",
 	event = "VeryLazy",
-	dependencies = { "nvim-tree/nvim-web-devicons", "catppuccin/nvim" },
+	dependencies = { "nvim-mini/mini.icons", "catppuccin/nvim" },
 	keys = {
 		{ "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Toggle pin" },
 		{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", desc = "Delete non-pinned buffers" },
@@ -42,7 +42,8 @@ return {
 				},
 				---@param opts bufferline.IconFetcherOpts
 				get_element_icon = function(opts)
-					return require("nvim-web-devicons").get_icon_by_filetype(opts.filetype, { default = false })
+					local icon, hl = require("mini.icons").get("filetype", opts.filetype)
+					return icon, hl
 				end,
 			},
 			highlights = require("catppuccin.special.bufferline").get_theme({

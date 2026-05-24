@@ -1,6 +1,6 @@
 -- Inline markdown rendering: headings, code-blocks, checkboxes, callouts,
 -- tables. Active in `markdown` (and a few markdown-flavored) buffers.
--- Icon provider is nvim-web-devicons (already pulled in by bufferline / lualine).
+-- Icon provider is mini.icons (already pulled in by plugins/icons.lua).
 -- Treesitter parsers needed (already in plugins/treesitter.lua): markdown,
 -- markdown_inline, html, yaml.
 
@@ -9,7 +9,7 @@ return {
 	ft = { "markdown", "Avante", "codecompanion" },
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
-		"nvim-tree/nvim-web-devicons",
+		"nvim-mini/mini.icons",
 	},
 	---@module 'render-markdown'
 	---@type render.md.UserConfig

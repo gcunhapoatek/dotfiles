@@ -75,8 +75,7 @@ map("n", "[d", function()
 	vim.diagnostic.jump({ count = -1, float = true })
 end, { desc = "Prev diagnostic" })
 
--- Quickfix / location list
-map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open quickfix list" })
-map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open location list" })
+-- Quickfix / location list. <leader>xq and <leader>xl are owned by Trouble (see
+-- plugins/trouble.lua); these here are just the next/prev navigation.
 map("n", "]q", "<cmd>cnext<cr>", { desc = "Next quickfix" })
 map("n", "[q", "<cmd>cprevious<cr>", { desc = "Prev quickfix" })

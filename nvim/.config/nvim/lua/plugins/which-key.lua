@@ -11,6 +11,7 @@ return {
 			{ "<leader>f", group = "find" },
 			{ "<leader>g", group = "git" },
 			{ "<leader>h", group = "hunks" },
+			{ "<leader>p", group = "profiler" },
 			{ "<leader>t", group = "terminal" },
 			{ "<leader>u", group = "ui/toggle" },
 			{ "<leader>w", group = "window" },

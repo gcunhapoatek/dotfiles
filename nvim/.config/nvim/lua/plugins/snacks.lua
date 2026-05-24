@@ -44,6 +44,11 @@ return {
 					ignored = true,
 					exclude = { ".git", ".DS_Store" },
 				},
+				projects = {
+					-- Override the default dev paths ({"~/dev","~/projects"})
+					-- to match this machine's layout.
+					dev = { "~/Developer" },
+				},
 			},
 		},
 		notifier = { enabled = true },
@@ -52,6 +57,9 @@ return {
 		scroll = { enabled = true },
 		statuscolumn = { enabled = true },
 		words = { enabled = true },
+		scratch = {},
+		dim = {},
+		profiler = {},
 	},
 	keys = {
 		-- Explorer
@@ -148,6 +156,13 @@ return {
 				Snacks.picker.resume()
 			end,
 			desc = "Resume picker",
+		},
+		{
+			"<leader>fp",
+			function()
+				Snacks.picker.projects()
+			end,
+			desc = "Projects",
 		},
 
 		-- Notifier
@@ -271,6 +286,31 @@ return {
 			end,
 			desc = "Rename file",
 		},
+
+		-- Scratch buffers
+		{
+			"<leader>.",
+			function()
+				Snacks.scratch()
+			end,
+			desc = "Toggle scratch buffer",
+		},
+		{
+			"<leader>S",
+			function()
+				Snacks.scratch.select()
+			end,
+			desc = "Select scratch buffer",
+		},
+
+		-- Profiler
+		{
+			"<leader>ps",
+			function()
+				Snacks.profiler.scratch()
+			end,
+			desc = "Profiler scratch buffer",
+		},
 	},
 	init = function()
 		vim.api.nvim_create_autocmd("User", {
@@ -286,10 +326,11 @@ return {
 					.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
 					:map("<leader>uc")
 				Snacks.toggle.treesitter():map("<leader>uT")
-				Snacks.toggle
-					.option("background", { off = "light", on = "dark", name = "Dark Background" })
-					:map("<leader>ub")
+				Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
 				Snacks.toggle.inlay_hints():map("<leader>uh")
+				Snacks.toggle.dim():map("<leader>uD")
+				Snacks.toggle.profiler():map("<leader>pp")
+				Snacks.toggle.profiler_highlights():map("<leader>ph")
 			end,
 		})
 	end,
