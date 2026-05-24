@@ -12,11 +12,11 @@ return {
 			{ "<leader>g", group = "git" },
 			{ "<leader>h", group = "hunks" },
 			{ "<leader>p", group = "profiler" },
+			{ "<leader>s", group = "swap" },
 			{ "<leader>t", group = "terminal" },
 			{ "<leader>u", group = "ui/toggle" },
 			{ "<leader>w", group = "window" },
 			{ "<leader>x", group = "diagnostics/quickfix" },
-			{ "<leader>z", group = "zen" },
 		},
 	},
 	keys = {

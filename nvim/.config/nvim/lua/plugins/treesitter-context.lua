@@ -14,8 +14,10 @@ return {
 		zindex = 20,
 	},
 	keys = {
+		-- `[c` left to textobjects (prev class start, vim convention).
+		-- Jump-to-context lives on `<leader>uk` (up to enclosing context).
 		{
-			"[c",
+			"<leader>uk",
 			function()
 				require("treesitter-context").go_to_context(vim.v.count1)
 			end,

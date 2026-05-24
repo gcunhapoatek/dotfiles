@@ -4,9 +4,8 @@ local map = vim.keymap.set
 map("i", "jk", "<Esc>", { desc = "Escape insert mode" })
 map("t", "<C-/>", "<C-\\><C-n>", { desc = "Escape terminal mode" })
 
--- Save / quit
+-- Save / quit. `<leader>w` is the "window" prefix; save via `<C-s>` or `:w`.
 map({ "n", "i", "v" }, "<C-s>", "<cmd>silent! write<cr><Esc>", { desc = "Save file" })
-map("n", "<leader>w", "<cmd>write<cr>", { desc = "Save file" })
 map("n", "<leader>q", "<cmd>confirm quit<cr>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>confirm qall<cr>", { desc = "Quit all" })
 
