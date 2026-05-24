@@ -66,12 +66,14 @@ map({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 map("n", "<leader>Y", '"+Y', { desc = "Yank line to system clipboard" })
 map({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without yanking" })
 
--- Diagnostics
+-- Diagnostics. Float-on-jump is configured via vim.diagnostic.config({ jump
+-- = { on_jump = ... } }) in plugins/lsp.lua — the deprecated `float = true`
+-- option was removed in nvim 0.12.
 map("n", "]d", function()
-	vim.diagnostic.jump({ count = 1, float = true })
+	vim.diagnostic.jump({ count = 1 })
 end, { desc = "Next diagnostic" })
 map("n", "[d", function()
-	vim.diagnostic.jump({ count = -1, float = true })
+	vim.diagnostic.jump({ count = -1 })
 end, { desc = "Prev diagnostic" })
 
 -- Quickfix / location list. <leader>xq and <leader>xl are owned by Trouble (see

@@ -129,6 +129,14 @@ return {
 				virtual_text = virtual_text_opts,
 				virtual_lines = false,
 				float = { border = "rounded", source = "if_many" },
+				-- Replaces the deprecated `float = true` option to
+				-- vim.diagnostic.jump(). on_jump fires once per jump and
+				-- pops the float for the diagnostic landed on.
+				jump = {
+					on_jump = function(_, _)
+						vim.diagnostic.open_float()
+					end,
+				},
 				signs = {
 					text = {
 						[vim.diagnostic.severity.ERROR] = "",
