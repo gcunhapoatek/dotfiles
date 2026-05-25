@@ -30,5 +30,6 @@ claude/.claude/*
 !claude/.claude/agents/
 !claude/.claude/commands/
 !claude/.claude/keybindings.json
+!claude/.claude/statusline.sh
 claude/.claude/settings.local.json
 claude/.claude/**/*.log

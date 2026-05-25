@@ -27,7 +27,9 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash \"$HOME/.claude/plugins/marketplaces/caveman/hooks/caveman-statusline.sh\""
+    "command": "bash \"$HOME/.claude/statusline.sh\"",
+    "padding": 1,
+    "refreshInterval": 30
   },
   "permissions": {
     "allow": [
