@@ -32,8 +32,8 @@ unstow: ## Unstow a single package: make unstow PKG=nvim
 	@$(STOW) -D $(PKG)
 
 check: ## Dry-run stow + check Brewfile dependencies
-	@echo "==> stow dry run"
-	@$(STOW) -n -v --restow $(PACKAGES) || true
+	@echo "==> Stow dry-run: $(PACKAGES)"
+	@$(STOW) -n --restow $(PACKAGES) || true
 	@echo
 	@echo "==> brew bundle check"
 	@brew bundle check --file=$(DOTFILES_DIR)/Brewfile --verbose || true
