@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Polls now-playing via nowplaying-cli (macOS 26 deprecated the media_change event).
+# Single CLI call: `get title artist` returns both, one per line.
 source "$CONFIG_DIR/colors.sh"
 
 if ! command -v nowplaying-cli >/dev/null 2>&1; then
@@ -7,8 +8,12 @@ if ! command -v nowplaying-cli >/dev/null 2>&1; then
   exit 0
 fi
 
-TITLE="$(nowplaying-cli get title 2>/dev/null)"
-ARTIST="$(nowplaying-cli get artist 2>/dev/null)"
+TITLE=""
+ARTIST=""
+{
+  IFS= read -r TITLE
+  IFS= read -r ARTIST
+} < <(nowplaying-cli get title artist 2>/dev/null)
 
 if [ -z "$TITLE" ] || [ "$TITLE" = "null" ]; then
   sketchybar --set "$NAME" drawing=off
@@ -22,6 +27,6 @@ else
 fi
 
 sketchybar --set "$NAME" drawing=on \
-                         icon="󰎈" \
-                         icon.color=$MAUVE \
-                         label="$LABEL"
+  icon="󰎈" \
+  icon.color=$MAUVE \
+  label="$LABEL"

@@ -9,6 +9,11 @@ else
   APP="$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null)"
 fi
 
+if [ -z "$APP" ]; then
+  sketchybar --set "$NAME" drawing=off
+  exit 0
+fi
+
 __icon_map "$APP"
 
-sketchybar --set "$NAME" icon="$icon_result" label="$APP"
+sketchybar --set "$NAME" drawing=on icon="$icon_result" label="$APP"
