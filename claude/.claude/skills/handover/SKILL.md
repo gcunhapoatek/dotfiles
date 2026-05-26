@@ -30,7 +30,12 @@ stamp="$(date -u +%Y-%m-%dT%H%M%S)"
 out="$HOME/.claude/projects/$slug/handover/$stamp.md"
 ```
 
-One file per handover. Do not overwrite prior handovers — they form a chronological record.
+One file per handover. Do not overwrite prior handovers.
+
+**Lifecycle.** Handovers are short-lived by design:
+- SessionStart surfaces only handovers ≤ 48h old, then moves them into `handover/consumed/`.
+- `handover/consumed/` is pruned after 7 days by the Stop-rotate hook.
+- If you need an older handover, ask the user — do not auto-resurface stale state.
 
 ## File structure
 
@@ -85,12 +90,17 @@ last commit: <short sha + subject, or "-">
 
 ## Reading a handover (next session)
 
-The SessionStart hook surfaces the most recent handover for the current cwd. When you see one in `additionalContext`:
+The SessionStart hook surfaces the most recent handover (age ≤ 48h) for the current cwd, then **moves it to `handover/consumed/`** so it loads at most once. Older handovers do not auto-surface — the user must request them.
 
+When you see a handover in `additionalContext` (block marked `--- BEGIN HANDOVER ---`):
+
+- **First reply must include exactly one ack line** (the injected context spells it out):
+  `Handover loaded: <path> (age: <age>) — resuming at "<next concrete step>"`
+  This is non-negotiable — without it the user cannot tell the handover was actually consumed.
 - Read it before doing anything else.
 - Treat "Next concrete step" as the default resume action unless the user overrides.
 - Honor "Don't redo" — do not re-explore those paths.
-- After the user confirms scope, you may delete the consumed handover or leave it as history (default: leave).
+- Do not delete or rename the consumed file. `handover/consumed/` is pruned automatically after 7 days by the Stop-rotate hook.
 
 ## Anti-examples (do not write)
 

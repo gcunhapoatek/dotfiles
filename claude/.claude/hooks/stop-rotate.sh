@@ -8,7 +8,7 @@
 #   - ~/.claude/telemetry/*           older than 7 days
 #   - ~/.claude/tasks/*               older than 30 days
 #   - ~/.claude/plans/*               older than 30 days
-#   - ~/.claude/projects/*/handover/* older than 60 days (curated, keep longer)
+#   - ~/.claude/projects/*/handover/**/*.md older than 7 days (curated, short-lived)
 # Best-effort: failures swallowed so they never block a Stop event.
 
 set -uo pipefail
@@ -32,10 +32,12 @@ prune "$HOME/.claude/telemetry" 7
 prune "$HOME/.claude/tasks" 30
 prune "$HOME/.claude/plans" 30
 
-# Handover files live under each per-project dir. Walk them with one find call.
+# Handover files (live + consumed/) live under each per-project dir.
+# Path match covers both projects/X/handover/foo.md and
+# projects/X/handover/consumed/foo.md.
 if [[ -d "$HOME/.claude/projects" ]]; then
-	find "$HOME/.claude/projects" -mindepth 3 -maxdepth 3 -type f -name '*.md' \
-		-path '*/handover/*' -mtime +60 -delete 2>/dev/null || true
+	find "$HOME/.claude/projects" -type f -name '*.md' \
+		-path '*/handover/*' -mtime +7 -delete 2>/dev/null || true
 fi
 
 date +%s >"$marker"
