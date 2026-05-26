@@ -18,6 +18,10 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
+# Refresh workspace pills when focused window changes (covers window close —
+# focus moves away from the closed window — and intra-workspace navigation).
+on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
 # Start AeroSpace at login
 start-at-login = true
 
@@ -226,3 +230,9 @@ on-mode-changed = []
     alt-shift-j = ['join-with down', 'mode main']
     alt-shift-k = ['join-with up', 'mode main']
     alt-shift-l = ['join-with right', 'mode main']
+
+# Refresh workspace pills when a new window is detected (covers app launch /
+# new window). Catch-all rule — no `if` filter, run only the sketchybar trigger
+# so window placement defaults remain unchanged.
+[[on-window-detected]]
+    run = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']

@@ -50,19 +50,30 @@ sketchybar --add event aerospace_workspace_change
 
 for sid in 1 2 3 4 5 6 7 8 9; do
   sketchybar --add item space.$sid left \
-             --subscribe space.$sid aerospace_workspace_change \
              --set space.$sid \
                 background.color=$SURFACE0 \
                 background.corner_radius=6 \
                 background.height=22 \
                 background.drawing=off \
-                label="$sid" \
-                label.padding_left=8 \
+                icon="$sid" \
+                icon.drawing=on \
+                icon.font="$FONT:Bold:13.0" \
+                icon.padding_left=8 \
+                icon.padding_right=4 \
+                label="" \
+                label.font="sketchybar-app-font:Regular:14.0" \
+                label.padding_left=0 \
                 label.padding_right=8 \
-                icon.drawing=off \
-                click_script="aerospace workspace $sid" \
-                script="$PLUGIN_DIR/aerospace.sh $sid"
+                label.y_offset=-1 \
+                click_script="aerospace workspace $sid"
 done
+
+# Invisible controller: one event subscription, one batched update for all space.* items.
+# Master script does a single `aerospace list-windows --all` and chains --set per workspace.
+sketchybar --add item aerospace_controller left \
+           --set aerospace_controller drawing=off \
+                                      script="$PLUGIN_DIR/aerospace.sh" \
+           --subscribe aerospace_controller aerospace_workspace_change
 
 ##### Left Items #####
 sketchybar --add item space_sep left \
@@ -80,13 +91,15 @@ sketchybar --add item space_sep left \
 ##### Right Items (rendered right-to-left in declaration order) #####
 # https://felixkratz.github.io/SketchyBar/config/events
 sketchybar --add item clock right \
-           --set clock update_freq=10 \
+           --set clock update_freq=30 \
                        icon="󰸘" \
                        icon.color=$BLUE \
+                       click_script="open -a Calendar" \
                        script="$PLUGIN_DIR/clock.sh" \
            \
            --add item battery right \
            --set battery update_freq=120 \
+                         click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
                          script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change \
            \
@@ -100,12 +113,14 @@ sketchybar --add item clock right \
            \
            --add item volume right \
            --set volume icon.color=$PEACH \
+                        click_script="open 'x-apple.systempreferences:com.apple.preference.sound'" \
                         script="$PLUGIN_DIR/volume.sh" \
            --subscribe volume volume_change \
            \
            --add item wifi right \
            --set wifi update_freq=30 \
                       icon.color=$SAPPHIRE \
+                      click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
                       script="$PLUGIN_DIR/wifi.sh" \
            --subscribe wifi system_woke \
            \
@@ -120,7 +135,17 @@ sketchybar --add item clock right \
                        drawing=off \
                        label.max_chars=30 \
                        scroll_texts=on \
+                       click_script="nowplaying-cli togglePlayPause" \
                        script="$PLUGIN_DIR/media.sh"
+
+##### Brackets (visual grouping; must be declared after members) #####
+# Docs: https://felixkratz.github.io/SketchyBar/config/components
+sketchybar --add bracket sysmon cpu mem battery \
+           --set sysmon background.color=$SURFACE0 \
+                        background.corner_radius=8 \
+                        background.height=26 \
+                        background.border_color=$SURFACE1 \
+                        background.border_width=1
 
 ##### Initial paint #####
 sketchybar --update
