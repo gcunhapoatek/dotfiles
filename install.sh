@@ -12,7 +12,7 @@ echo "==> Installing Brewfile dependencies"
 brew bundle --file=Brewfile
 
 # 3. Discover stow packages: every top-level directory except repo metadata.
-EXCLUDE=(.git .github)
+EXCLUDE=(.git .github .claude scripts)
 PACKAGES=()
 for dir in */; do
   pkg="${dir%/}"
