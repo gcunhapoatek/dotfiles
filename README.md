@@ -17,7 +17,6 @@ dotfiles/
 ├── aerospace/.config/aerospace/aerospace.toml
 ├── bat/.config/bat/{config,themes/}
 ├── btop/.config/btop/{btop.conf,themes/}
-├── cursor/.config/cursor/cli-config.json
 ├── eza/.config/eza/theme.yml
 ├── fastfetch/.config/fastfetch/{config.jsonc,logo.txt}
 ├── gh/.config/gh/config.yml          # hosts.yml is intentionally NOT tracked

@@ -13,7 +13,7 @@ On-demand reference. Load only when `SKILL.md` isn't enough — for example, whe
 
 - `zsh/` — files live at the package root (`.zshrc`, `.zprofile`) because the targets are `$HOME/.zshrc`, `$HOME/.zprofile`. There is no `.config/zsh/` subdir.
 - `nvim/` — everything under `.config/nvim/` so the symlinked target is `$HOME/.config/nvim/`. The lazy.nvim layout: `init.lua` → `lua/config/lazy.lua` → all of `lua/plugins/*.lua`.
-- `aerospace/`, `sketchybar/`, `btop/`, `eza/`, `bat/`, `cursor/`, `fastfetch/`, `ghostty/`, `lazygit/`, `spotify-player/` — `.config/<tool>/` layout.
+- `aerospace/`, `sketchybar/`, `btop/`, `eza/`, `bat/`, `fastfetch/`, `ghostty/`, `lazygit/`, `spotify-player/` — `.config/<tool>/` layout.
 - `gh/` — only `gh/.config/gh/config.yml` is tracked; `gh/.config/gh/hosts.yml` is gitignored (auth tokens).
 - `git/` — `.config/git/` layout. The tracked `config` file does `[include] path = ~/.gitconfig.local` so identity stays per-machine.
 
