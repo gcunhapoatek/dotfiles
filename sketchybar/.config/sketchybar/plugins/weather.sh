@@ -29,7 +29,7 @@ case "$COND" in
   ICON="󰖙"
   COLOR=$YELLOW
   ;;
-*Partly\ cloudy* | *Partly*)
+*Partly*)
   ICON="󰖕"
   COLOR=$SUBTEXT0
   ;;

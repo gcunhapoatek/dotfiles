@@ -19,10 +19,10 @@ PCT="$(vm_stat 2>/dev/null | awk '
 [ -z "$PCT" ] && exit 0
 
 case "$PCT" in
-  ''|[0-9]|[1-5][0-9]) COLOR=$GREEN ;;
-  [6-7][0-9])          COLOR=$YELLOW ;;
-  [8][0-9])            COLOR=$PEACH ;;
-  *)                   COLOR=$RED ;;
+[0-9] | [1-5][0-9]) COLOR=$GREEN ;;
+[6-7][0-9]) COLOR=$YELLOW ;;
+[8][0-9]) COLOR=$PEACH ;;
+*) COLOR=$RED ;;
 esac
 
 sketchybar --set "$NAME" icon="󰍛" icon.color="$COLOR" label="${PCT}%"
