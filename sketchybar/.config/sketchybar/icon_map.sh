@@ -1080,6 +1080,9 @@ function __icon_map() {
    "AutoFillPanelService" | "coreautha" | "Passwords" | "Passwörter" | "Паролі" | "Пароли")
         icon_result=":passwords:"
         ;;
+   "PasteBar")
+        icon_result=":pastebar:"
+        ;;
    "PCSX2")
         icon_result=":pcsx2:"
         ;;
@@ -1118,6 +1121,9 @@ function __icon_map() {
         ;;
    "Pinta")
         icon_result=":pinta:"
+        ;;
+   "Pixcall")
+        icon_result=":pixcall:"
         ;;
    "Pixelmator Pro")
         icon_result=":pixelmator_pro:"
@@ -1659,3 +1665,12 @@ function __icon_map() {
     esac
 }
 ### END-OF-ICON-MAP
+
+# When executed directly (not sourced), map all arguments and print space-separated results.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    for app_name in "$@"; do
+        __icon_map "$app_name"
+        printf '%s ' "$icon_result"
+    done
+    [[ $# -gt 0 ]] && printf '\n'
+fi
