@@ -32,6 +32,14 @@ export FZF_CTRL_T_OPTS="
 export NVM_DIR="$HOME/.nvm"
 export SDKMAN_DIR="$HOME/.sdkman"
 
+# Clear stale lazy-load wrappers leaked from a parent shell (e.g. Claude Code
+# sandbox re-exports user-facing functions via typeset -fx but not the
+# underscored helpers). Without this, the wrappers call a missing
+# _nvm_lazy_load and recurse until FUNCNEST blows up.
+if ! typeset -f _nvm_lazy_load >/dev/null 2>&1; then
+  unset -f nvm node npm npx 2>/dev/null
+fi
+
 # NVM lazy-load: defer sourcing nvm.sh (~200-500ms) until first use of
 # nvm/node/npm/npx, or when entering a directory tree containing .nvmrc.
 autoload -U add-zsh-hook
