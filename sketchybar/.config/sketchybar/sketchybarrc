@@ -30,10 +30,10 @@ sketchybar --bar position=top \
 default=(
   padding_left=4
   padding_right=4
-  icon.font="$FONT:Bold:16.0"
-  label.font="$FONT:Semibold:13.0"
-  icon.color=$TEXT
-  label.color=$TEXT
+  "icon.font=$FONT:Bold:16.0"
+  "label.font=$FONT:Semibold:13.0"
+  "icon.color=$TEXT"
+  "label.color=$TEXT"
   icon.padding_left=8
   icon.padding_right=4
   label.padding_left=4
@@ -45,27 +45,36 @@ sketchybar --default "${default[@]}"
 
 ##### AeroSpace Workspaces #####
 # Driven by `exec-on-workspace-change` in aerospace.toml.
+# Per-monitor pills: bar default display=all paints on every monitor; each
+# space.$sid.$mon item is scoped via `display=$mon` so each bar shows only its
+# monitor's workspaces. Plugin recomputes assignment + visible workspace per
+# monitor on every event.
 # Docs: https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
 sketchybar --add event aerospace_workspace_change
 
-for sid in 1 2 3 4 5 6 7 8 9; do
-  sketchybar --add item space.$sid left \
-             --set space.$sid \
-                background.color=$SURFACE0 \
-                background.corner_radius=6 \
-                background.height=22 \
-                background.drawing=off \
-                icon="$sid" \
-                icon.drawing=on \
-                icon.font="$FONT:Bold:13.0" \
-                icon.padding_left=8 \
-                icon.padding_right=4 \
-                label="" \
-                label.font="sketchybar-app-font:Regular:14.0" \
-                label.padding_left=0 \
-                label.padding_right=8 \
-                label.y_offset=-1 \
-                click_script="aerospace workspace $sid"
+MON_COUNT=$(aerospace list-monitors --count 2>/dev/null || echo 1)
+
+for mon in $(seq 1 "$MON_COUNT"); do
+  for sid in 1 2 3 4 5 6 7 8 9 10; do
+    sketchybar --add item space.$sid.$mon left \
+               --set space.$sid.$mon \
+                  display=$mon \
+                  background.color=$SURFACE0 \
+                  background.corner_radius=6 \
+                  background.height=22 \
+                  background.drawing=off \
+                  icon="$sid" \
+                  icon.drawing=on \
+                  icon.font="$FONT:Bold:13.0" \
+                  icon.padding_left=8 \
+                  icon.padding_right=4 \
+                  label="" \
+                  label.font="sketchybar-app-font:Regular:14.0" \
+                  label.padding_left=0 \
+                  label.padding_right=8 \
+                  label.y_offset=-1 \
+                  click_script="aerospace workspace $sid"
+  done
 done
 
 # Invisible controller: one event subscription, one batched update for all space.* items.
@@ -80,13 +89,21 @@ sketchybar --add item space_sep left \
            --set space_sep icon="" \
                            icon.color=$OVERLAY0 \
                            icon.font="$FONT:Bold:14.0" \
-                           label.drawing=off \
-           --add item front_app left \
-           --set front_app icon.font="sketchybar-app-font:Regular:16.0" \
-                           icon.color=$MAUVE \
-                           label.color=$TEXT \
-                           script="$PLUGIN_DIR/front_app.sh" \
-           --subscribe front_app front_app_switched
+                           label.drawing=off
+
+# Per-monitor front_app: each bar shows first window of its visible workspace.
+# AeroSpace orders windows by tiling tree, not MRU — accuracy caveat documented
+# in plugin script.
+for mon in $(seq 1 "$MON_COUNT"); do
+  sketchybar --add item front_app.$mon left \
+             --set front_app.$mon \
+                display=$mon \
+                icon.font="sketchybar-app-font:Regular:16.0" \
+                icon.color=$MAUVE \
+                label.color=$TEXT \
+                script="$PLUGIN_DIR/front_app.sh" \
+             --subscribe front_app.$mon front_app_switched aerospace_workspace_change
+done
 
 ##### Right Items (rendered right-to-left in declaration order) #####
 # https://felixkratz.github.io/SketchyBar/config/events
