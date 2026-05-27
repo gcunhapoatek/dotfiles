@@ -109,10 +109,11 @@ done
 # https://felixkratz.github.io/SketchyBar/config/events
 sketchybar --add item clock right \
            --set clock update_freq=30 \
-                       icon="󰸘" \
+                       icon="󰥔" \
                        icon.color=$BLUE \
                        click_script="open -a Calendar" \
                        script="$PLUGIN_DIR/clock.sh" \
+           --subscribe clock system_woke \
            \
            --add item battery right \
            --set battery update_freq=120 \

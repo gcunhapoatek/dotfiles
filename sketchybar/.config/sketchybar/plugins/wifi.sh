@@ -5,7 +5,9 @@
 
 source "$CONFIG_DIR/colors.sh"
 
-IFACE="en0"
+IFACE="$(networksetup -listallhardwareports 2>/dev/null |
+  awk '/Hardware Port: Wi-Fi/{getline; print $2; exit}')"
+IFACE="${IFACE:-en0}"
 
 SSID="$(ipconfig getsummary "$IFACE" 2>/dev/null | awk -F' SSID : ' '/ SSID : / {print $2; exit}')"
 
