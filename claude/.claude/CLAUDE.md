@@ -28,6 +28,13 @@ How I work. Defaults for any project. Project-level rules override these.
 - If a touched file is broken in ways unrelated to the task, flag it — don't silently fix it inline.
 - One logical change per branch and per commit.
 
+## Plan mode
+
+- **Enter plan mode** before implementation when the change touches more than two files, includes an irreversible or shared-state step, the user's ask is ambiguous about scope, or the work involves unfamiliar third-party config / API surface. Skip it for single-file edits, trivial bug fixes, and read-only tasks.
+- After `ExitPlanMode` is approved, **persist a curated copy** of the plan to `~/.claude/projects/<slug>/plans/<UTC-ISO>.md` per the `plan-mode` skill. The flat `~/.claude/plans/` files the harness may write are not durable — the per-project copy is what SessionStart surfaces on resume.
+- Treat the persisted plan's Approach + Files as the agreed scope. Append a `## Status log` entry on resume and on non-trivial state transitions. Move the file into `plans/completed/` when shipped, or set `status: abandoned`.
+- Project rules override these defaults. See `~/.claude/skills/plan-mode/SKILL.md`.
+
 ## Sources of truth
 
 - **Inside a repo: trust the code, not the docs.** READMEs, ADRs, and inline comments drift; the running source is authoritative. When code and docs disagree, follow the code and either update the stale doc or flag the drift in the PR.
