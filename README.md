@@ -23,7 +23,6 @@ dotfiles/
 ├── ghostty/.config/ghostty/{config,themes/}
 ├── lazygit/.config/lazygit/config.yml
 ├── nvim/.config/nvim/{init.lua,lua/,lazy-lock.json}
-├── spotify-player/.config/spotify-player/{app.toml,theme.toml}
 ├── git/.gitconfig                    # top-level dotfile
 └── zsh/{.zshrc,.zprofile}            # top-level dotfiles
 ```
