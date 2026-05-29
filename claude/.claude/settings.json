@@ -92,6 +92,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "mcp__claude_ai_Slack__slack_send_message|mcp__claude_ai_Slack__slack_send_message_draft|mcp__claude_ai_Slack__slack_schedule_message",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/pre-tool-use-slack.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [

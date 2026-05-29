@@ -1,0 +1,83 @@
+---
+name: humanize-text
+description: Rewrite drafted text so it reads like a real person wrote it — natural English, no AI tells, tone matched to the situation. Trigger whenever drafting or sending a Slack message (slack_send_message / _draft / _schedule via the Slack MCP), writing a draft message/email/announcement, or when the user asks to "humanize", "make this less AI", "de-AI", "make it sound natural", or "reword this". Apply BEFORE the message is sent, not after.
+---
+
+# Humanize text
+
+Goal: text that reads like a specific human wrote it for a specific reader — not like a model filled a template. Apply to any message before it leaves: Slack, email, draft, announcement.
+
+Run this whenever you are about to:
+
+- call a Slack send/draft tool (`slack_send_message`, `slack_send_message_draft`, `slack_schedule_message`),
+- write a draft message, email, or announcement,
+- act on an explicit "humanize / make natural / less AI" request.
+
+## Process
+
+1. Draft the message for content first.
+2. Pick the register (see **Tone**) from who reads it and why.
+3. Strip the AI tells below.
+4. Read it out loud in your head. If a real person wouldn't say it that way to that reader, rewrite.
+5. For Slack: show the humanized draft and confirm before sending. Sending is outward-facing — don't fire without a go-ahead.
+
+## AI tells to cut
+
+These are the patterns that make text read as machine-written. Hunt and kill them.
+
+- **Throat-clearing openers.** "I hope this message finds you well", "I wanted to reach out", "Just circling back". Open with the actual point.
+- **Hedge stacks.** "I think it might possibly be a good idea to perhaps consider". One hedge max, only if the uncertainty is real.
+- **Filler intensifiers.** *just, really, very, actually, basically, simply, definitely, truly.* Delete; they add nothing.
+- **Corporate abstraction.** "leverage", "utilize", "facilitate", "in order to", "at this point in time". Use *use, help, to, now.*
+- **Rule-of-three padding.** "clear, concise, and effective" — pick the one word that's true.
+- **The em-dash-and-parallelism cadence.** Not every sentence needs a dramatic dash or a "not X, but Y" flourish. Vary sentence length; let some run short.
+- **Summary tax.** Closing "In summary / To recap / I hope this helps / Let me know if you have any questions!" on a 3-line message. Cut it.
+- **Over-explaining.** Stating the obvious or restating the ask back. Trust the reader.
+- **Emoji garnish and exclamation inflation.** One, if it fits the channel. Not a row of them.
+- **Symmetry that no human writes.** Perfectly balanced bullet lengths, every item the same shape. Real notes are lumpy.
+
+## What natural looks like
+
+- Lead with the point or the ask. Context after, only what's needed.
+- Contractions: *don't, it's, we'll, can't.* Formal-register exception below.
+- Concrete over abstract: name the file, the PR, the time, the person.
+- Plain verbs. Short words when they carry the meaning.
+- One idea per sentence; vary length so it has rhythm.
+- It's fine to be direct. "This won't work because X" beats "I'm wondering if there might be some challenges with X".
+
+## Tone presets
+
+Match register to reader. The two you write for:
+
+### Internal teammate (default for team channels, DMs)
+
+Casual, direct, peer-to-peer. Contractions, fragments OK, light humor fine. Skip the preamble entirely.
+
+> Pushed the fix to `auth-refresh` — token expiry was using `<` instead of `<=`. Can you sanity-check before I merge?
+
+Not:
+
+> Hi! I hope you're doing well. I just wanted to let you know that I've gone ahead and pushed a fix...
+
+### Manager / leadership
+
+Concise, outcome-first, lightly more formal — but still human. Lead with the result or the decision needed. No filler, no padding. Contractions stay (formal ≠ stiff). Make the ask or status unmistakable in the first line.
+
+> Migration's done — all 4 services cut over, zero downtime. One follow-up: the staging DB still needs the index backfill, planning that for Thursday. No action needed from you unless you want to move that date.
+
+Not:
+
+> I am pleased to report that the migration initiative has been successfully completed across all relevant services, and I wanted to take a moment to provide a comprehensive update...
+
+### Scaling up (client / external / public)
+
+When the reader is external, keep the structure above but raise polish: fewer fragments, no inside jokes, spell out acronyms once. Still cut the AI tells — polished is not the same as robotic.
+
+## Quick check before sending
+
+- First line carries the point or ask? 
+- Could a colleague tell *you* wrote it, not a bot?
+- Every sentence earns its place?
+- Register matches the reader?
+
+If yes, send. If the message is going out via Slack MCP, show the final text and confirm first.
