@@ -15,7 +15,7 @@ jobs:
     name: shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         with:
@@ -30,7 +30,7 @@ jobs:
     name: stylua
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: JohnnyMorganz/stylua-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
     name: stow + json
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install stow
         run: sudo apt-get update && sudo apt-get install -y stow
       - name: Stow dry-run (conflict + structure check)
