@@ -11,7 +11,7 @@ cd "$DOTFILES_DIR"
 echo "==> Installing Brewfile dependencies"
 brew bundle --file=Brewfile
 
-# 3. Discover stow packages: every top-level directory except repo metadata.
+# 2. Discover stow packages: every top-level directory except repo metadata.
 EXCLUDE=(.git .github .claude scripts)
 PACKAGES=()
 for dir in */; do
@@ -28,10 +28,24 @@ if [[ ${#PACKAGES[@]} -eq 0 ]]; then
   exit 1
 fi
 
-# 4. Stow them. --target/--dir explicit so the script works for any user.
+# 3. Stow each package independently so one conflict doesn't abort the rest.
+#    --target/--dir explicit so the script works for any user.
 echo "==> Stowing into $HOME:"
-printf '  - %s\n' "${PACKAGES[@]}"
-stow --target="$HOME" --dir="$DOTFILES_DIR" --restow "${PACKAGES[@]}"
+fail=0
+for pkg in "${PACKAGES[@]}"; do
+  if err="$(stow --target="$HOME" --dir="$DOTFILES_DIR" --restow "$pkg" 2>&1)"; then
+    echo "  ✓ $pkg"
+  else
+    echo "  ✗ $pkg" >&2
+    printf '%s\n' "$err" | sed 's/^/      /' >&2
+    fail=1
+  fi
+done
 
 echo
-echo "Done. Symlinks in \$HOME now point at $DOTFILES_DIR"
+if [[ $fail -eq 0 ]]; then
+  echo "Done. Symlinks in \$HOME now point at $DOTFILES_DIR"
+else
+  echo "Some packages failed to stow — see above." >&2
+  exit 1
+fi
