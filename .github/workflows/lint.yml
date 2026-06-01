@@ -22,6 +22,9 @@ jobs:
           # Gate on hard errors only. Pre-existing style warnings (SC2154 from
           # sourced files, SC2221/2222) are tracked separately, not blocking.
           severity: error
+          # zsh/ holds zsh dotfiles shellcheck can't parse (SC2148, no shebang).
+          # They're validated with `zsh -n` per the CLAUDE.md matrix instead.
+          ignore_paths: zsh
 
   stylua:
     name: stylua
