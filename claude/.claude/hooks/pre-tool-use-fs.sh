@@ -40,6 +40,13 @@ case "/$path/" in
 	;;
 esac
 
+# Allowlist: CI build-config env templates under .github/config are not secrets.
+case "$path" in
+*/.github/config/*.env)
+	exit 0
+	;;
+esac
+
 # Env / secret filenames.
 base="${path##*/}"
 case "$base" in
