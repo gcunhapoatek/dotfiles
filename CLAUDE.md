@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Every top-level directory (other than `.git`, `.github`, `.claude`) is a **stow package** that mirrors the target path structure relative to `$HOME`. Stowing a package creates symlinks inside `$HOME` pointing back into the repo. `.claude/` is project-local Claude Code config — not stowed into `~/.claude/`.
+Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Every top-level directory (other than `.git`, `.github`, `.claude`, `scripts`) is a **stow package** that mirrors the target path structure relative to `$HOME`. Stowing a package creates symlinks inside `$HOME` pointing back into the repo. `.claude/` is project-local Claude Code config — not stowed into `~/.claude/`.
 
 Primary languages: Bash (scripts + hooks), Lua (Neovim config), TOML (AeroSpace), YAML/JSON (everything else). Runtime: macOS workstation; Homebrew is the package manager for everything declared in `Brewfile`.
 
@@ -12,7 +12,7 @@ Primary languages: Bash (scripts + hooks), Lua (Neovim config), TOML (AeroSpace)
 
 - **Stow packages.** Every top-level directory is a stow package. To add config for a new tool, create `<tool>/.config/<tool>/...` so the symlinked target under `$HOME/.config/<tool>/` is correct. Files that target `$HOME` directly (like `.zshrc`) live at the package root — see `zsh/` as the reference.
 - **`--no-folding` is mandatory.** `.stowrc` enforces it so every file gets its own symlink. Don't write tooling that relies on a single symlinked parent directory.
-- **`Makefile` is the dispatch.** It auto-discovers packages by listing top-level directories minus the `EXCLUDE` list (`.git`, `.github`, `.claude`). Adding a directory at the root automatically registers a stow package — only do that intentionally.
+- **`Makefile` is the dispatch.** It auto-discovers packages by listing top-level directories minus the `EXCLUDE` list (`.git`, `.github`, `.claude`, `scripts`). Adding a directory at the root automatically registers a stow package — only do that intentionally.
 - **No secrets in the repo.** Per-machine identity and tokens go in `~/.gitconfig.local`, `~/.zshrc.local`, `~/.zprofile.local`. The tracked configs source these when they exist.
 - **Where new content goes:**
 
