@@ -1,0 +1,69 @@
+name: lint
+
+# Mirrors the local validation matrix (CLAUDE.md "Build & test"):
+# shellcheck for *.sh, stylua for nvim Lua, stow dry-run + jq for the rest.
+# Runs on Linux runners — brew/cask checks (`make check`) are intentionally
+# omitted since GUI casks can't install in CI.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          # Gate on hard errors only. Pre-existing style warnings (SC2154 from
+          # sourced files, SC2221/2222) are tracked separately, not blocking.
+          severity: error
+          # zsh/ holds zsh dotfiles shellcheck can't parse (SC2148, no shebang).
+          # They're validated with `zsh -n` per the CLAUDE.md matrix instead.
+          ignore_paths: zsh
+
+  stylua:
+    name: stylua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v2.5.2
+          args: --check nvim/.config/nvim
+
+  stow:
+    name: stow + json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install stow
+        run: sudo apt-get update && sudo apt-get install -y stow
+      - name: Stow dry-run (conflict + structure check)
+        run: |
+          target="$(mktemp -d)"
+          fail=0
+          for pkg in */; do
+            pkg="${pkg%/}"
+            case "$pkg" in .git | .github | .claude | scripts) continue ;; esac
+            if ! stow -n --no-folding --target="$target" --dir="$PWD" --restow "$pkg"; then
+              echo "::error::stow conflict in package: $pkg"
+              fail=1
+            fi
+          done
+          exit $fail
+      - name: Validate tracked JSON
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if ! jq empty "$f" 2>/dev/null; then
+              echo "::error::invalid JSON: $f"
+              fail=1
+            fi
+          done < <(git ls-files '*.json')
+          exit $fail

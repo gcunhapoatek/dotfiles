@@ -23,6 +23,10 @@ brew "neovim"                       # → nvim/ package, also $EDITOR
 brew "tree-sitter-cli"              # CLI used by nvim-treesitter main branch to build parsers
 brew "ripgrep"                      # required by snacks.picker grep + vim grepprg
 
+# ----- Lint / validation (local mirror of .github/workflows/lint.yml) -----
+brew "shellcheck"                   # shell script linter, per CLAUDE.md validation matrix
+brew "stylua"                       # lua formatter for nvim/ — `stylua --check`
+
 # ----- Git stack -----
 brew "gh"                           # github cli, → gh/ package
 brew "git-delta"                    # diff pager (referenced by [core] pager = delta)
