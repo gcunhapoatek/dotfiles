@@ -5,8 +5,9 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 ## Layout
 
 Each top-level directory is a **stow package** that mirrors the structure
-relative to `$HOME`. Stowing a package symlinks its contents into the
-matching path under `$HOME`.
+relative to `$HOME` (except `scripts/`, which holds repo helpers and is not
+stowed). Stowing a package symlinks its contents into the matching path
+under `$HOME`.
 
 ```
 dotfiles/
@@ -17,12 +18,15 @@ dotfiles/
 ├── aerospace/.config/aerospace/aerospace.toml
 ├── bat/.config/bat/{config,themes/}
 ├── btop/.config/btop/{btop.conf,themes/}
+├── claude/.claude/{settings.json,CLAUDE.md,statusline.sh,hooks/,skills/}
 ├── eza/.config/eza/theme.yml
 ├── fastfetch/.config/fastfetch/{config.jsonc,logo.txt}
 ├── gh/.config/gh/config.yml          # hosts.yml is intentionally NOT tracked
 ├── ghostty/.config/ghostty/{config,themes/}
 ├── lazygit/.config/lazygit/config.yml
 ├── nvim/.config/nvim/{init.lua,lua/,lazy-lock.json}
+├── sketchybar/.config/sketchybar/{sketchybarrc,colors.sh,icon_map.sh,plugins/}
+├── scripts/                          # repo helpers (NOT a stow package)
 ├── git/.gitconfig                    # top-level dotfile
 └── zsh/{.zshrc,.zprofile}            # top-level dotfiles
 ```
