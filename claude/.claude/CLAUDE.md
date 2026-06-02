@@ -86,7 +86,8 @@ How I work. Defaults for any project. Project-level rules override these.
 ## Git
 
 - Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`, `perf:`, `build:`, `ci:`).
-- Subject ≤ 50 chars, imperative mood, no trailing period. Body only when the "why" isn't obvious from the diff or subject; wrap at ~72.
+- **Prefer single-line commits:** `<type>(<scope>): <concise description>`. Include the scope and keep the description tight.
+- Subject ≤ 50 chars, imperative mood, no trailing period. Add a body **only when critically necessary** — when the "why" can't be inferred from the diff or subject; wrap at ~72.
 - One logical change per commit. Squash noise locally before pushing.
 - Never force-push to `main`/`master`. Force-push to feature branches only with `--force-with-lease`.
 - Branch names: `kebab-case`, prefixed by type (`feat/`, `fix/`, `chore/`).

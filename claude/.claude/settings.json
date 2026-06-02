@@ -19,11 +19,11 @@
     }
   },
   "theme": "dark-ansi",
-  "includeCoAuthoredBy": true,
   "env": {
     "PAGER": "cat",
     "GIT_PAGER": "cat",
-    "LESS": "-FRX"
+    "LESS": "-FRX",
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
   },
   "statusLine": {
     "type": "command",
@@ -68,8 +68,29 @@
       "Read(**/.env.*)",
       "Read(**/*.pem)",
       "Read(**/*id_rsa*)",
-      "Read(**/*id_ed25519*)"
+      "Read(**/*id_ed25519*)",
+      "Read(**/*.key)",
+      "Read(~/.config/gh/hosts.yml)",
+      "Read(~/.netrc)",
+      "Read(**/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.kube/**)",
+      "Read(~/.docker/config.json)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "excludedCommands": [
+      "gh *"
+    ],
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.gnupg",
+        "~/.aws",
+        "~/.config/gh"
+      ]
+    }
   },
   "hooks": {
     "PreToolUse": [
@@ -84,7 +105,7 @@
         ]
       },
       {
-        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "matcher": "Write|Edit|NotebookEdit",
         "hooks": [
           {
             "type": "command",
@@ -106,7 +127,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
