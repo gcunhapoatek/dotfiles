@@ -55,7 +55,12 @@ load-nvmrc() {
   fi
 }
 
-_nvm_has_nvmrc_in_tree() {
+# Helper names use hyphens, not a leading underscore: Claude Code's shell
+# snapshot (~/.claude/shell-snapshots/) strips every function whose name starts
+# with `_`. The node/npm/npx/nvm wrappers below ARE captured; an underscored
+# helper would not be, leaving the wrappers calling a missing function and
+# recursing until FUNCNEST aborts. Hyphenated names survive the snapshot.
+nvm-has-nvmrc-in-tree() {
   local dir=$PWD
   while [[ -n $dir ]]; do
     [[ -f $dir/.nvmrc ]] && return 0
@@ -64,26 +69,31 @@ _nvm_has_nvmrc_in_tree() {
   return 1
 }
 
-_nvm_lazy_load() {
-  unset -f nvm node npm npx _nvm_lazy_load _nvm_chpwd_check _nvm_has_nvmrc_in_tree
-  add-zsh-hook -d chpwd _nvm_chpwd_check
+nvm-lazy-load() {
+  unset -f nvm node npm npx nvm-lazy-load nvm-chpwd-check nvm-has-nvmrc-in-tree
+  add-zsh-hook -d chpwd nvm-chpwd-check
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
   add-zsh-hook chpwd load-nvmrc
   load-nvmrc
 }
 
-_nvm_chpwd_check() {
-  _nvm_has_nvmrc_in_tree && _nvm_lazy_load
+nvm-chpwd-check() {
+  nvm-has-nvmrc-in-tree && nvm-lazy-load
 }
 
-nvm()  { _nvm_lazy_load; nvm  "$@"; }
-node() { _nvm_lazy_load; node "$@"; }
-npm()  { _nvm_lazy_load; npm  "$@"; }
-npx()  { _nvm_lazy_load; npx  "$@"; }
+# Interactive shells lazy-load nvm on first use. Non-interactive shells (Claude
+# Code's Bash tool, scripts) skip the wrapper and exec the real node/npm/npx
+# that .zshenv put on PATH — sourcing nvm.sh costs ~300ms and would be re-paid
+# on every command since each runs in a fresh shell. nvm itself isn't a PATH
+# binary, so its wrapper always loads.
+nvm()  { nvm-lazy-load; nvm  "$@"; }
+node() { if [[ -o interactive ]]; then nvm-lazy-load; node "$@"; else command node "$@"; fi; }
+npm()  { if [[ -o interactive ]]; then nvm-lazy-load; npm  "$@"; else command npm  "$@"; fi; }
+npx()  { if [[ -o interactive ]]; then nvm-lazy-load; npx  "$@"; else command npx  "$@"; fi; }
 
-add-zsh-hook chpwd _nvm_chpwd_check
-_nvm_chpwd_check
+add-zsh-hook chpwd nvm-chpwd-check
+nvm-chpwd-check
 
 eval "$(zoxide init zsh)"
 

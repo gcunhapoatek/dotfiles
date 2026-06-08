@@ -3,14 +3,15 @@
 
 typeset -U path PATH
 
-# Clear stale nvm lazy-load wrappers leaked from a parent shell. Claude Code
-# re-exports the user-facing nvm/node/npm/npx functions (typeset -fx) but not
-# the underscored helpers defined in .zshrc. Without this guard, a leaked
-# node/npm wrapper calls a missing _nvm_lazy_load and recurses until FUNCNEST
-# blows up. .zshrc redefines the wrappers afterward for interactive shells.
-# Lives in .zshenv (not .zprofile) so it also covers non-login shells such as
-# the Claude Code sandbox, which skip .zprofile.
-if ! typeset -f _nvm_lazy_load >/dev/null 2>&1; then
+# Defense-in-depth: clear nvm lazy-load wrappers leaked from a parent shell
+# without their helper. The wrappers and helpers are normally carried together
+# via Claude Code's shell snapshot (helpers are hyphen-named so the snapshot
+# keeps them). If a wrapper ever arrives without nvm-lazy-load, drop it so the
+# real node/npm/npx on PATH (added below) resolve instead of recursing until
+# FUNCNEST aborts. .zshrc redefines the wrappers afterward for interactive
+# shells. Lives in .zshenv (not .zprofile) so it also covers non-login shells
+# such as the Claude Code sandbox, which skip .zprofile.
+if ! typeset -f nvm-lazy-load >/dev/null 2>&1; then
   unset -f nvm node npm npx 2>/dev/null
 fi
 
