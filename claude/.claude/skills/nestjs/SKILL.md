@@ -5,7 +5,7 @@ description: Build, scaffold, and reason about NestJS (Node.js) backend projects
 
 # NestJS
 
-Targets **NestJS v11** (latest stable line; v11.1.x as of mid-2026). Verify the project's actual major before applying anything version-specific — read `package.json` `@nestjs/core` version first.
+Targets the **NestJS v11** line. Verify the project's actual major before applying anything version-specific — read `package.json` `@nestjs/core` version first.
 
 ## Non-negotiable: verify upstream before version-specific code
 
