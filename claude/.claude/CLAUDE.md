@@ -33,9 +33,8 @@ How I work. Defaults for any project. Project-level rules override these.
 ## Plan mode
 
 - **Enter plan mode** before implementation when the change touches more than two files, includes an irreversible or shared-state step, the user's ask is ambiguous about scope, or the work involves unfamiliar third-party config / API surface. Skip it for single-file edits, trivial bug fixes, and read-only tasks.
-- After `ExitPlanMode` is approved, **persist a curated copy** of the plan to `~/.claude/projects/<slug>/plans/<UTC-ISO>.md` per the `plan-mode` skill. The flat `~/.claude/plans/` files the harness may write are not durable — the per-project copy is what SessionStart surfaces on resume.
-- Treat the persisted plan's Approach + Files as the agreed scope. Append a `## Status log` entry on resume and on non-trivial state transitions. Move the file into `plans/completed/` when shipped, or set `status: abandoned`.
-- Project rules override these defaults. See `~/.claude/skills/plan-mode/SKILL.md`.
+- After `ExitPlanMode` is approved, persist a curated per-project copy of the plan and maintain its status log per the `plan-mode` skill — the per-project copy (not the flat `~/.claude/plans/` files) is what SessionStart surfaces on resume.
+- Project rules override these defaults. Mechanics (paths, status-log, completed-dir) live in `~/.claude/skills/plan-mode/SKILL.md` — that skill is the source of truth.
 
 ## Sources of truth
 
@@ -95,7 +94,7 @@ How I work. Defaults for any project. Project-level rules override these.
 - Branch names: `kebab-case`, prefixed by type (`feat/`, `fix/`, `chore/`).
 - PR titles mirror the commit style.
 - **Project commit/PR conventions override these defaults.** If a repo's `CLAUDE.md`, `CONTRIBUTING.md`, or commit history shows a different style (gitmoji, ticket prefixes, custom scopes), follow that.
-- **Always include the `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` trailer when Claude helped write the change** (use the current model's id/version at commit time). `includeCoAuthoredBy: true` stays on globally; a project may not disable it without a written reason in its `CLAUDE.md`.
+- **Always include a `Co-Authored-By` trailer when Claude helped write the change**, using the model's own id/version at commit time — e.g. `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`. Don't hardcode a stale version; read the current model from the session.
 
 ## Working in any repository
 
@@ -105,9 +104,8 @@ How I work. Defaults for any project. Project-level rules override these.
 
 ## Session learnings (feedback loop)
 
-- At session end (or when the user invokes `/session-learnings`), scan the conversation for: corrections received, repeated mistakes, validated non-obvious successes, and missing project context.
-- Convert each into one of: (a) a memory entry under `~/.claude/projects/<project>/memory/` per the auto-memory system, (b) a one-line rule appended to global `~/.claude/CLAUDE.md`, or (c) a one-line rule appended to project `CLAUDE.md`. Propose; let the user accept.
-- The skill at `~/.claude/skills/session-learnings/SKILL.md` defines the full workflow.
+- At session end (or when the user invokes `/session-learnings`), capture corrections, repeated mistakes, validated successes, and missing context, then propose durable updates (memory / global CLAUDE.md / project CLAUDE.md). Propose only; let the user accept.
+- Destinations and full workflow live in `~/.claude/skills/session-learnings/SKILL.md` — that skill is the source of truth.
 
 ## Editor / OS
 
