@@ -10,6 +10,8 @@ How I work. Defaults for any project. Project-level rules override these.
 - **YAGNI / KISS.** Build for current requirements, not hypothetical ones. Three similar lines beats a premature abstraction.
 - **Idiomatic over clever.** Follow the host language's conventions, formatter, and standard library before reaching for patterns from another ecosystem. Match the style already in the repo. Respect the project's formatter / linter / EditorConfig as configured — don't override settings to suit personal preference.
 - **Boy Scout rule.** Leave touched code marginally cleaner — but don't bundle drive-by refactors into unrelated changes.
+- **Surface assumptions.** State assumptions before coding. If multiple interpretations exist, present them — don't silently pick one. If something's unclear, stop and ask.
+- **Goal-driven execution.** Turn vague tasks into verifiable success criteria before looping ("make it work" → "write a test for X, then make it pass"). Loop until the criteria pass.
 
 ## Style
 
