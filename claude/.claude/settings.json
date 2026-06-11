@@ -1,35 +1,9 @@
 {
-  "enabledPlugins": {
-    "caveman@caveman": true,
-    "codex@openai-codex": true,
-    "lua-lsp@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
-      }
-    }
-  },
-  "theme": "dark-ansi",
   "env": {
     "PAGER": "cat",
     "GIT_PAGER": "cat",
     "LESS": "-FRX",
     "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bash \"$HOME/.claude/statusline.sh\"",
-    "padding": 1,
-    "refreshInterval": 30
   },
   "permissions": {
     "allow": [
@@ -77,20 +51,6 @@
       "Read(~/.kube/**)",
       "Read(~/.docker/config.json)"
     ]
-  },
-  "sandbox": {
-    "enabled": true,
-    "excludedCommands": [
-      "gh *"
-    ],
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh",
-        "~/.gnupg",
-        "~/.aws",
-        "~/.config/gh"
-      ]
-    }
   },
   "hooks": {
     "PreToolUse": [
@@ -171,5 +131,46 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline.sh\"",
+    "padding": 1,
+    "refreshInterval": 30
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "codex@openai-codex": true,
+    "lua-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.gnupg",
+        "~/.aws",
+        "~/.config/gh"
+      ]
+    },
+    "excludedCommands": [
+      "gh *"
+    ]
+  },
+  "theme": "dark-ansi",
+  "tui": "fullscreen"
 }
