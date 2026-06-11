@@ -16,10 +16,6 @@ gh/.config/gh/hosts.yml
 # Tool-managed runtime state we don't want to track
 **/configstore/
 
-# Claude Code local overrides and logs (project-local .claude/)
-.claude/settings.local.json
-.claude/**/*.log
-
 # Global Claude Code stow package — track only curated config.
 # Everything else under claude/.claude/ is runtime state / secrets.
 claude/.claude/*

@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Every top-level directory (other than `.git`, `.github`, `.claude`, `scripts`) is a **stow package** that mirrors the target path structure relative to `$HOME`. Stowing a package creates symlinks inside `$HOME` pointing back into the repo. `.claude/` is project-local Claude Code config — not stowed into `~/.claude/`.
+Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Every top-level directory (other than `.git`, `.github`, `scripts`) is a **stow package** that mirrors the target path structure relative to `$HOME`. Stowing a package creates symlinks inside `$HOME` pointing back into the repo.
 
-Primary languages: Bash (scripts + hooks), Lua (Neovim config), TOML (AeroSpace), YAML/JSON (everything else). Runtime: macOS workstation; Homebrew is the package manager for everything declared in `Brewfile`.
+Primary languages: Bash (scripts), Lua (Neovim config), TOML (AeroSpace), YAML/JSON (everything else). Runtime: macOS workstation; Homebrew is the package manager for everything declared in `Brewfile`.
 
 ## Architecture rules
 
 - **Stow packages.** Every top-level directory is a stow package. To add config for a new tool, create `<tool>/.config/<tool>/...` so the symlinked target under `$HOME/.config/<tool>/` is correct. Files that target `$HOME` directly (like `.zshrc`) live at the package root — see `zsh/` as the reference.
 - **`--no-folding` is mandatory.** `.stowrc` enforces it so every file gets its own symlink. Don't write tooling that relies on a single symlinked parent directory.
-- **`Makefile` is the dispatch.** It auto-discovers packages by listing top-level directories minus the `EXCLUDE` list (`.git`, `.github`, `.claude`, `scripts`). Adding a directory at the root automatically registers a stow package — only do that intentionally.
+- **`Makefile` is the dispatch.** It auto-discovers packages by listing top-level directories minus the `EXCLUDE` list (`.git`, `.github`, `scripts`). Adding a directory at the root automatically registers a stow package — only do that intentionally.
 - **No secrets in the repo.** Per-machine identity and tokens go in `~/.gitconfig.local`, `~/.zshrc.local`, `~/.zprofile.local`. The tracked configs source these when they exist.
 - **Where new content goes:**
 
@@ -21,9 +21,6 @@ Primary languages: Bash (scripts + hooks), Lua (Neovim config), TOML (AeroSpace)
 | Config for a new CLI tool `foo`               | `foo/.config/foo/...`                                                       |
 | A dotfile at `$HOME/.something`               | `<pkg>/.something`                                                          |
 | A new homebrew dependency                     | New line in `Brewfile` (under the right comment block)                      |
-| Claude Code subagent                          | `.claude/agents/<name>.md`                                                  |
-| Claude Code skill                             | `.claude/skills/<name>/SKILL.md`                                            |
-| Claude Code hook                              | `.claude/hooks/<name>.sh` (chmod +x; wire into `.claude/settings.json`)     |
 
 ## Build & test
 
@@ -44,11 +41,11 @@ Per-file validation (run these on touched files before considering a change done
 | Bash script (`*.sh`)         | `bash -n <file>`                                 |
 | Lua under `nvim/`            | `stylua <file>` (formats; exits non-zero on diff) |
 | `Brewfile`                   | `brew bundle check --file=Brewfile`              |
-| `.claude/**/settings*.json`  | `jq empty <file>`                                |
+| JSON config                  | `jq empty <file>`                                |
 | `aerospace.toml`             | `aerospace reload-config` (when AeroSpace running)|
 | `zsh/.zshrc`, `zsh/.zprofile`| `zsh -n <file>`                                  |
 
-There is no traditional test suite; the `test-runner` skill under `.claude/skills/test-runner/SKILL.md` codifies the validation matrix.
+There is no traditional test suite; the table above is the validation matrix.
 
 ## Definition of done
 
@@ -59,8 +56,7 @@ A change is done when **all** of these hold:
 3. No new TODO / FIXME / XXX comments have been added without a tracking note in the PR body.
 4. No secrets (tokens, API keys, work hostnames) are committed. Secrets go in `*.local` overrides.
 5. New top-level directories are intentional stow packages; otherwise they should not exist.
-6. Hook scripts are executable (`chmod +x`) and reference `${CLAUDE_PROJECT_DIR}` (project) or `$HOME` (global), not absolute personal paths.
-7. The commit message follows Conventional Commits (`<type>(<scope>): <subject>`). See [.claude/skills/repo-conventions/SKILL.md](.claude/skills/repo-conventions/SKILL.md).
+6. The commit message follows Conventional Commits (`<type>(<scope>): <subject>`) — see **Repo expectations** below.
 
 ## Repo expectations
 
@@ -71,9 +67,7 @@ A change is done when **all** of these hold:
 
 ## Editing rules
 
-**Ground every config edit in upstream docs.** Before editing or adding to any package, fetch the relevant tool/plugin's current documentation via `WebFetch`. Do not rely on memory or training-data recall — config schemas, plugin APIs, and CLI flags drift between releases.
-
-Tool-specific workflows live in `.claude/skills/<tool>-edit/SKILL.md` when the tool is non-trivial (`nvim-edit`, `aerospace-edit`, `sketchybar-edit`, `zsh-edit`). For tools without a dedicated skill, resolve the doc URL from the upstream repo/site and fetch before writing.
+**Ground every config edit in upstream docs.** Before editing or adding to any package, fetch the relevant tool/plugin's current documentation (e.g. via `WebFetch`). Do not rely on memory or training-data recall — config schemas, plugin APIs, and CLI flags drift between releases. This applies to every tool here: nvim plugins (snacks.nvim, lazy.nvim, treesitter, bufferline), AeroSpace, sketchybar, zsh integrations, git/delta, and anything new. Resolve the doc URL from the upstream repo/site and read it before writing.
 
 **When adding a new tool/package:** confirm the tool isn't already in `Brewfile` and that its config path matches the target layout under `$HOME` before stowing.
 
@@ -81,7 +75,6 @@ Tool-specific workflows live in `.claude/skills/<tool>-edit/SKILL.md` when the t
 
 - `gh/hosts.yml` — contains auth tokens; only `config.yml` is stowed
 - `yazi/` — config being reworked, to be added back as a stow package when ready
-- `.claude/settings.local.json` — personal Claude Code overrides (gitignored)
 
 ## Per-machine overrides
 
