@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
-# Global Stop hook. Throttles to once per 24h via marker, then prunes
-# unbounded Claude Code storage:
+# Global SessionEnd hook. Fires once when a session terminates, so it prunes
+# unbounded Claude Code storage exactly once per session — no throttle marker
+# needed (the old Stop-hook version ran on every turn and self-throttled to
+# 24h via a marker file). Prunes:
 #   - ~/.claude/file-history/*       older than 14 days
-#   - ~/.claude/backups/*             older than 14 days
-#   - ~/.claude/paste-cache/*         older than 7 days
-#   - ~/.claude/shell-snapshots/*     older than 7 days
-#   - ~/.claude/telemetry/*           older than 7 days
-#   - ~/.claude/tasks/*               older than 30 days
-#   - ~/.claude/plans/*               older than 30 days (legacy flat dir)
+#   - ~/.claude/backups/*            older than 14 days
+#   - ~/.claude/paste-cache/*        older than 7 days
+#   - ~/.claude/shell-snapshots/*    older than 7 days
+#   - ~/.claude/telemetry/*          older than 7 days
+#   - ~/.claude/tasks/*              older than 30 days
+#   - ~/.claude/plans/*              older than 30 days (legacy flat dir)
 #   - ~/.claude/projects/*/handover/**/*.md older than 7 days (curated, short-lived)
 #   - ~/.claude/projects/*/plans/completed/*.md older than 7 days
 #   - ~/.claude/projects/*/plans/*.md (top-level, active) older than 30 days
-# Best-effort: failures swallowed so they never block a Stop event.
+# Best-effort: failures swallowed so they never block session teardown.
 
 set -uo pipefail
-
-marker="$HOME/.claude/.last-rotate"
-if [[ -f "$marker" ]] && [[ $(($(date +%s) - $(stat -f %m "$marker" 2>/dev/null || echo 0))) -lt 86400 ]]; then
-  exit 0
-fi
 
 prune() {
   local dir="$1" days="$2"
@@ -51,5 +48,4 @@ if [[ -d "$HOME/.claude/projects" ]]; then
     -mtime +30 -delete 2>/dev/null || true
 fi
 
-date +%s >"$marker"
 exit 0

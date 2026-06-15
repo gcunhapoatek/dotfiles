@@ -99,7 +99,7 @@
     ],
     "SessionStart": [
       {
-        "matcher": "startup|resume|compact",
+        "matcher": "startup|resume|compact|clear",
         "hooks": [
           {
             "type": "command",
@@ -120,12 +120,12 @@
         ]
       }
     ],
-    "Stop": [
+    "SessionEnd": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/hooks/stop-rotate.sh",
+            "command": "$HOME/.claude/hooks/session-end-rotate.sh",
             "timeout": 10
           }
         ]
