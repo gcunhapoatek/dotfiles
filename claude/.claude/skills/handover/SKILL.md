@@ -1,6 +1,6 @@
 ---
 name: handover
-description: Capture the current session into a curated handover file so the next session can resume without quality loss. Trigger when the user types `/handover`, `/session-handover`, "write handover", "save handover", "context filling up — handover", or when the PreCompact hook injects a handover instruction. Prefer running this before context compaction starts; compaction is lossy summarization, handover is curated state.
+description: Capture the current session into a curated handover file so the next session can resume without quality loss. Trigger when the user types `/handover`, `/session-handover`, "write handover", "save handover", "context filling up — handover". Prefer running this before context compaction starts; compaction is lossy summarization, handover is curated state.
 ---
 
 # Session handover
@@ -10,7 +10,7 @@ Goal: produce one Markdown file at session-pause time that lets the next session
 ## When to run
 
 - User invokes `/handover`, `/session-handover`, or asks to "save / write a handover".
-- PreCompact hook fires — `additionalContext` will explicitly request a handover. Do it before responding to anything else.
+- Context filling up — run before auto-compaction kicks in, since compaction is lossy (no hook can trigger this for you; watch the statusline and run `/handover` manually).
 - Natural pause point in a long session (feature done, blocker hit, switching tasks).
 
 ## Output path
