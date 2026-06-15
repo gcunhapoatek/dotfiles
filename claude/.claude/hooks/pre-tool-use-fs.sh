@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Global PreToolUse hook (matcher: Write|Edit|MultiEdit|NotebookEdit).
+# Global PreToolUse hook (matcher: Write|Edit|NotebookEdit).
 # Blocks edits to credential stores, private keys, env files, and any path
 # nested under a known secrets directory. Read-side blocking lives in
 # settings.json permissions.deny.

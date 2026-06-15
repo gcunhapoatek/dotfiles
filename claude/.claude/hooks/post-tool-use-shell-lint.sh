@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Global PostToolUse hook (matcher: Write|Edit|MultiEdit). When a shell script
+# Global PostToolUse hook (matcher: Write|Edit). When a shell script
 # was written or edited, runs `bash -n` to surface syntax errors immediately.
 # Non-blocking: reports issues via stderr so Claude sees them, but does not
 # fail the tool call (exit 0 unconditionally — syntax issues are feedback, not
