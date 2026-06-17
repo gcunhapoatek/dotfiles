@@ -19,6 +19,7 @@ How I work. Defaults for any project. Project-level rules override these.
 - Explicit types at module/public boundaries; let inference handle locals.
 - No dead code, no commented-out blocks. If it's not running, delete it.
 - Comments explain *why*, not *what*. Well-named identifiers do the rest.
+- **Ticket/issue/doc references in code (and field/API descriptions) only when they carry weight.** Reserve a ticket key, doc link, or spec section for a genuinely non-obvious or critical decision — where the comment captures the *why* and *where it came from* (e.g. a deliberate divergence from spec or legacy, an unintuitive workaround). Never use them as decoration: don't prefix every new field, type, or test with the ticket that happened to introduce it — the code already lives in that branch/PR. Default to no reference; add one only when a future reader would otherwise be unable to reconstruct the reasoning.
 - **No WIP merges.** If a change requires follow-up, either scope it down to something shippable or open a tracking issue. Don't leave half-finished code in a merged branch.
 - **No backwards-compat shims for code that hasn't shipped or has no real consumers.** Don't add compat for hypothetical callers.
 - **`TODO` / `FIXME` must name an owner or a removal condition** (e.g. `TODO(gabriel): remove after migration X`). No orphan TODOs.
