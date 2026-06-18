@@ -7,11 +7,11 @@
 #
 # Handover consume-on-load: after surfacing, the handover file is moved to
 # handover/consumed/ so it loads at most once. Consumed files are pruned by
-# stop-rotate.sh after 7 days.
+# session-end-rotate.sh after 7 days.
 #
 # Plans are NOT consumed on load. A plan stays surfaced until status flips to
 # completed/abandoned (the plan-mode skill moves it to plans/completed/), or
-# until stop-rotate.sh prunes it (top-level after 30 days).
+# until session-end-rotate.sh prunes it (top-level after 30 days).
 
 set -euo pipefail
 
@@ -83,28 +83,35 @@ fi
 # plan-mode skill moves those into plans/completed/ anyway, but belt-and-
 # braces). Plans are NOT consumed on load.
 plan_dir="$HOME/.claude/projects/$slug/plans"
+plan_latest=""
 if [[ -d "$plan_dir" ]]; then
-  plan_latest="$(find "$plan_dir" -maxdepth 1 -type f -name '*.md' -mtime -7 2>/dev/null | sort | tail -n 1)"
-  if [[ -n "$plan_latest" ]]; then
-    plan_status="$(grep -m1 -E '^status:[[:space:]]*' "$plan_latest" 2>/dev/null | sed -E 's/^status:[[:space:]]*//; s/[[:space:]]+$//')"
-    case "$plan_status" in
-    completed | abandoned) plan_latest="" ;;
+  # Walk candidates newest-first; surface the first whose status is not
+  # completed/abandoned. A newer completed plan must not mask an older active
+  # one, so we fall through rather than bail on the first hit.
+  while IFS= read -r candidate; do
+    [[ -n "$candidate" ]] || continue
+    cand_status="$(grep -m1 -E '^status:[[:space:]]*' "$candidate" 2>/dev/null | sed -E 's/^status:[[:space:]]*//; s/[[:space:]]+$//')"
+    case "$cand_status" in
+    completed | abandoned) continue ;;
     esac
-  fi
-  if [[ -n "$plan_latest" ]]; then
-    plan_body="$(cat "$plan_latest" 2>/dev/null || true)"
-    if [[ -n "$plan_body" ]]; then
-      plan_mtime="$(stat -f %m "$plan_latest" 2>/dev/null || echo 0)"
-      plan_age_s=$(($(date +%s) - plan_mtime))
-      if ((plan_age_s < 3600)); then
-        plan_age="$((plan_age_s / 60))m"
-      elif ((plan_age_s < 86400)); then
-        plan_age="$((plan_age_s / 3600))h"
-      else
-        plan_age="$((plan_age_s / 86400))d"
-      fi
+    plan_latest="$candidate"
+    break
+  done < <(find "$plan_dir" -maxdepth 1 -type f -name '*.md' -mtime -7 2>/dev/null | sort -r)
+fi
+if [[ -n "$plan_latest" ]]; then
+  plan_body="$(cat "$plan_latest" 2>/dev/null || true)"
+  if [[ -n "$plan_body" ]]; then
+    plan_mtime="$(stat -f %m "$plan_latest" 2>/dev/null || echo 0)"
+    plan_age_s=$(($(date +%s) - plan_mtime))
+    if ((plan_age_s < 3600)); then
+      plan_age="$((plan_age_s / 60))m"
+    elif ((plan_age_s < 86400)); then
+      plan_age="$((plan_age_s / 3600))h"
+    else
+      plan_age="$((plan_age_s / 86400))d"
+    fi
 
-      ctx="${ctx}
+    ctx="${ctx}
 
 REQUIRED ACK: Active plan loaded for this cwd (age: ${plan_age}). First reply must include exactly one line:
   Plan loaded: ${plan_latest} (age: ${plan_age}) — resuming at \"<next concrete step from plan>\"
@@ -113,7 +120,6 @@ Then proceed. Treat the plan's Approach + Files as agreed scope; flag drift befo
 --- BEGIN ACTIVE PLAN (age: ${plan_age}) ---
 ${plan_body}
 --- END ACTIVE PLAN ---"
-    fi
   fi
 fi
 

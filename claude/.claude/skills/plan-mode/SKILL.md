@@ -46,8 +46,9 @@ One file per approved plan. Do not overwrite prior plans. If the user iterates o
 
 - Active plans live at `plans/<ts>.md` (top level of the project's plans dir).
 - When the work is done, move the file to `plans/completed/<ts>.md` and set `status: completed`. Same on abandonment (`status: abandoned`).
-- `session-start.sh` surfaces only the most recent **active** plan (status not `completed`/`abandoned`, top-level only) with `mtime` ≤ 7 days.
-- `stop-rotate.sh` prunes `plans/completed/*` after 7 days and `plans/*.md` (top-level) after 30 days. Stale active plans get cleaned up automatically.
+- `session-start.sh` surfaces only the most recent **active** plan (status not `completed`/`abandoned`, top-level only) with `mtime` ≤ 7 days. It walks candidates newest-first and skips `completed`/`abandoned`, so a newer finished plan never masks an older active one.
+- **Long-running plans go dormant, not deleted.** The auto-surface window is `mtime` ≤ 7 days, but the prune window is 30 days — a plan untouched for 8–30 days stays on disk yet stops surfacing on resume. Appending a `## Status log` entry (any edit) refreshes `mtime` and keeps it in the surface window, so log progress on multi-week work to keep it live.
+- `session-end-rotate.sh` prunes `plans/completed/*` after 7 days and `plans/*.md` (top-level) after 30 days. Stale active plans get cleaned up automatically.
 
 ## File structure
 
@@ -98,7 +99,7 @@ last_handover: <path>     # optional — set if a handover precedes this plan
 2. Present the plan via `ExitPlanMode` for user approval.
 3. **Immediately after approval**, write the curated copy to the per-project path above. Do not start implementation work before the file exists.
 4. As work progresses, append entries to `## Status log` for non-trivial state transitions (e.g., "<ts> first file landed", "<ts> blocked on X").
-5. On completion or abandonment: set `status:` in the frontmatter accordingly and `mv` the file into `plans/completed/`.
+5. On completion or abandonment: set `status:` in the frontmatter accordingly, then `mkdir -p "$HOME/.claude/projects/$slug/plans/completed"` and `mv` the file into `plans/completed/` (the dir may not exist yet — create it first or the `mv` fails).
 
 ## Reading a plan (next session)
 
