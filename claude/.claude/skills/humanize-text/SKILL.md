@@ -44,6 +44,7 @@ These are the patterns that make text read as machine-written. Hunt and kill the
 - Plain verbs. Short words when they carry the meaning.
 - One idea per sentence; vary length so it has rhythm.
 - It's fine to be direct. "This won't work because X" beats "I'm wondering if there might be some challenges with X".
+- **Embed links when the medium supports it.** If you reference a PR, ticket, doc, file, or person and the target renders inline links (Slack, email, Markdown, GitHub), hyperlink the natural words — `[#619](url)`, `[WIL-1682](url)` — instead of pasting a bare URL or naming it with no link. A real person links what they mention. Skip only where links don't render (plaintext, terminal) or the URL isn't known.
 
 ## Tone presets
 
