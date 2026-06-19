@@ -26,6 +26,9 @@ Run this whenever you are about to:
 These are the patterns that make text read as machine-written. Hunt and kill them.
 
 - **Throat-clearing openers.** "I hope this message finds you well", "I wanted to reach out", "Just circling back". Open with the actual point.
+- **Eager-assistant openers.** "Certainly!", "Of course!", "Absolutely!", "Great question!". Delete the whole word.
+- **Note-flagging filler.** "It's worth noting that", "It's important to note", "Keep in mind that", "That said,", "Here's the thing:". State the thing; drop the frame.
+- **Thesaurus tells.** *delve, tapestry, navigate (the complexities), landscape, realm, robust, seamless, foster, underscore, testament to.* Swap for the plain word or cut.
 - **Hedge stacks.** "I think it might possibly be a good idea to perhaps consider". One hedge max, only if the uncertainty is real.
 - **Filler intensifiers.** *just, really, very, actually, basically, simply, definitely, truly.* Delete; they add nothing.
 - **Corporate abstraction.** "leverage", "utilize", "facilitate", "in order to", "at this point in time". Use *use, help, to, now.*
@@ -35,6 +38,18 @@ These are the patterns that make text read as machine-written. Hunt and kill the
 - **Over-explaining.** Stating the obvious or restating the ask back. Trust the reader.
 - **Emoji garnish and exclamation inflation.** One, if it fits the channel. Not a row of them.
 - **Symmetry that no human writes.** Perfectly balanced bullet lengths, every item the same shape. Real notes are lumpy.
+
+## Worked example
+
+A typical AI draft, then the same message after the cuts:
+
+> Hi team! I hope you're all doing well. I just wanted to quickly circle back regarding the deployment that we had scheduled for this week. It's worth noting that we've encountered a few unexpected challenges with the database migration, but rest assured we are actively working to navigate these complexities. I'll be sure to keep you all posted with any updates. Thanks so much for your patience and understanding! 🙏
+
+Cut: opener, "just/quickly", "It's worth noting", "rest assured", "navigate these complexities", summary tax, emoji garnish. What's left is the actual news:
+
+> Heads up: this week's deploy is slipping. The DB migration hit a snag — I'm on it and will update you by EOD tomorrow.
+
+~70 words → 23, and the reader learns *more* (there's now a deadline).
 
 ## What natural looks like
 
@@ -46,9 +61,19 @@ These are the patterns that make text read as machine-written. Hunt and kill the
 - It's fine to be direct. "This won't work because X" beats "I'm wondering if there might be some challenges with X".
 - **Embed links when the medium supports it.** If you reference a PR, ticket, doc, file, or person and the target renders inline links (Slack, email, Markdown, GitHub), hyperlink the natural words — `[#619](url)`, `[WIL-1682](url)` — instead of pasting a bare URL or naming it with no link. A real person links what they mention. Skip only where links don't render (plaintext, terminal) or the URL isn't known.
 
+## Don't overcorrect
+
+Humanizing removes machine residue. It does not change what the message says or who the writer is.
+
+- **Keep the meaning exact.** Don't drop a caveat, number, or condition to sound breezier. A hedge that's *true* ("this might break if the cache is cold") stays — only kill the empty ones.
+- **Don't manufacture personality.** No jokes, warmth, or slang the original didn't have. Natural ≠ chummy. A dry status update should stay dry.
+- **Preserve the writer's voice.** If the user drafted it, match *their* idiom and vocabulary — don't flatten it to a generic "natural" register. You're cleaning their text, not replacing it.
+- **Shorter by default.** Humanizing usually cuts length; a real fix often drops 30–40%. Never pad back to the original word count. If the rewrite is longer, you added filler.
+- **Leave exact-wording text alone.** Quoted error messages, code, commands, legal/compliance copy, names, and IDs pass through untouched. Humanize the prose around them, not them.
+
 ## Tone presets
 
-Match register to reader. The two you write for:
+Match register to reader:
 
 ### Internal teammate (default for team channels, DMs)
 
