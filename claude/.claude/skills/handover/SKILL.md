@@ -34,7 +34,7 @@ One file per handover. Do not overwrite prior handovers.
 
 **Lifecycle.** Handovers are short-lived by design:
 - SessionStart surfaces only handovers ≤ 48h old, then moves them into `handover/consumed/`.
-- `handover/consumed/` is pruned after 7 days by the Stop-rotate hook.
+- `handover/consumed/` is pruned after 7 days by `session-end-rotate.sh`.
 - If you need an older handover, ask the user — do not auto-resurface stale state.
 
 ## File structure
@@ -101,7 +101,7 @@ When you see a handover in `additionalContext` (block marked `--- BEGIN HANDOVER
 - Read it before doing anything else.
 - Treat "Next concrete step" as the default resume action unless the user overrides.
 - Honor "Don't redo" — do not re-explore those paths.
-- Do not delete or rename the consumed file. `handover/consumed/` is pruned automatically after 7 days by the Stop-rotate hook.
+- Do not delete or rename the consumed file. `handover/consumed/` is pruned automatically after 7 days by `session-end-rotate.sh`.
 
 ## Cross-reference with plan mode
 
