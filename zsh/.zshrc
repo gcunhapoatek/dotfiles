@@ -36,6 +36,16 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # nvm/node/npm/npx, or when entering a directory tree containing .nvmrc.
 autoload -U add-zsh-hook
 
+# Node logo via Nerd Font glyph (nf-dev-nodejs, U+E718). Falls back to a plain
+# tag if the terminal font lacks it — but every terminal here uses a Nerd Font.
+NVMRC_NODE_ICON=$''
+
+# nvmrc-msg <color> <message> — print an icon-prefixed, colored status line.
+# Colors are zsh %F codes: green (use/install ok), yellow (revert), red (miss).
+nvmrc-msg() {
+  print -P "%F{$1}${NVMRC_NODE_ICON}%f  $2"
+}
+
 load-nvmrc() {
   local nvmrc_path
   nvmrc_path="$(nvm_find_nvmrc)"
@@ -43,15 +53,21 @@ load-nvmrc() {
   if [ -n "$nvmrc_path" ]; then
     local nvmrc_node_version
     nvmrc_node_version=$(nvm version "$(cat "$nvmrc_path")")
+    local requested
+    requested="$(cat "$nvmrc_path")"
 
     if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvmrc-msg yellow "node %F{cyan}${requested}%f not installed — running %Bnvm install%b"
       nvm install
     elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
-      nvm use
+      nvmrc-msg green "switching to node %F{cyan}${nvmrc_node_version}%f %F{8}(.nvmrc)%f"
+      nvm use --silent
+    else
+      nvmrc-msg green "node %F{cyan}${nvmrc_node_version}%f already active %F{8}(.nvmrc)%f"
     fi
   elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
+    nvmrc-msg yellow "left .nvmrc tree — reverting to node %F{cyan}$(nvm version default)%f %F{8}(default)%f"
+    nvm use default --silent
   fi
 }
 
