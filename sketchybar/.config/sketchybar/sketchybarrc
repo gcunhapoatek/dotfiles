@@ -54,6 +54,19 @@ sketchybar --add event aerospace_workspace_change
 
 MON_COUNT=$(aerospace list-monitors --count 2>/dev/null || echo 1)
 
+##### Monitor hot-plug watcher #####
+# Per-monitor items (space.*.$mon, front_app.$mon) are created from MON_COUNT at
+# load time, so a monitor connect/disconnect needs a `--reload` to recreate them.
+# This invisible item watches for layout changes and reloads only when the
+# monitor count actually changed (see plugins/monitor_watcher.sh for the guard).
+# display_change fires on active-display switch; monitor_change is triggered by
+# AeroSpace's on-focused-monitor-changed callback — two detection paths.
+sketchybar --add event monitor_change
+sketchybar --add item monitor_watcher left \
+           --set monitor_watcher drawing=off \
+                                 script="$PLUGIN_DIR/monitor_watcher.sh" \
+           --subscribe monitor_watcher display_change monitor_change
+
 for mon in $(seq 1 "$MON_COUNT"); do
   for sid in 1 2 3 4 5 6 7 8 9 10; do
     sketchybar --add item space.$sid.$mon left \
