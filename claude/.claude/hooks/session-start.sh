@@ -86,7 +86,10 @@ fi
 # already-finished plan early, delete its file (there is no status flag).
 # Plans are NOT consumed on load.
 plan_dir="$HOME/.claude/projects/$slug/plans"
-plan_latest="$(find "$plan_dir" -maxdepth 1 -type f -name '*.md' -mtime -7 2>/dev/null | sort -r | head -n 1)"
+plan_latest=""
+if [[ -d "$plan_dir" ]]; then
+  plan_latest="$(find "$plan_dir" -maxdepth 1 -type f -name '*.md' -mtime -7 2>/dev/null | sort -r | head -n 1)"
+fi
 if [[ -n "$plan_latest" ]]; then
   plan_body="$(cat "$plan_latest" 2>/dev/null || true)"
   if [[ -n "$plan_body" ]]; then
