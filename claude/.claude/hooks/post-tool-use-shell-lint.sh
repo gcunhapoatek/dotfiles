@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Global PostToolUse hook (matcher: Write|Edit). When a shell script
 # was written or edited, runs `bash -n` to surface syntax errors immediately.
-# Non-blocking: reports issues via stderr so Claude sees them, but does not
-# fail the tool call (exit 0 unconditionally — syntax issues are feedback, not
-# violations).
+# Non-blocking: reports issues via hookSpecificOutput.additionalContext on
+# stdout (exit 0). PostToolUse at exit 0 parses stdout JSON; stderr is NOT fed
+# to the model (only exit 2 does that), so additionalContext is the reliable
+# channel for lint feedback that must reach Claude.
 
 set -uo pipefail
 
@@ -26,7 +27,10 @@ fi
 [[ $is_shell -eq 1 ]] || exit 0
 
 if ! err="$(bash -n "$path" 2>&1)"; then
-	printf 'bash -n failed for %s:\n%s\n' "$path" "$err" >&2
+	jq -nc \
+		--arg c "bash -n failed for ${path}:
+${err}" \
+		'{hookSpecificOutput:{hookEventName:"PostToolUse", additionalContext:$c}}'
 fi
 
 exit 0
