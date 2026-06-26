@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 # Global statusLine command. Reads Claude Code's JSON session data on stdin
 # and prints two lines:
-#   Line 1: [CAVEMAN][Model] cwd | branch +staged ~modified
+#   Line 1: [Model] cwd | branch +staged ~modified
 #   Line 2: <bar> pct% | tokens_used/window_size | $cost | Mm Ss
 #
-# Caveman badge is inlined from ~/.claude/.caveman-active using the same
-# hardening as the upstream caveman-statusline.sh: rejects symlinks, caps the
-# read at 64 bytes, sanitizes to [a-z0-9-], and renders only allowlisted
-# modes. Git status is cached per session_id with a 5s TTL to keep the
-# script fast on event-driven refreshes.
+# Git status is cached per session_id with a 5s TTL to keep the script fast
+# on event-driven refreshes.
 
 set -uo pipefail
 
@@ -35,23 +32,6 @@ DIR="${CWD##*/}"
 PCT_INT="${PCT%.*}"
 [ -z "$PCT_INT" ] && PCT_INT=0
 
-# --- Caveman badge (inlined, hardened) -------------------------------------
-FLAG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.caveman-active"
-CAVEMAN_BADGE=""
-if [ -f "$FLAG" ] && [ ! -L "$FLAG" ]; then
-  MODE=$(head -c 64 "$FLAG" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
-  case "$MODE" in
-  off | lite | full | ultra | wenyan-lite | wenyan | wenyan-full | wenyan-ultra | commit | review | compress)
-    if [ -z "$MODE" ] || [ "$MODE" = "full" ]; then
-      CAVEMAN_BADGE=$'\033[38;5;172m[CAVEMAN]\033[0m'
-    else
-      SUFFIX=$(printf '%s' "$MODE" | tr '[:lower:]' '[:upper:]')
-      CAVEMAN_BADGE=$(printf '\033[38;5;172m[CAVEMAN:%s]\033[0m' "$SUFFIX")
-    fi
-    ;;
-  esac
-fi
-
 # --- Git branch + dirty count (cached per session) -------------------------
 CACHE_FILE="${TMPDIR:-/tmp}/claude-statusline-git-${SESSION_ID}"
 CACHE_TTL=5
@@ -64,14 +44,19 @@ if [ "$stale" -eq 1 ]; then
   BRANCH=""
   STAGED=0
   MODIFIED=0
+  UNTRACKED=0
   if [ -n "$CWD" ] && git -C "$CWD" rev-parse --git-dir >/dev/null 2>&1; then
     BRANCH=$(git -C "$CWD" branch --show-current 2>/dev/null)
+    # Detached HEAD (rebase, bisect, checked-out SHA) → fall back to short SHA.
+    [ -z "$BRANCH" ] && BRANCH=$(git -C "$CWD" rev-parse --short HEAD 2>/dev/null)
     STAGED=$(git -C "$CWD" diff --cached --numstat 2>/dev/null | wc -l | tr -d ' ')
     MODIFIED=$(git -C "$CWD" diff --numstat 2>/dev/null | wc -l | tr -d ' ')
+    UNTRACKED=$(git -C "$CWD" ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')
   fi
-  printf '%s\x1f%s\x1f%s\n' "$BRANCH" "$STAGED" "$MODIFIED" >"$CACHE_FILE"
+  printf '%s\x1f%s\x1f%s\x1f%s\n' "$BRANCH" "$STAGED" "$MODIFIED" "$UNTRACKED" >"$CACHE_FILE"
 fi
-IFS=$'\x1f' read -r BRANCH STAGED MODIFIED <"$CACHE_FILE"
+IFS=$'\x1f' read -r BRANCH STAGED MODIFIED UNTRACKED <"$CACHE_FILE"
+: "${UNTRACKED:=0}"
 
 # --- Colors + thresholds ---------------------------------------------------
 CYAN=$'\033[36m'
@@ -123,9 +108,11 @@ SECS=$((DUR_SEC % 60))
 # --- Git segment for line 1 ------------------------------------------------
 GIT_SEG=""
 if [ -n "$BRANCH" ]; then
+  [ "${#BRANCH}" -gt 20 ] && BRANCH="${BRANCH:0:19}…"
   GIT_SEG=" ${DIM}|${RESET} ${YELLOW}${BRANCH}${RESET}"
   [ "$STAGED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${GREEN}+${STAGED}${RESET}"
   [ "$MODIFIED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${YELLOW}~${MODIFIED}${RESET}"
+  [ "$UNTRACKED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${DIM}?${UNTRACKED}${RESET}"
 fi
 
 # --- Output style badge (hide when absent or "default") --------------------
@@ -156,7 +143,7 @@ if [ "$RL5_INT" -ge 0 ] || [ "$RL7_INT" -ge 0 ]; then
 fi
 
 # --- Output ---------------------------------------------------------------
-printf '%s%s[%s]%s%s %s%s\n' "$CAVEMAN_BADGE" "$CYAN" "$MODEL" "$RESET" "$STYLE_BADGE" "$DIR" "$GIT_SEG"
+printf '%s[%s]%s%s %s%s\n' "$CYAN" "$MODEL" "$RESET" "$STYLE_BADGE" "$DIR" "$GIT_SEG"
 LINE2="${BAR_COLOR}${BAR}${RESET} ${PCT_INT}%"
 LINE2="${LINE2} ${DIM}|${RESET} ${TOK_USED}/${TOK_MAX}"
 LINE2="${LINE2} ${DIM}|${RESET} ${COST_FMT}"
