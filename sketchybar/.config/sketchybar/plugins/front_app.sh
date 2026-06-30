@@ -3,6 +3,7 @@
 # $NAME = front_app.<mon>. Script runs for every front_app.* item on each
 # front_app_switched / aerospace_workspace_change event:
 #   1. Refresh cache from globally focused window (monitor, workspace, app).
+#      Also runs on front_app_refresh (AeroSpace on-focus-changed).
 #      Idempotent — multiple invocations for the same event write the same key.
 #   2. Render this item's monitor from its (monitor, workspace) cache entry,
 #      falling back to first window in the workspace if no entry exists or the
@@ -12,7 +13,7 @@
 # reboot. Bash 3.2 compatible.
 source "$CONFIG_DIR/icon_map.sh"
 
-STATE_DIR="/tmp/sketchybar-front-app-${USER}"
+STATE_DIR="${TMPDIR:-/tmp}/sketchybar-front-app-${USER}"
 mkdir -p "$STATE_DIR"
 
 # --- 1. Refresh cache from current global focus ---------------------------

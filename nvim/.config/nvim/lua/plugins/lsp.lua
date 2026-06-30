@@ -32,6 +32,33 @@ local servers = {
 			},
 		},
 	},
+	angularls = {
+		-- Attaches only in Angular workspaces (root markers angular.json / nx.json),
+		-- so it stays dormant in other projects. vtsls also serves rename on the
+		-- shared .ts files; silence angularls's to avoid duplicate rename popups.
+		on_attach = function(client)
+			client.server_capabilities.renameProvider = false
+		end,
+	},
+	eslint = {
+		-- Defaults cover js/ts/jsx/tsx/vue/svelte/astro; add Angular templates.
+		filetypes = {
+			"javascript",
+			"javascriptreact",
+			"typescript",
+			"typescriptreact",
+			"vue",
+			"htmlangular",
+		},
+		-- Apply all ESLint autofixes on save (rule fixes / unused imports / order);
+		-- prettier still owns formatting via conform.
+		on_attach = function(_, bufnr)
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				buffer = bufnr,
+				command = "LspEslintFixAll",
+			})
+		end,
+	},
 	html = {},
 	cssls = {},
 	jsonls = {},
@@ -104,7 +131,6 @@ return {
 				"goimports",
 				"shfmt",
 				"shellcheck",
-				"eslint_d",
 				"golangci-lint",
 			},
 		},

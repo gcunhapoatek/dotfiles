@@ -1,6 +1,6 @@
 -- Linters complement LSP diagnostics. Lua/Python are handled by their LSPs
--- (lua_ls / ruff), so no entries here. JS/TS use eslint_d, Go uses
--- golangci-lint, shell uses shellcheck.
+-- (lua_ls / ruff) and JS/TS by the eslint LSP (diagnostics + fix-on-save), so
+-- no entries here. Go uses golangci-lint, shell uses shellcheck.
 
 return {
 	"mfussenegger/nvim-lint",
@@ -9,11 +9,6 @@ return {
 		local lint = require("lint")
 
 		lint.linters_by_ft = {
-			javascript = { "eslint_d" },
-			javascriptreact = { "eslint_d" },
-			typescript = { "eslint_d" },
-			typescriptreact = { "eslint_d" },
-			vue = { "eslint_d" },
 			go = { "golangcilint" },
 			sh = { "shellcheck" },
 			bash = { "shellcheck" },

@@ -3,8 +3,11 @@ source "$CONFIG_DIR/colors.sh"
 
 PMSET="$(pmset -g batt 2>/dev/null)"
 PERCENTAGE="$(printf '%s\n' "$PMSET" | grep -Eo '[0-9]+%' | head -n1 | tr -d '%')"
+# Show the charging bolt only while actually charging, not whenever on AC.
+# pmset reports the per-battery state as "...%; charging|charged|discharging;".
+# "charged" (full on AC) falls through to the %-based 100% icon (󰁹 green).
 case "$PMSET" in
-*"AC Power"*) CHARGING=1 ;;
+*"; charging;"* | *"; finishing charge;"*) CHARGING=1 ;;
 *) CHARGING= ;;
 esac
 

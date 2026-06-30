@@ -18,9 +18,13 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
-# Refresh workspace pills when focused window changes (covers window close —
-# focus moves away from the closed window — and intra-workspace navigation).
-on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+# Refresh only the front-app items on focus change — a focus move changes the
+# focused window but not the workspace pills, so the heavier pill recompute is
+# skipped here. Pills still recompute on workspace switch (exec-on-workspace-change)
+# and new windows (on-window-detected).
+# Tradeoff: AeroSpace has no on-window-closed callback, so a closed window's icon
+# lingers in its pill until the next workspace switch / window detect (self-heals).
+on-focus-changed = ['exec-and-forget sketchybar --trigger front_app_refresh']
 
 # Start AeroSpace at login
 start-at-login = true
