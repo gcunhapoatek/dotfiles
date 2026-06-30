@@ -5,9 +5,17 @@
 
 source "$CONFIG_DIR/colors.sh"
 
-IFACE="$(networksetup -listallhardwareports 2>/dev/null |
-  awk '/Hardware Port: Wi-Fi/{getline; print $2; exit}')"
-IFACE="${IFACE:-en0}"
+# Wi-Fi interface name is stable per boot, so resolve it once and cache. Avoids
+# a `networksetup` spawn on every poll (every 30s). Cache clears on reboot.
+IFACE_CACHE="${TMPDIR:-/tmp}/sketchybar-wifi-iface-${USER}"
+IFACE=""
+[ -r "$IFACE_CACHE" ] && IFACE="$(cat "$IFACE_CACHE" 2>/dev/null)"
+if [ -z "$IFACE" ]; then
+  IFACE="$(networksetup -listallhardwareports 2>/dev/null |
+    awk '/Hardware Port: Wi-Fi/{getline; print $2; exit}')"
+  IFACE="${IFACE:-en0}"
+  printf '%s' "$IFACE" >"$IFACE_CACHE"
+fi
 
 SSID="$(ipconfig getsummary "$IFACE" 2>/dev/null | awk -F' SSID : ' '/ SSID : / {print $2; exit}')"
 

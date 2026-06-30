@@ -107,6 +107,17 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/stop-plan-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "startup|resume|compact|clear",
@@ -171,5 +182,8 @@
     ]
   },
   "theme": "dark-ansi",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "attribution": {
+    "commit": ""
+  }
 }

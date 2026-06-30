@@ -12,6 +12,7 @@ return {
 	build = ":TSUpdate",
 	config = function()
 		local ensure_installed = {
+			"angular",
 			"bash",
 			"c",
 			"comment",
@@ -41,6 +42,10 @@ return {
 			"yaml",
 		}
 		require("nvim-treesitter").install(ensure_installed)
+
+		-- Angular templates resolve to filetype `htmlangular` (nvim 0.11+); point
+		-- it at the `angular` parser so the FileType autocmd below starts it.
+		vim.treesitter.language.register("angular", "htmlangular")
 
 		vim.api.nvim_create_autocmd("FileType", {
 			group = vim.api.nvim_create_augroup("user_treesitter_start", { clear = true }),

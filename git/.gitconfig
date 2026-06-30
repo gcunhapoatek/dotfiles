@@ -107,6 +107,8 @@
 [delta]
 	navigate = true
 	line-numbers = true
+	side-by-side = true
+	hyperlinks = true
 	dark = true
 	blame-palette = "#1e1e2e #181825 #11111b #313244 #45475a"
 	commit-decoration-style = "#6c7086" bold box ul

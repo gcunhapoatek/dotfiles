@@ -11,8 +11,8 @@
 #   - ~/.claude/tasks/*              older than 30 days
 #   - ~/.claude/plans/*              older than 30 days (legacy flat dir)
 #   - ~/.claude/projects/*/handover/**/*.md older than 7 days (curated, short-lived)
-#   - ~/.claude/projects/*/plans/completed/*.md older than 7 days
-#   - ~/.claude/projects/*/plans/*.md (top-level, active) older than 30 days
+#   - ~/.claude/projects/*/plans/*.md (active) older than 30 days
+#   - ~/.claude/projects/*/plans/.pending markers older than 30 days
 # Best-effort: failures swallowed so they never block session teardown.
 
 set -uo pipefail
@@ -38,14 +38,13 @@ if [[ -d "$HOME/.claude/projects" ]]; then
   find "$HOME/.claude/projects" -type f -name '*.md' \
     -path '*/handover/*' -mtime +7 -delete 2>/dev/null || true
 
-  # Per-project plans: completed/ short-lived (7d), top-level active 30d.
-  # Find with -path 'plans/completed' first to avoid matching active plans
-  # under plans/ via the broader rule below.
+  # Per-project plans: active plans pruned after 30 days. Stale .pending markers
+  # and .pending.nagged.<id> sentinels (left when a cwd is never reopened, so
+  # session-start never consumed them) pruned on the same window.
   find "$HOME/.claude/projects" -type f -name '*.md' \
-    -path '*/plans/completed/*' -mtime +7 -delete 2>/dev/null || true
-  find "$HOME/.claude/projects" -type f -name '*.md' \
-    -path '*/plans/*' -not -path '*/plans/completed/*' \
-    -mtime +30 -delete 2>/dev/null || true
+    -path '*/plans/*' -mtime +30 -delete 2>/dev/null || true
+  find "$HOME/.claude/projects" -type f -name '.pending*' \
+    -path '*/plans/*' -mtime +30 -delete 2>/dev/null || true
 fi
 
 exit 0

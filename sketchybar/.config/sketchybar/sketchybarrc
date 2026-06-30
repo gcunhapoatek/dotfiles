@@ -98,15 +98,20 @@ sketchybar --add item aerospace_controller left \
            --subscribe aerospace_controller aerospace_workspace_change
 
 ##### Left Items #####
+# Separator between the workspace pills and the front_app/media group.
 sketchybar --add item space_sep left \
-           --set space_sep icon="" \
+           --set space_sep icon="┊" \
                            icon.color=$OVERLAY0 \
-                           icon.font="$FONT:Bold:14.0" \
+                           icon.font="$FONT:Bold:16.0" \
                            label.drawing=off
 
 # Per-monitor front_app: each bar shows first window of its visible workspace.
 # AeroSpace orders windows by tiling tree, not MRU — accuracy caveat documented
 # in plugin script.
+# front_app_refresh is fired by aerospace.toml's on-focus-changed: a focus move
+# changes the front app but NOT the workspace pills, so it refreshes only these
+# items — not the heavier aerospace_controller pill recompute.
+sketchybar --add event front_app_refresh
 for mon in $(seq 1 "$MON_COUNT"); do
   sketchybar --add item front_app.$mon left \
              --set front_app.$mon \
@@ -115,8 +120,25 @@ for mon in $(seq 1 "$MON_COUNT"); do
                 icon.color=$MAUVE \
                 label.color=$TEXT \
                 script="$PLUGIN_DIR/front_app.sh" \
-             --subscribe front_app.$mon front_app_switched aerospace_workspace_change
+             --subscribe front_app.$mon front_app_switched aerospace_workspace_change front_app_refresh
 done
+
+# Separator between the front_app group and now playing.
+sketchybar --add item media_sep left \
+           --set media_sep icon="┊" \
+                           icon.color=$OVERLAY0 \
+                           icon.font="$FONT:Bold:16.0" \
+                           label.drawing=off
+
+# Now playing — left side, right after the front app. Single item (no display),
+# so it shows once per bar. Icon color is set by the plugin.
+sketchybar --add item media left \
+           --set media update_freq=25 \
+                       drawing=off \
+                       label.max_chars=30 \
+                       scroll_texts=on \
+                       click_script="nowplaying-cli togglePlayPause" \
+                       script="$PLUGIN_DIR/media.sh"
 
 ##### Right Items (rendered right-to-left in declaration order) #####
 # https://felixkratz.github.io/SketchyBar/config/events
@@ -133,14 +155,6 @@ sketchybar --add item clock right \
                          click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
                          script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change \
-           \
-           --add item cpu right \
-           --set cpu update_freq=5 \
-                     script="$PLUGIN_DIR/cpu.sh" \
-           \
-           --add item mem right \
-           --set mem update_freq=10 \
-                     script="$PLUGIN_DIR/mem.sh" \
            \
            --add item volume right \
            --set volume icon.color=$PEACH \
@@ -159,24 +173,7 @@ sketchybar --add item clock right \
            --set weather update_freq=900 \
                          icon.color=$YELLOW \
                          script="$PLUGIN_DIR/weather.sh" \
-           --subscribe weather system_woke \
-           \
-           --add item media right \
-           --set media update_freq=10 \
-                       drawing=off \
-                       label.max_chars=30 \
-                       scroll_texts=on \
-                       click_script="nowplaying-cli togglePlayPause" \
-                       script="$PLUGIN_DIR/media.sh"
-
-##### Brackets (visual grouping; must be declared after members) #####
-# Docs: https://felixkratz.github.io/SketchyBar/config/components
-sketchybar --add bracket sysmon cpu mem battery \
-           --set sysmon background.color=$SURFACE0 \
-                        background.corner_radius=8 \
-                        background.height=26 \
-                        background.border_color=$SURFACE1 \
-                        background.border_width=1
+           --subscribe weather system_woke
 
 ##### Initial paint #####
 sketchybar --update

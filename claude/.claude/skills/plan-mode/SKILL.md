@@ -10,7 +10,9 @@ Two responsibilities:
 1. **Decide when to enter plan mode.**
 2. **Persist an approved plan** as a curated per-project artifact that survives session loss and is auto-surfaced on the next session.
 
-The built-in `ExitPlanMode` tool only presents a plan to the user — the harness may also stash a copy under `~/.claude/plans/<slug>.md` with an arbitrary slug, but that file has no cwd, no status, and no structure. This skill writes the durable, project-scoped copy that `session-start.sh` reads on resume.
+The built-in `ExitPlanMode` tool only presents a plan to the user — the harness may also stash a copy under `~/.claude/plans/<slug>.md` with an arbitrary slug, but that file has no cwd and no structure. This skill writes the durable, project-scoped copy that `session-start.sh` reads on resume.
+
+**No close ceremony.** Persist the plan, then just work. A plan auto-surfaces while it's recent and stops on its own — there is no required status-flip or move-to-completed step. See *Lifecycle* below.
 
 ## When to enter plan mode
 
@@ -40,26 +42,39 @@ stamp="$(date -u +%Y-%m-%dT%H%M%S)"
 out="$HOME/.claude/projects/$slug/plans/$stamp.md"
 ```
 
-One file per approved plan. Do not overwrite prior plans. If the user iterates on the plan in the same session, **append a new `## Revision <ts>` section to the existing file** rather than writing a new file — the revision history is part of the artifact.
+One file per approved plan. Do not overwrite prior plans. If the user iterates on the plan in the same session, **edit the same file in place** — no new file, no special revision section.
 
-**Lifecycle.**
+## Lifecycle
 
-- Active plans live at `plans/<ts>.md` (top level of the project's plans dir).
-- When the work is done, move the file to `plans/completed/<ts>.md` and set `status: completed`. Same on abandonment (`status: abandoned`).
-- `session-start.sh` surfaces only the most recent **active** plan (status not `completed`/`abandoned`, top-level only) with `mtime` ≤ 7 days. It walks candidates newest-first and skips `completed`/`abandoned`, so a newer finished plan never masks an older active one.
-- **Long-running plans go dormant, not deleted.** The auto-surface window is `mtime` ≤ 7 days, but the prune window is 30 days — a plan untouched for 8–30 days stays on disk yet stops surfacing on resume. Appending a `## Status log` entry (any edit) refreshes `mtime` and keeps it in the surface window, so log progress on multi-week work to keep it live.
-- `session-end-rotate.sh` prunes `plans/completed/*` after 7 days and `plans/*.md` (top-level) after 30 days. Stale active plans get cleaned up automatically.
+Surfacing is automatic and time-based — no bookkeeping required:
+
+- A plan **auto-surfaces** on session start for its cwd while `mtime` ≤ 7 days (most recent first).
+- Past 7 days untouched, it goes **dormant** (stops surfacing) but stays on disk.
+- `session-end-rotate.sh` **prunes** plans after 30 days. Nothing accumulates forever.
+- Any edit (e.g. appending a `## Status log` line) refreshes `mtime` and keeps a multi-week plan in the surface window. Log progress on long-running work to keep it live.
+
+**Stopping a finished plan early** (optional): a just-completed plan keeps surfacing for up to 7 days. If that nags you on resume, **delete the file**. There is no status flag — deletion is the only early-suppress.
+
+## Persist-reliability warning
+
+The persist step (writing the curated copy after approval) is instruction-driven — nothing forces it. The backstop: `post-tool-use-plan.sh` drops a `.pending` marker each time `ExitPlanMode` fires, and on the next session start `session-start.sh` checks whether any curated plan is newer than that marker. If none is, it surfaces a one-time **`REQUIRED ACK`** — the same mechanism plan/handover surfacing uses, so the loss reaches the user instead of sitting in passive context.
+
+When you see it, your first reply must include the `Plan-persist check:` line. Two cases:
+
+- **Approved and lost** — reconstruct the plan from the conversation and persist it per the file structure above before any implementation.
+- **Rejected, or persist intentionally skipped** — ack with "no action" and continue.
+
+The marker is consumed on load, so the next-session check prompts at most once per `ExitPlanMode`. The same-session window is covered too: a `Stop` hook (`stop-plan-check.sh`) checks the same marker when a turn ends and **blocks** with the same instruction if no curated plan was persisted — catching a loss within the live session, with the next-session check as backstop. It blocks at most once per distinct `ExitPlanMode` per session (a rejected plan → one block, ack, then stop), so it never loops.
 
 ## File structure
 
-Use exactly these sections, in order. Skip a section only if it would be empty.
+Use these sections, in order. Skip a section if it would be empty.
 
 ```markdown
 ---
 cwd: <absolute path>
 branch: <git branch at plan-approval time, or "(no git)">
 created: <ISO timestamp UTC>
-status: active            # active | completed | abandoned
 last_handover: <path>     # optional — set if a handover precedes this plan
 ---
 
@@ -82,7 +97,7 @@ last_handover: <path>     # optional — set if a handover precedes this plan
 
 ## Status log
 - <ISO ts> approved
-- <ISO ts> <next state transition>
+- <ISO ts> <optional progress note — refreshes mtime to keep the plan live>
 ```
 
 ## Rules of restraint
@@ -98,12 +113,11 @@ last_handover: <path>     # optional — set if a handover precedes this plan
 1. Decide whether plan mode applies (see *When to enter plan mode*). If yes, call `EnterPlanMode` and draft the plan against the file structure.
 2. Present the plan via `ExitPlanMode` for user approval.
 3. **Immediately after approval**, write the curated copy to the per-project path above. Do not start implementation work before the file exists.
-4. As work progresses, append entries to `## Status log` for non-trivial state transitions (e.g., "<ts> first file landed", "<ts> blocked on X").
-5. On completion or abandonment: set `status:` in the frontmatter accordingly, then `mkdir -p "$HOME/.claude/projects/$slug/plans/completed"` and `mv` the file into `plans/completed/` (the dir may not exist yet — create it first or the `mv` fails).
+4. (Optional) Append `## Status log` entries on multi-session work to leave breadcrumbs and refresh `mtime`.
 
 ## Reading a plan (next session)
 
-The `session-start.sh` hook surfaces the most recent active plan for the current `cwd` (`additionalContext` block marked `--- BEGIN ACTIVE PLAN ---`).
+The `session-start.sh` hook surfaces the most recent recent plan for the current `cwd` (`additionalContext` block marked `--- BEGIN ACTIVE PLAN ---`).
 
 When you see a plan in `additionalContext`:
 
@@ -111,13 +125,13 @@ When you see a plan in `additionalContext`:
   `Plan loaded: <path> (age: <age>) — resuming at "<next concrete step from the plan>"`
 - Treat the plan's `## Approach` and `## Files` as the agreed scope. Do not silently expand it.
 - If state has drifted (files moved, dependency renamed), update the plan **before** executing — flag the drift to the user.
-- Append a `## Status log` entry when resuming, before doing other work.
+- If the surfaced plan is for work already finished, say so and offer to delete it.
 
 ## Cross-reference with handover
 
 A plan and a handover are complementary:
 
-- A **plan** is the agreed shape of the work — written **before** execution. Lives until the work ships or is abandoned.
+- A **plan** is the agreed shape of the work — written **before** execution.
 - A **handover** is the curated session state — written at a **pause point**. Lives ≤ 48h, consumed on next session start.
 
 When writing a handover during work that has an active plan, set `Active plan:` in the handover frontmatter so the next session loads both. When writing a plan that follows a previous handover, set `last_handover:` in the plan frontmatter. See [[handover]] for the handover skill.
@@ -126,5 +140,6 @@ When writing a handover during work that has an active plan, set `Active plan:` 
 
 - "Plan: fix the thing." — no goal, no files, no test plan.
 - A plan with no `## Risks` section for a migration / force-push / mass rewrite — that section is the whole point for risky work.
-- "Status: active" left behind after the work merged. Move to `completed/` so it stops surfacing.
-- Two near-identical plan files for the same task on the same day. If you iterate, append `## Revision <ts>` to the existing file.
+- Two near-identical plan files for the same task on the same day. If you iterate, edit the existing file in place.
+</content>
+</invoke>
