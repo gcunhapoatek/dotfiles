@@ -47,7 +47,6 @@ Use exactly these sections, in this order. Skip a section only if it would be em
 cwd: <absolute path>
 branch: <git branch or "(no git)">
 last commit: <short sha + subject, or "-">
-Active plan: <path under projects/<slug>/plans/, or "-">
 
 ## Goal
 <One sentence. The original ask that drove this session.>
@@ -102,14 +101,6 @@ When you see a handover in `additionalContext` (block marked `--- BEGIN HANDOVER
 - Treat "Next concrete step" as the default resume action unless the user overrides.
 - Honor "Don't redo" — do not re-explore those paths.
 - Do not delete or rename the consumed file. `handover/consumed/` is pruned automatically after 7 days by `session-end-rotate.sh`.
-
-## Cross-reference with plan mode
-
-If the work is governed by an approved plan (see [[plan-mode]]):
-
-- Set `Active plan:` in the header to the plan path under `projects/<slug>/plans/`.
-- Before writing the handover, append a `## Status log` entry to the plan summarizing where execution stands.
-- On resume, SessionStart will surface **both** the handover and the active plan. The plan defines scope; the handover defines the resume point.
 
 ## Anti-examples (do not write)
 

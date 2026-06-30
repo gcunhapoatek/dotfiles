@@ -95,27 +95,6 @@
             "timeout": 5
           }
         ]
-      },
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/post-tool-use-plan.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/stop-plan-check.sh",
-            "timeout": 5
-          }
-        ]
       }
     ],
     "SessionStart": [

@@ -34,9 +34,7 @@ How I work. Defaults for any project. Project-level rules override these.
 ## Plan mode
 
 - **Enter plan mode** before implementation when the change touches more than two files, includes an irreversible or shared-state step, the user's ask is ambiguous about scope, or the work involves unfamiliar third-party config / API surface. Skip it for single-file edits, trivial bug fixes, and read-only tasks.
-- After `ExitPlanMode` is approved, persist a curated per-project copy of the plan per the `plan-mode` skill — the per-project copy (not the flat `~/.claude/plans/` files) is what SessionStart surfaces on resume. No close ceremony: plans auto-surface while recent and age out on their own.
-- When resuming a SessionStart-surfaced plan, re-enter Plan Mode (or stop and ask) before coding if the work needs any deviation from the approved Approach/Files.
-- Project rules override these defaults. Mechanics (paths, lifecycle, file structure) live in `~/.claude/skills/plan-mode/SKILL.md` — that skill is the source of truth.
+- Project rules override these defaults.
 
 ## Sources of truth
 
