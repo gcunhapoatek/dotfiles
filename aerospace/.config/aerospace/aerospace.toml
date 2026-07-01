@@ -76,6 +76,21 @@ persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 on-mode-changed = []
 
+# Refresh workspace pills when a new window is detected (covers app launch /
+# new window). Catch-all rule (`if = 'true'` matches every window) that runs
+# only the sketchybar trigger so window placement defaults stay unchanged.
+# Since 0.21.0 an explicit `if` is mandatory — omitting it is a hard error.
+# `check-further-callbacks` is unneeded: this is the only callback.
+# Must stay above the [mode.*] tables: a bare top-level key placed after a
+# table header would be parsed as a member of that table.
+# See: https://nikitabobko.github.io/AeroSpace/guide#on-window-detected-callback
+on-window-detected = [
+    {
+        if = 'true',
+        run = ['exec-and-forget sketchybar --trigger aerospace_workspace_change'],
+    },
+]
+
 # Possible values: (qwerty|dvorak|colemak)
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
 [key-mapping]
@@ -261,9 +276,3 @@ on-mode-changed = []
     alt-shift-j = ['join-with down', 'mode main']
     alt-shift-k = ['join-with up', 'mode main']
     alt-shift-l = ['join-with right', 'mode main']
-
-# Refresh workspace pills when a new window is detected (covers app launch /
-# new window). Catch-all rule — no `if` filter, run only the sketchybar trigger
-# so window placement defaults remain unchanged.
-[[on-window-detected]]
-    run = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
