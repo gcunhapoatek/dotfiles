@@ -3,7 +3,11 @@
     "PAGER": "cat",
     "GIT_PAGER": "cat",
     "LESS": "-FRX",
-    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1",
+    "CAVEMAN_DEFAULT_MODE": "off"
+  },
+  "attribution": {
+    "commit": ""
   },
   "permissions": {
     "allow": [
@@ -160,9 +164,8 @@
       "gh *"
     ]
   },
-  "theme": "dark-ansi",
+  "effortLevel": "high",
   "tui": "fullscreen",
-  "attribution": {
-    "commit": ""
-  }
+  "theme": "dark-ansi",
+  "model": "opus[1m]"
 }

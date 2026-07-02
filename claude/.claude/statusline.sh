@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Global statusLine command. Reads Claude Code's JSON session data on stdin
 # and prints two lines:
-#   Line 1: [Model] cwd | branch +staged ~modified
-#   Line 2: <bar> pct% | tokens_used/window_size | $cost | Mm Ss
+#   Line 1: [Model] effort [style] cwd | ⑂worktree branch +staged ~modified ?untracked
+#   Line 2: <bar> pct% | tokens_used/window_size | $cost | +added/-removed | Mm Ss | 5h% 7d%
 #
-# Git status is cached per session_id with a 5s TTL to keep the script fast
-# on event-driven refreshes.
+# Field paths track the current Claude Code statusLine JSON schema
+# (code.claude.com/docs/en/statusline). Git status is cached per session_id
+# with a 5s TTL to keep the script fast on event-driven refreshes.
 
 set -uo pipefail
 
 input="$(cat)"
 
 # --- jq extraction (single call, US-separated to keep empty fields stable) --
-IFS=$'\x1f' read -r MODEL CWD SESSION_ID IN_TOK CTX_SIZE PCT COST_USD DUR_MS STYLE RL5 RL7 < <(
+IFS=$'\x1f' read -r MODEL CWD SESSION_ID IN_TOK CTX_SIZE PCT COST_USD DUR_MS STYLE RL5 RL7 EFFORT WORKTREE LINES_ADD LINES_DEL < <(
   printf '%s' "$input" | jq -r '[
 		.model.display_name // "claude",
 		.workspace.current_dir // .cwd // "",
@@ -24,7 +25,11 @@ IFS=$'\x1f' read -r MODEL CWD SESSION_ID IN_TOK CTX_SIZE PCT COST_USD DUR_MS STY
 		.cost.total_duration_ms // 0,
 		.output_style.name // "",
 		(.rate_limits.five_hour.used_percentage // -1),
-		(.rate_limits.seven_day.used_percentage // -1)
+		(.rate_limits.seven_day.used_percentage // -1),
+		.effort.level // "",
+		.workspace.git_worktree // "",
+		(.cost.total_lines_added // 0),
+		(.cost.total_lines_removed // 0)
 	] | map(tostring) | join("")'
 )
 
@@ -109,7 +114,10 @@ SECS=$((DUR_SEC % 60))
 GIT_SEG=""
 if [ -n "$BRANCH" ]; then
   [ "${#BRANCH}" -gt 20 ] && BRANCH="${BRANCH:0:19}…"
-  GIT_SEG=" ${DIM}|${RESET} ${YELLOW}${BRANCH}${RESET}"
+  GIT_SEG=" ${DIM}|${RESET}"
+  # Worktree marker — present only for linked git worktrees.
+  [ -n "$WORKTREE" ] && GIT_SEG="${GIT_SEG} ${DIM}⑂${RESET}"
+  GIT_SEG="${GIT_SEG} ${YELLOW}${BRANCH}${RESET}"
   [ "$STAGED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${GREEN}+${STAGED}${RESET}"
   [ "$MODIFIED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${YELLOW}~${MODIFIED}${RESET}"
   [ "$UNTRACKED" -gt 0 ] && GIT_SEG="${GIT_SEG} ${DIM}?${UNTRACKED}${RESET}"
@@ -119,6 +127,16 @@ fi
 STYLE_BADGE=""
 if [ -n "$STYLE" ] && [ "$STYLE" != "default" ]; then
   STYLE_BADGE="${DIM}[${STYLE}]${RESET}"
+fi
+
+# --- Reasoning effort badge (absent when model has no effort control) -------
+EFFORT_BADGE=""
+[ -n "$EFFORT" ] && EFFORT_BADGE=" ${DIM}${EFFORT}${RESET}"
+
+# --- Code churn segment (hide when nothing added/removed) ------------------
+CHURN_SEG=""
+if [ "$LINES_ADD" -gt 0 ] || [ "$LINES_DEL" -gt 0 ]; then
+  CHURN_SEG=" ${DIM}|${RESET} ${GREEN}+${LINES_ADD}${RESET}${DIM}/${RESET}${RED}-${LINES_DEL}${RESET}"
 fi
 
 # --- Rate limits segment (absent for non-subscribers) ----------------------
@@ -143,10 +161,11 @@ if [ "$RL5_INT" -ge 0 ] || [ "$RL7_INT" -ge 0 ]; then
 fi
 
 # --- Output ---------------------------------------------------------------
-printf '%s[%s]%s%s %s%s\n' "$CYAN" "$MODEL" "$RESET" "$STYLE_BADGE" "$DIR" "$GIT_SEG"
+printf '%s[%s]%s%s%s %s%s\n' "$CYAN" "$MODEL" "$RESET" "$EFFORT_BADGE" "$STYLE_BADGE" "$DIR" "$GIT_SEG"
 LINE2="${BAR_COLOR}${BAR}${RESET} ${PCT_INT}%"
 LINE2="${LINE2} ${DIM}|${RESET} ${TOK_USED}/${TOK_MAX}"
 LINE2="${LINE2} ${DIM}|${RESET} ${COST_FMT}"
+LINE2="${LINE2}${CHURN_SEG}"
 LINE2="${LINE2} ${DIM}|${RESET} ${MINS}m ${SECS}s"
 LINE2="${LINE2}${RL_SEG}"
 printf '%s\n' "$LINE2"
