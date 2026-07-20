@@ -56,6 +56,7 @@
       "Read(~/.docker/config.json)"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -167,5 +168,5 @@
   "effortLevel": "high",
   "tui": "fullscreen",
   "theme": "dark-ansi",
-  "model": "opus[1m]"
+  "skipWorkflowUsageWarning": true
 }

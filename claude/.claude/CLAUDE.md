@@ -94,13 +94,12 @@ How I work. Defaults for any project. Project-level rules override these.
 - Branch names: `kebab-case`, prefixed by type (`feat/`, `fix/`, `chore/`).
 - PR titles mirror the commit style.
 - **Project commit/PR conventions override these defaults.** If a repo's `CLAUDE.md`, `CONTRIBUTING.md`, or commit history shows a different style (gitmoji, ticket prefixes, custom scopes), follow that.
-- **Always include a `Co-Authored-By` trailer when Claude helped write the change**, using the model's own id/version at commit time — e.g. `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`. Don't hardcode a stale version; read the current model from the session.
+- **Always include a `Co-Authored-By` trailer when Claude helped write the change**, using the model's own id/version at commit time — e.g. `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`. Don't hardcode a stale version; read the current model from the session. (Added manually because `attribution.commit` is `""` in `settings.json`, which suppresses the automatic trailer — that's what keeps the version current.)
 
 ## Working in any repository
 
 - Read the repo's `CLAUDE.md` and any files under `.claude/` before acting. **Project rules override these defaults.**
 - Prefer reading existing patterns over generating new abstractions. Consistency with what's already in the repo wins.
-- Verify upstream documentation before writing config for an unfamiliar tool (see *Sources of truth*).
 
 ## Session learnings (feedback loop)
 
@@ -111,3 +110,4 @@ How I work. Defaults for any project. Project-level rules override these.
 
 - Neovim is my primary editor (config under `~/.config/nvim`).
 - macOS workstation; tools installed via Homebrew where possible.
+- `cp`/`mv` are interactive-aliased (`-i`) in my shell — use `/bin/cp -f` (or `command cp`) for scripted, non-interactive overwrites.
