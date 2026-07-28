@@ -167,6 +167,6 @@
   },
   "effortLevel": "high",
   "tui": "fullscreen",
-  "theme": "dark-ansi",
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-ansi"
 }
