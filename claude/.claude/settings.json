@@ -43,7 +43,8 @@
       "Read(~/.gnupg/**)",
       "Read(~/.aws/credentials*)",
       "Read(**/.env)",
-      "Read(**/.env.*)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
       "Read(**/*.pem)",
       "Read(**/*id_rsa*)",
       "Read(**/*id_ed25519*)",
@@ -56,7 +57,6 @@
       "Read(~/.docker/config.json)"
     ]
   },
-  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -134,8 +134,8 @@
   },
   "enabledPlugins": {
     "caveman@caveman": true,
-    "codex@openai-codex": true,
-    "lua-lsp@claude-plugins-official": true
+    "codex@openai-codex": false,
+    "lua-lsp@claude-plugins-official": false
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -156,9 +156,11 @@
     "filesystem": {
       "denyRead": [
         "~/.ssh",
-        "~/.gnupg",
         "~/.aws",
         "~/.config/gh"
+      ],
+      "allowWrite": [
+        "~/.gnupg"
       ]
     },
     "excludedCommands": [
