@@ -18,7 +18,7 @@ block() {
 
 # Credential stores (whole-dir).
 case "$path" in
-"$HOME"/.ssh/* | "$HOME"/.gnupg/* | "$HOME"/.aws/credentials* | "$HOME"/.aws/config | "$HOME"/.config/gh/hosts.yml | "$HOME"/.docker/config.json)
+"$HOME"/.ssh/* | "$HOME"/.gnupg/* | "$HOME"/.aws/credentials* | "$HOME"/.aws/config | "$HOME"/.config/gh/hosts.yml | "$HOME"/.docker/config.json | "$HOME"/.npmrc | "$HOME"/.kube/*)
 	block "edit to credential store"
 	;;
 "$HOME"/.netrc | */.netrc)
@@ -28,7 +28,7 @@ esac
 
 # Private key file extensions / known names anywhere in the path.
 case "$path" in
-*.pem | *.key | *.p12 | *.pfx | *.asc | *id_rsa | *id_ed25519 | *id_ecdsa | *id_dsa)
+*.pem | *.key | *.p12 | *.pfx | *.asc | *id_rsa* | *id_ed25519* | *id_ecdsa* | *id_dsa*)
 	block "edit to private key file"
 	;;
 esac

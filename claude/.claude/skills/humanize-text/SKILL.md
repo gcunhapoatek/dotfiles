@@ -1,6 +1,6 @@
 ---
 name: humanize-text
-description: Rewrite drafted text so it reads like a real person wrote it — natural English, no AI tells, tone matched to the situation. Trigger whenever drafting or sending a Slack message (slack_send_message / _draft / _schedule via the Slack MCP), writing a draft message/email/announcement, or when the user asks to "humanize", "make this less AI", "de-AI", "make it sound natural", or "reword this". Apply BEFORE the message is sent, not after.
+description: Rewrite drafted text so it reads like a real person wrote it — natural English, no AI tells, tone matched to the situation. Trigger whenever drafting a Slack message (slack_send_message_draft via the Slack MCP — direct send/schedule are hard-blocked by pre-tool-use-slack.sh), writing a draft message/email/announcement, or when the user asks to "humanize", "make this less AI", "de-AI", "make it sound natural", or "reword this". Apply BEFORE the message is sent, not after.
 ---
 
 # Humanize text
@@ -9,7 +9,7 @@ Goal: text that reads like a specific human wrote it for a specific reader — n
 
 Run this whenever you are about to:
 
-- call a Slack send/draft tool (`slack_send_message`, `slack_send_message_draft`, `slack_schedule_message`),
+- call the Slack draft tool (`slack_send_message_draft` — direct send/schedule are hard-blocked by `pre-tool-use-slack.sh`),
 - write a draft message, email, or announcement,
 - act on an explicit "humanize / make natural / less AI" request.
 
