@@ -288,7 +288,7 @@ function __icon_map() {
    "Clock")
         icon_result=":clock:"
         ;;
-   "cmux")
+   "cmux" | "cmux NIGHTLY")
         icon_result=":cmux:"
         ;;
    "coconutBattery")
@@ -951,6 +951,9 @@ function __icon_map() {
    "Miro")
         icon_result=":miro:"
         ;;
+   "Mole")
+        icon_result=":mole:"
+        ;;
    "MongoDB Compass"*)
         icon_result=":mongodb:"
         ;;
@@ -1098,6 +1101,9 @@ function __icon_map() {
    "OpenChamber")
         icon_result=":openchamber:"
         ;;
+   "OpenClaw")
+        icon_result=":openclaw:"
+        ;;
    "opencode" | "OpenCode")
         icon_result=":opencode:"
         ;;
@@ -1163,6 +1169,9 @@ function __icon_map() {
         ;;
    "Pearcleaner")
         icon_result=":pearcleaner:"
+        ;;
+   "Permute 3" | "Permute 4")
+        icon_result=":permute:"
         ;;
    "Perplexity" | "Perplexity AI")
         icon_result=":perplexity:"
@@ -1398,7 +1407,7 @@ function __icon_map() {
    "Setapp")
         icon_result=":setapp:"
         ;;
-   "SF Symbols" | "SF Symbole" | "SF-Symbole")
+   "SF Symbols" | "SF Symbole" | "SF-Symbole" |  "SF Symbols Beta")
         icon_result=":sf_symbols:"
         ;;
    "Shapr3D")
@@ -1694,6 +1703,9 @@ function __icon_map() {
         ;;
    "WezTerm" | "wezterm-gui")
         icon_result=":wezterm:"
+        ;;
+   "WhatCable")
+        icon_result=":whatcable:"
         ;;
    "WhatsApp" | "‎WhatsApp")
         icon_result=":whats_app:"

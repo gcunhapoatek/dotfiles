@@ -57,6 +57,7 @@
       "Read(~/.docker/config.json)"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -154,20 +155,20 @@
   "sandbox": {
     "enabled": true,
     "filesystem": {
+      "allowWrite": [
+        "~/.gnupg"
+      ],
       "denyRead": [
         "~/.ssh",
         "~/.aws",
         "~/.config/gh"
-      ],
-      "allowWrite": [
-        "~/.gnupg"
       ]
     },
     "excludedCommands": [
       "gh *"
     ]
   },
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark-ansi"
