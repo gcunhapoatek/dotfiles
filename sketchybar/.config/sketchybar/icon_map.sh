@@ -1452,6 +1452,9 @@ function __icon_map() {
    "Sonarr")
         icon_result=":sonarr:"
         ;;
+   "SourceGit")
+        icon_result=":sourcegit:"
+        ;;
    "Sourcetree")
         icon_result=":sourcetree:"
         ;;
@@ -1767,7 +1770,7 @@ function __icon_map() {
    "Zeplin")
         icon_result=":zeplin:"
         ;;
-   "zoom.us")
+   "zoom.us" | "Zoom")
         icon_result=":zoom:"
         ;;
    "Zotero")
