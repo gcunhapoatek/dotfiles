@@ -1,7 +1,7 @@
 # Appearance
 theme = catppuccin-mocha.conf
 background-opacity = 0.8
-font-family = FiraCode
+font-family = FiraCode Nerd Font Mono
 
 # Window Settings
 window-height = 34
@@ -14,3 +14,6 @@ macos-window-shadow = false
 # Cursor Settings
 cursor-style = block
 shell-integration-features = no-cursor
+# Blinking forces a full GPU redraw at display refresh rate; on this 120Hz
+# ProMotion panel that alone is ~10-15% idle CPU. ghostty-org/ghostty#10397
+cursor-style-blink = false
