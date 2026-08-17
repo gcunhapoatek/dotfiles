@@ -378,6 +378,9 @@ function __icon_map() {
    "Default Folder X")
         icon_result=":default_folder_x:"
         ;;
+   "Delta")
+        icon_result=":delta:"
+        ;;
    "Deluge")
         icon_result=":deluge:"
         ;;
@@ -1512,6 +1515,9 @@ function __icon_map() {
    "System Information" | "System Profiler")
         icon_result=":system_information:"
         ;;
+   "T3 Code" | "T3 Code (Alpha)")
+        icon_result=":t3_code:"
+        ;;
    "T3 Chat")
         icon_result=":t3chat:"
         ;;
@@ -1761,7 +1767,7 @@ function __icon_map() {
    "Z-Library")
         icon_result=":z_library:"
         ;;
-   "Zed")
+   "Zed" | "Zed Preview")
         icon_result=":zed:"
         ;;
    "Zen" | "Zen Browser" | "Twilight")
