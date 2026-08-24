@@ -18,11 +18,12 @@ Run this whenever you are about to:
 1. Draft the message for content first.
 2. Pick the register (see **Tone**) from who reads it and why.
 3. Strip the AI tells below (phrase-level).
-4. Break the statistical smoothness (see **Burstiness**) — this is the part that actually fools detectors.
-5. Read it out loud in your head. If a real person wouldn't say it that way to that reader, rewrite.
-6. For Slack: show the humanized draft and confirm before sending. Sending is outward-facing — don't fire without a go-ahead.
+4. Break the statistical smoothness (see **Burstiness**) — spread the variance across the whole message, not one paragraph.
+5. Surface real specifics where they exist (see **Specificity**) — this is what beats meaning-level detection, not just statistical detection.
+6. Read it out loud in your head. If a real person wouldn't say it that way to that reader, rewrite.
+7. For Slack: show the humanized draft and confirm before sending. Sending is outward-facing — don't fire without a go-ahead.
 
-**Why two passes.** Cutting AI-tell phrases removes vocabulary an AI would use. It does not remove the *shape* — AI detectors (GPTZero, Originality.ai, Turnitin) score perplexity (how predictable each next word is) and burstiness (how much sentence length/complexity varies across the text). A draft with zero "delve" or "It's worth noting" can still read as 100% AI if every sentence is 15–20 words, subject-first, one clause, evenly hedged. Step 4 exists to fix that.
+**Why three passes.** Cutting AI-tell phrases removes vocabulary an AI would use. It does not remove the *shape* (detectors score perplexity and burstiness per sentence, not just per document) or the *emptiness* (generic text has nothing specific to say). A draft with zero "delve" or "It's worth noting" can still read as AI if every sentence runs the same length and every claim stays comfortably general. Steps 4 and 5 exist to fix those two, separately.
 
 ## AI tells to cut
 
@@ -58,7 +59,17 @@ Phrase-level cuts remove AI *vocabulary*. They don't remove AI *shape* — and d
 - **Skip the tidy close.** AI writing resolves; human writing often just stops once the last piece of information lands. Don't add a wrap-up sentence whose only job is to sound finished.
 - **Allow one real imperfection over a longer message.** A sentence that runs on a bit before a period, a parenthetical that trails off, mixing "which" and "that" the way people actually do. Don't inject typos or bad grammar — that's a different (worse) tell — just don't sand every sentence to the same polish level.
 
-**Caveat: this isn't a detector-beating trick, it's the actual fix.** Statistical detectors (ZeroGPT, Copyleaks, Originality.ai) score perplexity/burstiness directly, so the fixes above move the needle on those. GPTZero itself moved off raw perplexity/burstiness to a deep-learning classifier back in 2023 and now scores deeper stylistic and semantic patterns — surface-level sentence-length juggling alone won't fool it. The real target is still "does this read like a specific person thought it, not like a template got filled" — burstiness is a proxy for that, not a substitute.
+**What detectors actually score, and why word-swaps alone don't work.** Statistical detectors (ZeroGPT, Copyleaks, Originality.ai) score perplexity/burstiness directly. GPTZero moved to a deep-learning classifier in 2023 but still reports six explainability features: perplexity, burstiness, average sentence length, readability, simplicity, and an **AI Vocabulary** signal for lexical markers (the "AI tells" list above). Critically, GPTZero classifies **sentence by sentence**, not just on a whole-document average — so five bursty sentences bunched in one paragraph followed by ten uniform ones still reads as mostly-AI. Variance has to be distributed across the whole message, not front-loaded into one "human" paragraph. And a synonym swap (leverage → use) doesn't change sentence length or word predictability, which is why phrase-hunting alone plateaus — burstiness and specificity (below) move the needle that vocabulary cleanup can't.
+
+## Specificity: the strongest single signal
+
+Structure fixes (burstiness) beat detectors that score statistics. The thing that beats detectors that score *meaning* is information an AI would never invent: a real name, a specific number from this situation, an opinion stated more bluntly than a neutral assistant would risk. Generic AI text stays safely general because it has nothing specific to say — real human text is dense with detail because the writer actually lived the thing they're describing.
+
+- **Name the specific thing, not the category.** Not "the deployment" but "the Thursday 2pm deploy"; not "a bug" but "the null check on line 84"; not "the team" but the actual names.
+- **Use a number that only this situation produces.** "3 retries before it gave up," "took 40 minutes, not the usual 10" — not "several attempts" or "longer than expected."
+- **State an opinion an assistant wouldn't hedge into existence.** "This approach is going to bite us in three months" reads human. "This approach may present some challenges in the future" reads like a draft nobody committed to.
+- **Reference something only the writer would know or remember.** A prior conversation, an inside joke, "like last time with the Redis thing" — context a generic model has no way to reach for.
+- Don't fabricate specifics that aren't true. If the draft has no real detail to surface, this lever doesn't apply — go back to whoever has the information rather than inventing a plausible-sounding number.
 
 ## Worked example
 
@@ -126,8 +137,9 @@ When the reader is external, keep the structure above but raise polish: fewer fr
 - Could a colleague tell *you* wrote it, not a bot?
 - Every sentence earns its place?
 - Register matches the reader?
-- **Sentence-length spread:** eyeball the sentence lengths in the longest paragraph. If they're all clustered within a few words of each other, rewrite for variance before sending — this is the single biggest detector signal and the easiest one to miss because the *words* already look clean.
+- **Sentence-length spread:** eyeball every paragraph, not just one. Detectors classify sentence by sentence, so variance bunched into a single "human" paragraph while the rest stays uniform still reads as mostly-AI.
 - **Shape check:** any bullet list where every item is a full, similarly-sized sentence? Any paragraph that opens with a setup and closes with a tidy wrap-up? Either one is worth flattening into plainer, lumpier prose.
 - Zero or one em-dash in the whole message, not per sentence?
+- **Specificity check:** is there at least one real name, number, or detail that a generic model couldn't have guessed? If every claim is still safely general, go back and ask for or add the concrete detail before calling it done.
 
 If yes, send. If the message is going out via Slack MCP, show the final text and confirm first.
