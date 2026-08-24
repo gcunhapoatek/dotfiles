@@ -90,10 +90,28 @@ Secrets and identity are never committed. The tracked configs source these gitig
 
 `nvim/.config/nvim/` follows lazy.nvim conventions:
 
-- `init.lua` — loads `config.options` then `config.lazy`
+- `init.lua` — loads `config.options`, `config.keymaps`, `config.autocmds`, then `config.lazy`
+- `lua/config/options.lua` — global `vim.opt` settings (leader keys live here too)
+- `lua/config/keymaps.lua` — plugin-independent keymaps
+- `lua/config/autocmds.lua` — plugin-independent autocmds, all under `user_*` augroups
 - `lua/config/lazy.lua` — lazy.nvim bootstrap, imports all `lua/plugins/*.lua`
 - `lua/plugins/` — one file per plugin or plugin group
+- `after/ftplugin/` — per-filetype buffer options (indentation, textwidth)
 
-Active plugins: **snacks.nvim** (explorer + picker + notifier + many extras), **bufferline**, **lualine**, **catppuccin**, **treesitter**, **plenary**.
+Plugin groups, one file each under `lua/plugins/`:
+
+| Area          | Plugins                                                             |
+| ------------- | ------------------------------------------------------------------- |
+| Core UI       | `snacks.nvim` (explorer, picker, notifier, terminal, dashboard, toggles, lazygit), `bufferline`, `lualine`, `catppuccin`, `mini.icons`, `which-key` |
+| LSP / tooling | `nvim-lspconfig` + `mason` + `mason-lspconfig` + `mason-tool-installer`, `blink.cmp`, `conform` (format), `nvim-lint` (lint), `trouble` |
+| Treesitter    | `nvim-treesitter` (**`main` branch** — different API from `master`), `-textobjects`, `-context`, `nvim-ts-autotag` |
+| Editing       | `flash`, `mini.pairs`, `nvim-surround`, `gitsigns`, `todo-comments`, `render-markdown` |
+
+Conventions worth knowing before editing:
+
+- **Float borders come from `vim.o.winborder`** (`config/options.lua`), not per-plugin `border` options. blink.cmp, mason, gitsigns previews and native LSP/diagnostic floats all inherit it — don't reintroduce per-plugin borders.
+- **Keymaps are single-owner.** Where two plugins could claim a key, the loser carries a comment naming the winner (e.g. `]]`/`[[` → snacks.words, `<C-k>` → blink.cmp, `<leader>bo` → snacks.bufdelete). Grep for "owned by" before adding a binding.
+- **`nvim-treesitter` is on `main`**: no `opts.ensure_installed`/`highlight`/`indent`, parsers via `require('nvim-treesitter').install{}`, highlighting via a `FileType` autocmd. Check `plugins/treesitter.lua`'s header comment before touching it.
+- **`nvim-ts-autotag`'s `ft` list must stay a subset of the installed parsers** — it is treesitter-driven and silently inert otherwise.
 
 The picker and explorer sources (`files`, `grep`, `smart`, `explorer`) all have `hidden = true` and `ignored = true` — essential since all configs live under `.config/` which would otherwise be excluded.
