@@ -25,7 +25,6 @@ return {
 			delay = 500,
 			ignore_whitespace = false,
 		},
-		preview_config = { border = "rounded" },
 		on_attach = function(buf)
 			local gs = require("gitsigns")
 			local function map(mode, lhs, rhs, desc)

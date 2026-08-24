@@ -42,9 +42,10 @@ return {
 							removed = icons.git.removed,
 						},
 					},
+					-- No `filetype` here: lualine_c already renders its icon next to
+					-- the filename.
 					"encoding",
 					"fileformat",
-					"filetype",
 				},
 				lualine_y = {
 					{ "progress", separator = " ", padding = { left = 1, right = 0 } },

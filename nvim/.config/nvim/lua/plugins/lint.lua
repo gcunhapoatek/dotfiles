@@ -15,13 +15,29 @@ return {
 		}
 
 		local aug = vim.api.nvim_create_augroup("user_nvim_lint", { clear = true })
-		vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+
+		-- golangci-lint analyses the whole package and takes seconds, so Go lints
+		-- on save only. Everything else is cheap enough to run while editing.
+		local slow_fts = { go = true }
+
+		local function lint_buf()
+			if vim.bo.modifiable then
+				require("lint").try_lint()
+			end
+		end
+
+		vim.api.nvim_create_autocmd({ "BufReadPost", "InsertLeave" }, {
 			group = aug,
-			callback = function()
-				if vim.bo.modifiable then
-					require("lint").try_lint()
+			callback = function(args)
+				if not slow_fts[vim.bo[args.buf].filetype] then
+					lint_buf()
 				end
 			end,
+		})
+
+		vim.api.nvim_create_autocmd("BufWritePost", {
+			group = aug,
+			callback = lint_buf,
 		})
 
 		vim.api.nvim_create_user_command("Lint", function()

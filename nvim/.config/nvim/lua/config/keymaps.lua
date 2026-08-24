@@ -2,7 +2,9 @@ local map = vim.keymap.set
 
 -- Quicker escape
 map("i", "jk", "<Esc>", { desc = "Escape insert mode" })
-map("t", "<C-/>", "<C-\\><C-n>", { desc = "Escape terminal mode" })
+-- `<C-/>` in terminal mode belongs to the snacks terminal toggle (see
+-- plugins/snacks.lua); use a double Esc to drop into normal mode instead.
+map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Escape terminal mode" })
 
 -- Save / quit. `<leader>w` is the "window" prefix; save via `<C-s>` or `:w`.
 map({ "n", "i", "v" }, "<C-s>", "<cmd>silent! write<cr><Esc>", { desc = "Save file" })
@@ -10,7 +12,7 @@ map("n", "<leader>q", "<cmd>confirm quit<cr>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>confirm qall<cr>", { desc = "Quit all" })
 
 -- Clear search highlight
-map({ "i", "n" }, "<Esc>", "<cmd>noh<cr><Esc>", { desc = "Escape and clear hlsearch" })
+map({ "n", "s" }, "<Esc>", "<cmd>noh<cr><Esc>", { desc = "Escape and clear hlsearch" })
 
 -- Better up/down on wrapped lines
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })

@@ -14,10 +14,10 @@ return {
 		completion = {
 			documentation = { auto_show = true, auto_show_delay_ms = 200 },
 			ghost_text = { enabled = true },
-			menu = { border = "rounded" },
 			list = { selection = { preselect = false, auto_insert = true } },
 		},
-		signature = { enabled = true, window = { border = "rounded" } },
+		-- `<C-k>` (default preset) toggles this; borders come from `winborder`.
+		signature = { enabled = true },
 		snippets = { preset = "default" },
 		sources = {
 			default = { "lsp", "path", "snippets", "buffer" },

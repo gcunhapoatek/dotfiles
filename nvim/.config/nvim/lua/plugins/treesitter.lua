@@ -24,6 +24,8 @@ return {
 			"go",
 			"html",
 			"javascript",
+			-- No `jsonc` entry: it has no grammar of its own, nvim maps the
+			-- filetype onto the `json` parser.
 			"json",
 			"lua",
 			"luadoc",
@@ -34,11 +36,14 @@ return {
 			"query",
 			"regex",
 			"rust",
+			"scss",
 			"toml",
 			"tsx",
 			"typescript",
 			"vim",
 			"vimdoc",
+			"vue",
+			"xml",
 			"yaml",
 		}
 		require("nvim-treesitter").install(ensure_installed)

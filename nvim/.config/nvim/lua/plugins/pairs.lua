@@ -7,20 +7,19 @@ return {
 	},
 	{
 		"windwp/nvim-ts-autotag",
+		-- Only filetypes with a parser installed (see plugins/treesitter.lua) —
+		-- autotag is treesitter-driven, so it is inert anywhere else. Note `tsx`
+		-- and `jsx` are not nvim filetypes; the *react entries are what fire.
 		ft = {
 			"html",
+			"htmlangular",
 			"xml",
-			"svelte",
 			"vue",
-			"tsx",
-			"jsx",
 			"javascript",
 			"typescript",
 			"javascriptreact",
 			"typescriptreact",
 			"markdown",
-			"astro",
-			"php",
 		},
 		opts = {
 			opts = {

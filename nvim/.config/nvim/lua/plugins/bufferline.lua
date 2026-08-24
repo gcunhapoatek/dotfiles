@@ -6,7 +6,8 @@ return {
 	keys = {
 		{ "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Toggle pin" },
 		{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", desc = "Delete non-pinned buffers" },
-		{ "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", desc = "Delete other buffers" },
+		-- `<leader>bo` (delete other buffers) is owned by Snacks.bufdelete.other,
+		-- which preserves the window layout. See plugins/snacks.lua.
 		{ "<leader>br", "<cmd>BufferLineCloseRight<cr>", desc = "Delete buffers to the right" },
 		{ "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", desc = "Delete buffers to the left" },
 		{ "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },

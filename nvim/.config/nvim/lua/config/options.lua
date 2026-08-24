@@ -60,12 +60,17 @@ opt.timeoutlen = 300
 opt.ttimeoutlen = 10
 opt.redrawtime = 1500
 
+-- Floating windows. Single source of truth for float borders: nvim_open_win
+-- falls back to this whenever a caller passes no explicit border, so LSP hover,
+-- diagnostic floats, blink.cmp, mason and gitsigns previews all inherit it.
+opt.winborder = "rounded"
+
 -- Completion / wildmenu
 opt.completeopt = { "menu", "menuone", "noselect", "fuzzy" }
 opt.wildmode = "longest:full,full"
 opt.shortmess:append({ W = true, I = true, c = true })
 
--- Folding (treesitter-driven; disabled by default)
+-- Folding (treesitter-driven; enabled but every fold starts open)
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
@@ -82,7 +87,6 @@ opt.mouse = "a"
 opt.mousemoveevent = true
 opt.virtualedit = "block"
 opt.formatoptions = "jcroqlnt"
-opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 
 -- Diff
 opt.diffopt:append("linematch:60")

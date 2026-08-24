@@ -190,7 +190,7 @@ return {
 			desc = "Delete buffer (keep window)",
 		},
 		{
-			"<leader>bD",
+			"<leader>bo",
 			function()
 				Snacks.bufdelete.other()
 			end,
@@ -235,6 +235,9 @@ return {
 				Snacks.terminal()
 			end,
 			desc = "Toggle terminal",
+			-- Also in terminal mode so one press closes it: Snacks.terminal() is
+			-- toggle(), which hides the window when called from inside it.
+			mode = { "n", "t" },
 		},
 		{
 			"<leader>tt",

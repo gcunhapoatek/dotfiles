@@ -41,7 +41,9 @@ local servers = {
 		end,
 	},
 	eslint = {
-		-- Defaults cover js/ts/jsx/tsx/vue/svelte/astro; add Angular templates.
+		-- Replaces lspconfig's defaults rather than extending them: narrowed to
+		-- the filetypes actually used here (svelte/astro deliberately dropped)
+		-- plus `htmlangular` for Angular templates.
 		filetypes = {
 			"javascript",
 			"javascriptreact",
@@ -52,8 +54,11 @@ local servers = {
 		},
 		-- Apply all ESLint autofixes on save (rule fixes / unused imports / order);
 		-- prettier still owns formatting via conform.
+		-- Grouped per buffer so a re-attach (:LspRestart, reopening the buffer)
+		-- replaces the hook instead of stacking another FixAll onto every save.
 		on_attach = function(_, bufnr)
 			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = vim.api.nvim_create_augroup("user_eslint_fix_" .. bufnr, { clear = true }),
 				buffer = bufnr,
 				command = "LspEslintFixAll",
 			})
@@ -113,9 +118,7 @@ return {
 	{
 		"mason-org/mason.nvim",
 		cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonLog", "MasonUninstall" },
-		opts = {
-			ui = { border = "rounded" },
-		},
+		opts = {},
 	},
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -154,7 +157,7 @@ return {
 				update_in_insert = false,
 				virtual_text = virtual_text_opts,
 				virtual_lines = false,
-				float = { border = "rounded", source = "if_many" },
+				float = { source = "if_many" },
 				-- Replaces the deprecated `float = true` option to
 				-- vim.diagnostic.jump(). on_jump fires once per jump and
 				-- pops the float for the diagnostic landed on.
@@ -232,7 +235,9 @@ return {
 					map("n", "<leader>cS", function()
 						Snacks.picker.lsp_workspace_symbols()
 					end, "Workspace symbols")
-					map({ "i", "s" }, "<C-k>", vim.lsp.buf.signature_help, "Signature help")
+					-- Insert-mode `<C-k>` is left to blink.cmp's default preset, which
+					-- shows its own (bordered) signature window. Binding it here would
+					-- shadow blink with the plain native float in every LSP buffer.
 
 					if client and client:supports_method("textDocument/inlayHint") then
 						vim.lsp.inlay_hint.enable(true, { bufnr = buf })
