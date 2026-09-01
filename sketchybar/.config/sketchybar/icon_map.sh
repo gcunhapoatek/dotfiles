@@ -1596,6 +1596,9 @@ function __icon_map() {
    "Microsoft To Do" | "Things")
         icon_result=":things:"
         ;;
+   "Threema"*)
+        icon_result=":threema:"
+        ;;
    "Thunderbird" | "Thunderbird Daily")
         icon_result=":thunderbird:"
         ;;
