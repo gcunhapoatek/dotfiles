@@ -168,6 +168,11 @@
     ]
   },
   "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "high"
+    }
+  },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark-ansi",
