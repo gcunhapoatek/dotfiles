@@ -172,16 +172,23 @@ return {
 			-- Toggle between inline virtual_text and expanded virtual_lines.
 			-- virtual_lines.current_line = true keeps noise low: only the
 			-- diagnostic for the cursor's line is expanded.
-			vim.keymap.set("n", "<leader>ux", function()
-				local cfg = vim.diagnostic.config() or {}
-				if cfg.virtual_lines then
-					vim.diagnostic.config({ virtual_text = virtual_text_opts, virtual_lines = false })
-					vim.notify("Diagnostics: virtual_text", vim.log.levels.INFO)
-				else
-					vim.diagnostic.config({ virtual_text = false, virtual_lines = { current_line = true } })
-					vim.notify("Diagnostics: virtual_lines (current line)", vim.log.levels.INFO)
-				end
-			end, { desc = "Toggle diagnostic virtual_lines" })
+			-- A Snacks toggle like the rest of `<leader>u` (see plugins/snacks.lua),
+			-- so which-key shows its state.
+			Snacks.toggle
+				.new({
+					name = "Diagnostic Virtual Lines",
+					get = function()
+						return (vim.diagnostic.config() or {}).virtual_lines ~= false
+					end,
+					set = function(state)
+						if state then
+							vim.diagnostic.config({ virtual_text = false, virtual_lines = { current_line = true } })
+						else
+							vim.diagnostic.config({ virtual_text = virtual_text_opts, virtual_lines = false })
+						end
+					end,
+				})
+				:map("<leader>ux")
 
 			-- No vim.lsp.config("*", { capabilities = ... }) here: blink.cmp's
 			-- plugin/ script already sets it when it loads (hence the dependency).
