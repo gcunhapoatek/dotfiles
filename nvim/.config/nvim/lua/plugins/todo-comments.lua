@@ -4,12 +4,7 @@ return {
 	event = { "BufReadPost", "BufNewFile" },
 	cmd = { "TodoTrouble", "TodoQuickFix", "TodoLocList" },
 	opts = {
-		signs = true,
-		highlight = {
-			multiline = false,
-			-- Match keywords only inside treesitter comment nodes.
-			comments_only = true,
-		},
+		highlight = { multiline = false },
 	},
 	keys = {
 		{

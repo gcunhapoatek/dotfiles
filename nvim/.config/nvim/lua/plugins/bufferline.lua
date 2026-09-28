@@ -21,9 +21,6 @@ return {
 	opts = function()
 		return {
 			options = {
-				mode = "buffers",
-				themable = true,
-				numbers = "none",
 				close_command = function(n)
 					Snacks.bufdelete(n)
 				end,

@@ -19,12 +19,7 @@ return {
 		},
 		signs_staged_enable = true,
 		current_line_blame = false,
-		current_line_blame_opts = {
-			virt_text = true,
-			virt_text_pos = "eol",
-			delay = 500,
-			ignore_whitespace = false,
-		},
+		current_line_blame_opts = { delay = 500 },
 		on_attach = function(buf)
 			local gs = require("gitsigns")
 			local function map(mode, lhs, rhs, desc)
