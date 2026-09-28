@@ -58,7 +58,27 @@ local servers = {
 	},
 	html = {},
 	cssls = {},
-	jsonls = {},
+	-- Schemas come from SchemaStore.nvim, resolved in before_init because this
+	-- table is built before the plugin is on the runtimepath. Neither server
+	-- defines its own before_init in lspconfig, so nothing is shadowed.
+	jsonls = {
+		before_init = function(_, config)
+			config.settings.json.schemas = require("schemastore").json.schemas()
+		end,
+		settings = { json = { validate = { enable = true } } },
+	},
+	yamlls = {
+		before_init = function(_, config)
+			config.settings.yaml.schemas = require("schemastore").yaml.schemas()
+		end,
+		settings = {
+			yaml = {
+				-- Disable the server's built-in SchemaStore fetch; SchemaStore.nvim
+				-- provides the catalog instead (per its README).
+				schemaStore = { enable = false, url = "" },
+			},
+		},
+	},
 	basedpyright = {
 		settings = {
 			basedpyright = {
@@ -137,6 +157,7 @@ return {
 		dependencies = {
 			{ "mason-org/mason-lspconfig.nvim", dependencies = { "mason-org/mason.nvim" } },
 			"saghen/blink.cmp",
+			{ "b0o/SchemaStore.nvim", lazy = true },
 		},
 		config = function()
 			local virtual_text_opts = {
