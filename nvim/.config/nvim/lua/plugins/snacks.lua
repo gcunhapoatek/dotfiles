@@ -263,14 +263,14 @@ return {
 			desc = "Toggle zoom",
 		},
 
-		-- Word jumping
+		-- Word jumping. Normal mode only: in terminal mode these would swallow
+		-- shell `[[ ... ]]` tests typed into the snacks terminal.
 		{
 			"]]",
 			function()
 				Snacks.words.jump(vim.v.count1)
 			end,
 			desc = "Next reference",
-			mode = { "n", "t" },
 		},
 		{
 			"[[",
@@ -278,7 +278,6 @@ return {
 				Snacks.words.jump(-vim.v.count1)
 			end,
 			desc = "Prev reference",
-			mode = { "n", "t" },
 		},
 
 		-- Rename current file (and update references via LSP if attached)

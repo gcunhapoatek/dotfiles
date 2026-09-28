@@ -4,6 +4,11 @@ return {
 	event = "VeryLazy",
 	dependencies = { "nvim-mini/mini.icons", "catppuccin/nvim" },
 	keys = {
+		-- Cycle in visual (tab bar) order; `:bnext` would ignore `[B`/`]B` moves.
+		{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
+		{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
+		{ "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
+		{ "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
 		{ "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Toggle pin" },
 		{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", desc = "Delete non-pinned buffers" },
 		-- `<leader>bo` (delete other buffers) is owned by Snacks.bufdelete.other,

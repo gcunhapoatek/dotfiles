@@ -198,18 +198,21 @@ return {
 				callback = function(args)
 					local buf = args.buf
 					local client = vim.lsp.get_client_by_id(args.data.client_id)
-					local function map(mode, lhs, rhs, desc)
-						vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc, silent = true })
+					local function map(mode, lhs, rhs, desc, opts)
+						opts = vim.tbl_extend("force", { buffer = buf, desc = desc, silent = true }, opts or {})
+						vim.keymap.set(mode, lhs, rhs, opts)
 					end
 
 					-- Navigation via Snacks picker so results land in a fuzzy list.
+					-- `gr` is nowait: nvim's global `grr`/`grn`/`gra`/`gri`/`grt`/`grx`
+					-- would otherwise make it wait out `timeoutlen` on every press.
 					map("n", "gd", function()
 						Snacks.picker.lsp_definitions()
 					end, "Goto definition")
 					map("n", "gD", vim.lsp.buf.declaration, "Goto declaration")
 					map("n", "gr", function()
 						Snacks.picker.lsp_references()
-					end, "References")
+					end, "References", { nowait = true })
 					map("n", "gI", function()
 						Snacks.picker.lsp_implementations()
 					end, "Implementations")

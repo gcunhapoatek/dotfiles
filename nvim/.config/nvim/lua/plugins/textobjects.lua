@@ -42,7 +42,8 @@ return {
 		map({ "x", "o" }, "ao", sel("@loop.outer"), { desc = "Loop (outer)" })
 		map({ "x", "o" }, "io", sel("@loop.inner"), { desc = "Loop (inner)" })
 
-		-- Move. `]]`/`[[` are owned by snacks.words; use `]c`/`[c` for class.
+		-- Move. `]]`/`[[` are owned by snacks.words; use `]c`/`[c` for class (diff
+		-- mode keeps the native change jump, see unless_diff below).
 		local function goto_next_start(query)
 			return function()
 				move.goto_next_start(query, "textobjects")
@@ -68,9 +69,20 @@ return {
 		map({ "n", "x", "o" }, "]F", goto_next_end("@function.outer"), { desc = "Next function end" })
 		map({ "n", "x", "o" }, "[f", goto_prev_start("@function.outer"), { desc = "Prev function start" })
 		map({ "n", "x", "o" }, "[F", goto_prev_end("@function.outer"), { desc = "Prev function end" })
-		map({ "n", "x", "o" }, "]c", goto_next_start("@class.outer"), { desc = "Next class start" })
+		-- In diff mode `]c`/`[c` fall back to the native next/prev change jump.
+		local function unless_diff(key, fn)
+			return function()
+				if vim.wo.diff then
+					vim.cmd.normal({ vim.v.count1 .. key, bang = true })
+				else
+					fn()
+				end
+			end
+		end
+
+		map({ "n", "x", "o" }, "]c", unless_diff("]c", goto_next_start("@class.outer")), { desc = "Next class start" })
 		map({ "n", "x", "o" }, "]C", goto_next_end("@class.outer"), { desc = "Next class end" })
-		map({ "n", "x", "o" }, "[c", goto_prev_start("@class.outer"), { desc = "Prev class start" })
+		map({ "n", "x", "o" }, "[c", unless_diff("[c", goto_prev_start("@class.outer")), { desc = "Prev class start" })
 		map({ "n", "x", "o" }, "[C", goto_prev_end("@class.outer"), { desc = "Prev class end" })
 		map({ "n", "x", "o" }, "]a", goto_next_start("@parameter.inner"), { desc = "Next parameter" })
 		map({ "n", "x", "o" }, "[a", goto_prev_start("@parameter.inner"), { desc = "Prev parameter" })

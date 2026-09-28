@@ -35,11 +35,8 @@ map("n", "<leader>-", "<C-w>s", { desc = "Split window below" })
 map("n", "<leader>|", "<C-w>v", { desc = "Split window right" })
 map("n", "<leader>wd", "<C-w>c", { desc = "Delete window" })
 
--- Buffer navigation
-map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- Buffer navigation. `<S-h>`/`<S-l>` and `[b`/`]b` are owned by bufferline
+-- (plugins/bufferline.lua) so cycling follows the tab bar's order.
 map("n", "<leader>bb", "<cmd>edit #<cr>", { desc = "Switch to last buffer" })
 
 -- Stay in indent mode on visual indent
@@ -54,31 +51,19 @@ map("i", "<A-k>", "<Esc><cmd>m .-2<cr>==gi", { desc = "Move line up" })
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
 map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 
--- Keep cursor centered on jumps / search
-map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
-map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
-map("n", "n", "nzzzv", { desc = "Next search (centered)" })
-map("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
+-- No `zz`-centering remaps on <C-d>/<C-u>/n/N: the extra recenter fights
+-- snacks.scroll's smooth-scroll animation (plugins/snacks.lua).
 
--- Better paste in visual: don't overwrite register
-map("x", "p", '"_dP', { desc = "Paste without yanking selection" })
+-- Better paste in visual: don't overwrite register. Native `v_P` does this
+-- without `"_dP`'s off-by-one when the selection ends at end of line.
+map("x", "p", "P", { desc = "Paste without yanking selection" })
 
 -- Yank to system clipboard explicitly (clipboard=unnamedplus already does, but kept for muscle memory)
 map({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 map("n", "<leader>Y", '"+Y', { desc = "Yank line to system clipboard" })
 map({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without yanking" })
 
--- Diagnostics. Float-on-jump is configured via vim.diagnostic.config({ jump
--- = { on_jump = ... } }) in plugins/lsp.lua — the deprecated `float = true`
--- option was removed in nvim 0.12.
-map("n", "]d", function()
-	vim.diagnostic.jump({ count = 1 })
-end, { desc = "Next diagnostic" })
-map("n", "[d", function()
-	vim.diagnostic.jump({ count = -1 })
-end, { desc = "Prev diagnostic" })
-
--- Quickfix / location list. <leader>xq and <leader>xl are owned by Trouble (see
--- plugins/trouble.lua); these here are just the next/prev navigation.
-map("n", "]q", "<cmd>cnext<cr>", { desc = "Next quickfix" })
-map("n", "[q", "<cmd>cprevious<cr>", { desc = "Prev quickfix" })
+-- `]d`/`[d` (diagnostics) and `]q`/`[q` (quickfix) are nvim 0.11+ defaults
+-- with count support; float-on-jump comes from vim.diagnostic.config({ jump =
+-- { on_jump = ... } }) in plugins/lsp.lua. <leader>xq / <leader>xl are owned
+-- by Trouble (plugins/trouble.lua).

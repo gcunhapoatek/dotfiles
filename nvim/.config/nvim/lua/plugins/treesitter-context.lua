@@ -14,7 +14,7 @@ return {
 		zindex = 20,
 	},
 	keys = {
-		-- `[c` left to textobjects (prev class start, vim convention).
+		-- `[c` left to textobjects (prev class start; native diff jump in diff mode).
 		-- Jump-to-context lives on `<leader>uk` (up to enclosing context).
 		{
 			"<leader>uk",
