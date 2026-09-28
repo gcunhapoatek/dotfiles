@@ -52,17 +52,9 @@ local servers = {
 			"vue",
 			"htmlangular",
 		},
-		-- Apply all ESLint autofixes on save (rule fixes / unused imports / order);
-		-- prettier still owns formatting via conform.
-		-- Grouped per buffer so a re-attach (:LspRestart, reopening the buffer)
-		-- replaces the hook instead of stacking another FixAll onto every save.
-		on_attach = function(_, bufnr)
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				group = vim.api.nvim_create_augroup("user_eslint_fix_" .. bufnr, { clear = true }),
-				buffer = bufnr,
-				command = "LspEslintFixAll",
-			})
-		end,
+		-- No on_attach here: vim.lsp.config replaces (not chains) it, and
+		-- lspconfig's default is what defines :LspEslintFixAll. The fix-on-save
+		-- hook lives in the LspAttach autocmd below instead.
 	},
 	html = {},
 	cssls = {},
@@ -238,6 +230,18 @@ return {
 					-- Insert-mode `<C-k>` is left to blink.cmp's default preset, which
 					-- shows its own (bordered) signature window. Binding it here would
 					-- shadow blink with the plain native float in every LSP buffer.
+
+					-- Apply all ESLint autofixes on save (rule fixes / unused imports /
+					-- order); prettier still owns formatting via conform. Grouped per
+					-- buffer so a re-attach (:LspRestart, reopening the buffer) replaces
+					-- the hook instead of stacking another FixAll onto every save.
+					if client and client.name == "eslint" then
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							group = vim.api.nvim_create_augroup("user_eslint_fix_" .. buf, { clear = true }),
+							buffer = buf,
+							command = "LspEslintFixAll",
+						})
+					end
 
 					if client and client:supports_method("textDocument/inlayHint") then
 						vim.lsp.inlay_hint.enable(true, { bufnr = buf })
