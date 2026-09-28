@@ -125,6 +125,7 @@ return {
 				"gofumpt",
 				"goimports",
 				"shfmt",
+				-- Not a nvim-lint linter: bashls picks it up from PATH.
 				"shellcheck",
 				"golangci-lint",
 			},

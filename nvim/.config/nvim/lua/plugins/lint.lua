@@ -1,6 +1,7 @@
 -- Linters complement LSP diagnostics. Lua/Python are handled by their LSPs
--- (lua_ls / ruff) and JS/TS by the eslint LSP (diagnostics + fix-on-save), so
--- no entries here. Go uses golangci-lint, shell uses shellcheck.
+-- (lua_ls / ruff), JS/TS by the eslint LSP (diagnostics + fix-on-save), and
+-- shell by bashls, which runs shellcheck itself (mason puts it on PATH), so
+-- no entries here. Go uses golangci-lint.
 
 return {
 	"mfussenegger/nvim-lint",
@@ -10,8 +11,6 @@ return {
 
 		lint.linters_by_ft = {
 			go = { "golangcilint" },
-			sh = { "shellcheck" },
-			bash = { "shellcheck" },
 		}
 
 		local aug = vim.api.nvim_create_augroup("user_nvim_lint", { clear = true })
