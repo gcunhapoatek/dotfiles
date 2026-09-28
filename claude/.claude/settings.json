@@ -175,6 +175,5 @@
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-ansi",
-  "model": "opus[1m]"
+  "theme": "dark-ansi"
 }
