@@ -31,25 +31,26 @@ return {
 				vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc, silent = true })
 			end
 
-			-- Hunk navigation
+			-- Hunk navigation. No diff-mode fallback: `]h`/`[h` have no native
+			-- meaning (diff-mode change jumps are `]c`/`[c`).
 			map("n", "]h", function()
-				if vim.wo.diff then
-					vim.cmd.normal({ "]h", bang = true })
-				else
-					gs.nav_hunk("next")
-				end
+				gs.nav_hunk("next")
 			end, "Next hunk")
 			map("n", "[h", function()
-				if vim.wo.diff then
-					vim.cmd.normal({ "[h", bang = true })
-				else
-					gs.nav_hunk("prev")
-				end
+				gs.nav_hunk("prev")
 			end, "Prev hunk")
 
 			-- Hunk actions. stage_hunk toggles: re-run on a staged hunk to unstage.
-			map({ "n", "v" }, "<leader>hs", "<cmd>Gitsigns stage_hunk<cr>", "Stage/unstage hunk")
-			map({ "n", "v" }, "<leader>hr", "<cmd>Gitsigns reset_hunk<cr>", "Reset hunk")
+			-- Visual mode passes the selected lines explicitly; `<cmd>` mappings
+			-- don't forward the visual range to :Gitsigns.
+			map("n", "<leader>hs", gs.stage_hunk, "Stage/unstage hunk")
+			map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
+			map("v", "<leader>hs", function()
+				gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end, "Stage/unstage selected lines")
+			map("v", "<leader>hr", function()
+				gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end, "Reset selected lines")
 			map("n", "<leader>hS", gs.stage_buffer, "Stage buffer")
 			map("n", "<leader>hR", gs.reset_buffer, "Reset buffer")
 			map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
