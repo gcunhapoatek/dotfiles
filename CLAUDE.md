@@ -114,4 +114,4 @@ Conventions worth knowing before editing:
 - **`nvim-treesitter` is on `main`**: no `opts.ensure_installed`/`highlight`/`indent`, parsers via `require('nvim-treesitter').install{}`, highlighting via a `FileType` autocmd. Check `plugins/treesitter.lua`'s header comment before touching it.
 - **`nvim-ts-autotag`'s `ft` list must stay a subset of the installed parsers** — it is treesitter-driven and silently inert otherwise.
 
-The picker and explorer sources (`files`, `grep`, `smart`, `explorer`) all have `hidden = true` and `ignored = true` — essential since all configs live under `.config/` which would otherwise be excluded.
+The picker and explorer sources (`files`, `grep`, `smart`, `explorer`) all have `hidden = true` — essential since all configs live under `.config/`, a hidden (not gitignored) directory. Only `explorer` also has `ignored = true`; on the pickers it would crawl `node_modules`/`dist`/`.venv` (toggle per-picker with `<a-i>`).

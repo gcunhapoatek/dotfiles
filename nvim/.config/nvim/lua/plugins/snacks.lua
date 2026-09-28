@@ -20,30 +20,18 @@ return {
 		picker = {
 			enabled = true,
 			sources = {
-				-- Defaults shared across the file-finding sources. Each source
-				-- can still override individually below.
+				-- `hidden` shows dotfiles (essential when editing this dotfiles
+				-- repo: every config lives under .config/). Only the explorer
+				-- shows gitignored files too; for files/grep/smart that would
+				-- crawl node_modules, dist, .venv, etc. Toggle with `<a-i>`.
 				explorer = {
-					-- Show dotfiles and gitignored files (essential when editing
-					-- this dotfiles repo: every config lives under .config/).
 					hidden = true,
 					ignored = true,
 					exclude = { ".git", ".DS_Store" },
 				},
-				files = {
-					hidden = true,
-					ignored = true,
-					exclude = { ".git", ".DS_Store" },
-				},
-				grep = {
-					hidden = true,
-					ignored = true,
-					exclude = { ".git", ".DS_Store" },
-				},
-				smart = {
-					hidden = true,
-					ignored = true,
-					exclude = { ".git", ".DS_Store" },
-				},
+				files = { hidden = true, exclude = { ".git", ".DS_Store" } },
+				grep = { hidden = true, exclude = { ".git", ".DS_Store" } },
+				smart = { hidden = true, exclude = { ".git", ".DS_Store" } },
 				projects = {
 					-- Override the default dev paths ({"~/dev","~/projects"})
 					-- to match this machine's layout.
