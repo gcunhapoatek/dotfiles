@@ -70,26 +70,18 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 	end,
 })
 
--- Close certain filetypes with q
+-- Close certain filetypes with q. Not `gitcommit`: `q` there must still
+-- record macros, and the commit buffer is often the last window.
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("close_with_q"),
 	pattern = {
 		"help",
 		"lspinfo",
 		"man",
-		"notify",
 		"qf",
 		"query",
 		"checkhealth",
-		"fugitive",
 		"git",
-		"gitcommit",
-		"spectre_panel",
-		"startuptime",
-		"tsplayground",
-		"neotest-output",
-		"neotest-summary",
-		"neotest-output-panel",
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false

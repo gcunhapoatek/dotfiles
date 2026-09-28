@@ -14,7 +14,7 @@ return {
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {
-					statusline = { "dashboard", "snacks_dashboard", "alpha", "starter" },
+					statusline = { "snacks_dashboard" },
 				},
 			},
 			sections = {
@@ -57,7 +57,7 @@ return {
 					end,
 				},
 			},
-			extensions = { "lazy", "quickfix", "fugitive", "man" },
+			extensions = { "lazy", "quickfix", "man", "mason", "trouble" },
 		}
 	end,
 }
