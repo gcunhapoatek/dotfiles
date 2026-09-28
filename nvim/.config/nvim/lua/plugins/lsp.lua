@@ -6,8 +6,8 @@ local servers = {
 	lua_ls = {
 		settings = {
 			Lua = {
+				-- `vim` / `Snacks` types come from lazydev (plugins/lazydev.lua).
 				workspace = { checkThirdParty = false },
-				diagnostics = { globals = { "vim", "Snacks" } },
 				hint = { enable = true },
 				telemetry = { enable = false },
 				format = { enable = false },

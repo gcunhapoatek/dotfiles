@@ -103,7 +103,7 @@ Plugin groups, one file each under `lua/plugins/`:
 | Area          | Plugins                                                             |
 | ------------- | ------------------------------------------------------------------- |
 | Core UI       | `snacks.nvim` (explorer, picker, notifier, terminal, dashboard, toggles, lazygit), `bufferline`, `lualine`, `catppuccin`, `mini.icons`, `which-key` |
-| LSP / tooling | `nvim-lspconfig` + `mason` + `mason-lspconfig` + `mason-tool-installer`, `blink.cmp`, `conform` (format), `nvim-lint` (lint), `trouble` |
+| LSP / tooling | `nvim-lspconfig` + `mason` + `mason-lspconfig` + `mason-tool-installer`, `blink.cmp`, `lazydev` (lua_ls types for this config), `conform` (format), `nvim-lint` (lint), `trouble` |
 | Treesitter    | `nvim-treesitter` (**`main` branch** — different API from `master`), `-textobjects`, `-context`, `nvim-ts-autotag` |
 | Editing       | `flash`, `mini.pairs`, `nvim-surround`, `gitsigns`, `todo-comments`, `render-markdown` |
 
