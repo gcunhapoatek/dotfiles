@@ -183,8 +183,8 @@ return {
 				end
 			end, { desc = "Toggle diagnostic virtual_lines" })
 
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
-			vim.lsp.config("*", { capabilities = capabilities })
+			-- No vim.lsp.config("*", { capabilities = ... }) here: blink.cmp's
+			-- plugin/ script already sets it when it loads (hence the dependency).
 			for name, cfg in pairs(servers) do
 				vim.lsp.config(name, cfg)
 			end

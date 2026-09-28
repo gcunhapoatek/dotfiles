@@ -1,5 +1,6 @@
--- Completion engine. Capabilities are pulled into lspconfig via
--- require('blink.cmp').get_lsp_capabilities() in plugins/lsp.lua.
+-- Completion engine. On nvim 0.11+ blink's plugin/ script registers its LSP
+-- capabilities via vim.lsp.config("*", ...) on load; plugins/lsp.lua lists it
+-- as an lspconfig dependency so that happens before servers are enabled.
 
 return {
 	"saghen/blink.cmp",
