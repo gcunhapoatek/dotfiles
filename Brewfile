@@ -14,6 +14,8 @@ brew "fzf"                          # fuzzy finder, sourced by .zshrc
 brew "zoxide"                       # smarter cd, init'd by .zshrc
 brew "fastfetch"                    # boot banner in .zshrc
 brew "bat"                          # used as MANPAGER in .zshrc
+brew "zsh-autosuggestions"          # sourced by .zshrc
+brew "zsh-syntax-highlighting"      # sourced last by .zshrc
 
 # ----- Terminal tools mapped 1:1 to dotfile packages -----
 brew "btop"                         # → btop/ package

@@ -123,6 +123,9 @@ function __icon_map() {
    "Aseprite")
         icon_result=":aseprite:"
         ;;
+   "Aside")
+        icon_result=":aside:"
+        ;;
    "Atom")
         icon_result=":atom:"
         ;;
@@ -188,6 +191,9 @@ function __icon_map() {
         ;;
    "Bilibili" | "哔哩哔哩")
         icon_result=":bilibili:"
+        ;;
+   "Bionic")
+        icon_result=":bionic:"
         ;;
    "Bitwarden")
         icon_result=":bit_warden:"
@@ -1448,6 +1454,9 @@ function __icon_map() {
         ;;
    "Seafile")
         icon_result=":seafile:"
+        ;;
+   "Search")
+        icon_result=":search:"
         ;;
    "Secretive" | "Secretive.app")
         icon_result=":secretive:"

@@ -45,7 +45,6 @@ gitignored files when present:
 
 - `--no-folding` (in `.stowrc`) gives each file its own symlink, safe for
   tools that write runtime files into `~/.config/<tool>/`.
-- Not brew-managed, install separately: oh-my-zsh (+ `zsh-autosuggestions`,
-  `zsh-syntax-highlighting`), nvm, sdkman.
+- Not brew-managed, install separately: oh-my-zsh, nvm, sdkman.
 - `gh/hosts.yml` is excluded (auth tokens) — only `config.yml` is stowed.
 - `yazi/` is temporarily dropped while its config is reworked.

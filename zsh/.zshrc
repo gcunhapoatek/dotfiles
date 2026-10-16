@@ -1,20 +1,28 @@
-fpath=("/opt/homebrew/share/zsh/site-functions" $fpath)
-
 # Oh-My-Zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="fox-mini"
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
 source <(fzf --zsh)
 
-# Load Angular CLI autocompletion if 'ng' is available.
-if command -v ng &> /dev/null; then
-  source <(ng completion script)
+# Angular CLI completion, cached: `ng completion script` boots node (~300ms),
+# so regenerate only when the ng install is newer than the cache.
+if (( $+commands[ng] )); then
+  ng_completion="$XDG_CACHE_HOME/zsh/ng-completion.zsh"
+  if [[ ! -s $ng_completion || $commands[ng] -nt $ng_completion ]]; then
+    mkdir -p "${ng_completion:h}"
+    ng completion script >| "$ng_completion"
+  fi
+  source "$ng_completion"
+  unset ng_completion
 fi
 
 # Tool-specific environment variables
+export MANPAGER="bat -plman"
+export GPG_TTY=$TTY
+
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:-1,bg:-1,spinner:#F5E0DC,hl:#F38BA8 \
 --color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
@@ -51,10 +59,10 @@ load-nvmrc() {
   nvmrc_path="$(nvm_find_nvmrc)"
 
   if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version
-    nvmrc_node_version=$(nvm version "$(cat "$nvmrc_path")")
     local requested
-    requested="$(cat "$nvmrc_path")"
+    requested="$(<"$nvmrc_path")"
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$requested")
 
     if [ "$nvmrc_node_version" = "N/A" ]; then
       nvmrc-msg yellow "node %F{cyan}${requested}%f not installed — running %Bnvm install%b"
@@ -62,8 +70,6 @@ load-nvmrc() {
     elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
       nvmrc-msg green "switching to node %F{cyan}${nvmrc_node_version}%f %F{8}(.nvmrc)%f"
       nvm use --silent
-    else
-      nvmrc-msg green "node %F{cyan}${nvmrc_node_version}%f already active %F{8}(.nvmrc)%f"
     fi
   elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
     nvmrc-msg yellow "left .nvmrc tree — reverting to node %F{cyan}$(nvm version default)%f %F{8}(default)%f"
@@ -113,7 +119,21 @@ nvm-chpwd-check
 
 eval "$(zoxide init zsh)"
 
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# SDKMAN lazy-load: sdkman-init.sh costs ~250ms per shell. Expose installed
+# candidates the way init does (current/bin on PATH, <NAME>_HOME), and defer
+# the rest until the first `sdk` call. Safe while sdkman_auto_env=false in
+# $SDKMAN_DIR/etc/config — init's chpwd hook is the only thing deferred away.
+for candidate_dir in "$SDKMAN_DIR"/candidates/*/current(N); do
+  path=("$candidate_dir/bin" $path)
+  export "${(U)${candidate_dir:h:t}}_HOME=$candidate_dir"
+done
+unset candidate_dir
+
+sdk() {
+  unset -f sdk
+  source "$SDKMAN_DIR/bin/sdkman-init.sh"
+  sdk "$@"
+}
 
 # Fastfetch only on top-level shells (skip nested tmux/zellij panes and subshells)
 if [[ -z "$TMUX" && -z "$ZELLIJ" && $SHLVL -eq 1 ]] && command -v fastfetch &> /dev/null; then
@@ -125,3 +145,7 @@ fi
 if [[ -f ~/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
+
+# Brew-installed plugins. zsh-syntax-highlighting must be sourced last.
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"

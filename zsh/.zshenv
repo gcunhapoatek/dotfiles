@@ -22,28 +22,26 @@ fi
 # adds the real binary to PATH without sourcing nvm. Must live in .zshenv:
 # non-login / non-interactive shells skip .zprofile, so a PATH entry there
 # never reaches them. Set the default with `nvm alias default <ver>`.
-if [[ -f "$HOME/.nvm/alias/default" ]]; then
-  _nvm_default="$(<"$HOME/.nvm/alias/default")"
+# .zprofile calls this again: macOS path_helper (/etc/zprofile) and brew
+# shellenv push their entries ahead of it in login shells.
+nvm-prepend-default-bin() {
+  [[ -f "$HOME/.nvm/alias/default" ]] || return 0
+  local version
+  version="$(<"$HOME/.nvm/alias/default")"
   # Resolve indirection (e.g. "lts/*" → concrete version).
-  if [[ -f "$HOME/.nvm/alias/$_nvm_default" ]]; then
-    _nvm_default="$(<"$HOME/.nvm/alias/$_nvm_default")"
+  if [[ -f "$HOME/.nvm/alias/$version" ]]; then
+    version="$(<"$HOME/.nvm/alias/$version")"
   fi
   # nvm stores alias as "22.22.2" but directories are "v22.22.2".
-  [[ "$_nvm_default" != v* ]] && _nvm_default="v$_nvm_default"
-  if [[ -d "$HOME/.nvm/versions/node/$_nvm_default/bin" ]]; then
-    path=("$HOME/.nvm/versions/node/$_nvm_default/bin" $path)
+  [[ "$version" != v* ]] && version="v$version"
+  if [[ -d "$HOME/.nvm/versions/node/$version/bin" ]]; then
+    path=("$HOME/.nvm/versions/node/$version/bin" $path)
   fi
-  unset _nvm_default
-fi
+}
+nvm-prepend-default-bin
 
 export EDITOR="nvim"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
-
-export MANPAGER="bat -plman"
-
-if [ -t 0 ]; then
-  export GPG_TTY=$(tty)
-fi
