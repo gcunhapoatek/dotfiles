@@ -149,3 +149,33 @@ fi
 # Brew-installed plugins. zsh-syntax-highlighting must be sourced last.
 source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+# oktoast shell function wrapper (auto-sources profile after oktoast commands)
+oktoast() {
+  local exit_code=0
+  command oktoast "$@" || exit_code=$?
+  source /Users/gabrieldacunha/.zprofile 2>/dev/null || true
+  eval $(aws configure export-credentials --format env 2>/dev/null | grep -E '^AWS_CREDENTIAL_EXPIRATION=') 2>/dev/null || true
+  # Export SSO session expiry for Starship
+  local sso_cache=$({ ls -t "$HOME"/.aws/sso/cache/*.json; } 2>/dev/null | head -1)
+  if [[ -f "$sso_cache" ]]; then
+    export AWS_SSO_EXPIRATION=$(jq -r '.expiresAt' "$sso_cache" 2>/dev/null)
+  fi
+  return $exit_code
+}
+
+# oktoast: default SAML auth via Chrome (Okta). Remove or set OKTOAST_PROVIDER=Okta for the API-based provider.
+export OKTOAST_PROVIDER=Browser
+
+# awsfed: SSO login and export AWS_SSO_EXPIRATION for Starship
+unalias awsfed 2>/dev/null
+awsfed() {
+  aws sso login --sso-session default
+  local exit_code=$?
+  # Export SSO session expiry for Starship
+  local sso_cache=$({ ls -t "$HOME"/.aws/sso/cache/*.json; } 2>/dev/null | head -1)
+  if [[ -f "$sso_cache" ]]; then
+    export AWS_SSO_EXPIRATION=$(jq -r '.expiresAt' "$sso_cache" 2>/dev/null)
+  fi
+  return $exit_code
+}

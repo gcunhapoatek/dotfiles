@@ -12,3 +12,6 @@ nvm-prepend-default-bin
 if [[ -f ~/.zprofile.local ]]; then
   source ~/.zprofile.local
 fi
+export AWS_REGION="us-east-1"
+export OKTOAST_AUTH_METHOD="saml"
+export AWS_PROFILE="default"
