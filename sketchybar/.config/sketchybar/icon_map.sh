@@ -105,7 +105,7 @@ function __icon_map() {
    "App Store")
         icon_result=":app_store:"
         ;;
-   "Apple Books" | "Books" | "Bücher")
+   "Apple Books" | "Books" | "Bücher" | "Книги")
         icon_result=":apple_books:"
         ;;
    "Apple Configurator")
@@ -120,6 +120,12 @@ function __icon_map() {
    "Arduino" | "Arduino IDE")
         icon_result=":arduino:"
         ;;
+   "Armbian Imager")
+        icon_result=":armbian_imager:"
+        ;;
+   "Asana")
+        icon_result=":asana:"
+        ;;
    "Aseprite")
         icon_result=":aseprite:"
         ;;
@@ -128,6 +134,9 @@ function __icon_map() {
         ;;
    "Atom")
         icon_result=":atom:"
+        ;;
+   "Atuin")
+        icon_result=":atuin:"
         ;;
    "Audacity")
         icon_result=":audacity:"
@@ -140,6 +149,9 @@ function __icon_map() {
         ;;
    "Automator")
         icon_result=":automator:"
+        ;;
+   "Avec")
+        icon_result=":avec:"
         ;;
    "Azahar")
         icon_result=":azahar:"
@@ -207,6 +219,9 @@ function __icon_map() {
    "Blitzit")
         icon_result=":blitzit:"
         ;;
+   "Bloom")
+        icon_result=":bloom:"
+        ;;
    "Bluesky" | "Sky")
         icon_result=":bluesky:"
         ;;
@@ -215,9 +230,6 @@ function __icon_map() {
         ;;
    "BluOS Controller")
         icon_result=":bluos_controller:"
-        ;;
-   "Calibre" | "Книги")
-        icon_result=":book:"
         ;;
    "YABA" | "Anybox" | "URL Manager Pro")
         icon_result=":bookmark:"
@@ -246,13 +258,16 @@ function __icon_map() {
    "Buzz")
         icon_result=":buzz:"
         ;;
+   "Caido")
+        icon_result=":caido:"
+        ;;
    "Calculator" | "Calculette" | "Rechner" | "Калькулятор")
         icon_result=":calculator:"
         ;;
    "Calendar" | "日历" | "Fantastical" | "Cron" | "Amie" | "Calendrier" | "カレンダー" | "Notion Calendar" | "Kalender" | "Календар" | "Календарь")
         icon_result=":calendar:"
         ;;
-   "calibre")
+   "calibre" | "E-book Viewer")
         icon_result=":calibre:"
         ;;
    "Capacities")
@@ -276,11 +291,17 @@ function __icon_map() {
    "Chess" | "The Enemy Within")
         icon_result=":chess:"
         ;;
+   "Chilpa")
+        icon_result=":chilpa:"
+        ;;
    "Amazon Chime")
         icon_result=":chime:"
         ;;
    "Choosy")
         icon_result=":choosy:"
+        ;;
+   "Cider")
+        icon_result=":cider:"
         ;;
    "Cisco AnyConnect Secure Mobility Client" | "Cisco Secure Client")
         icon_result=":cisco_anyconnect:"
@@ -296,6 +317,9 @@ function __icon_map() {
         ;;
    "Claude")
         icon_result=":claude:"
+        ;;
+   "CleanMyMac" | "CleanMyMac X" | "CleanMyMac 3")
+        icon_result=":cleanmymac:"
         ;;
    "ClickUp")
         icon_result=":click_up:"
@@ -348,6 +372,9 @@ function __icon_map() {
    "Creative Cloud")
         icon_result=":creative_cloud:"
         ;;
+   "Crest")
+        icon_result=":crest:"
+        ;;
    "CrossOver")
         icon_result=":crossover:"
         ;;
@@ -384,7 +411,7 @@ function __icon_map() {
    "DeepL")
         icon_result=":deepl:"
         ;;
-   "DeepSeek")
+   "DeepSeek" | "DeepSeek Harness")
         icon_result=":deepseek:"
         ;;
    "Deezer")
@@ -468,6 +495,9 @@ function __icon_map() {
    "DSM")
         icon_result=":dsm:"
         ;;
+   "DuckDuckGo")
+        icon_result=":duckduckgo:"
+        ;;
    "DVD Player")
         icon_result=":dvd_player:"
         ;;
@@ -494,6 +524,9 @@ function __icon_map() {
         ;;
    "Evernote Legacy" | "Evernote")
         icon_result=":evernote_legacy:"
+        ;;
+   "Excalidraw")
+        icon_result=":excalidraw:"
         ;;
    "FaceTime" | "FaceTime 通话")
         icon_result=":face_time:"
@@ -522,7 +555,7 @@ function __icon_map() {
    "Find My" | "Локатор")
         icon_result=":find_my:"
         ;;
-   "Finder" | "访达" | "Bloom" | "FlowFinder")
+   "Finder" | "访达" | "FlowFinder")
         icon_result=":finder:"
         ;;
    "Firefox")
@@ -564,6 +597,9 @@ function __icon_map() {
    "ForkLift")
         icon_result=":forklift:"
         ;;
+   "Foundry VTT" | "Foundry VTT*" | "Foundry Virtual Tabletop" | "Foundry Virtual Tabletop*")
+        icon_result=":foundry_vtt:"
+        ;;
    "Foxit PDF Reader")
         icon_result=":foxit_reader:"
         ;;
@@ -591,6 +627,9 @@ function __icon_map() {
    "Games")
         icon_result=":games:"
         ;;
+   "GarageBand")
+        icon_result=":garageband:"
+        ;;
    "System Preferences" | "System Settings" | "系统设置" | "Réglages Système" | "システム設定" | "Systemeinstellungen" | "System­einstellungen" | "Системні параметри" | "Системные настройки")
         icon_result=":gear:"
         ;;
@@ -606,8 +645,8 @@ function __icon_map() {
    "GIMP")
         icon_result=":gimp:"
         ;;
-   "GitHub Desktop" | "GitHub Copilot")
-        icon_result=":git_hub:"
+   "GitHub Desktop" | "GitHub Copilot" | "GitHub")
+        icon_result=":github:"
         ;;
    "GitKraken")
         icon_result=":gitkraken:"
@@ -669,6 +708,9 @@ function __icon_map() {
    "Helium")
         icon_result=":helium:"
         ;;
+   "Herdr")
+        icon_result=":herdr:"
+        ;;
    "Hermes" | "Hermes Agent" | "Hermes Agent Desktop" | "Hermes Agent"*)
         icon_result=":hermes_agent:"
         ;;
@@ -683,6 +725,9 @@ function __icon_map() {
         ;;
    "brew-browser" | "WailBrew" | "TapHouse" | "Cork" | "Homebrew" | "Brewer X" | "Applite" | "BrewMate" | "Brewlet")
         icon_result=":homebrew:"
+        ;;
+   "HTTPie")
+        icon_result=":httpie:"
         ;;
    "Hyper")
         icon_result=":hyper:"
@@ -807,6 +852,9 @@ function __icon_map() {
    "Keychain Access")
         icon_result=":keychain_access:"
         ;;
+   "Keymapp")
+        icon_result=":keymapp:"
+        ;;
    "Keynote" | "Keynote 讲演")
         icon_result=":keynote:"
         ;;
@@ -828,7 +876,7 @@ function __icon_map() {
    "Kodi")
         icon_result=":kodi:"
         ;;
-   "krita")
+   "Krita" | "krita")
         icon_result=":krita:"
         ;;
    "LanguageTool for Desktop")
@@ -894,6 +942,9 @@ function __icon_map() {
    "MacForge")
         icon_result=":macforge:"
         ;;
+   "MacPacker")
+        icon_result=":macpacker:"
+        ;;
    "MacPass")
         icon_result=":macpass:"
         ;;
@@ -933,6 +984,9 @@ function __icon_map() {
    "Mattermost")
         icon_result=":mattermost:"
         ;;
+   "Max")
+        icon_result=":max:"
+        ;;
    "MediaInfo")
         icon_result=":mediainfo:"
         ;;
@@ -941,6 +995,12 @@ function __icon_map() {
         ;;
    "MEGA")
         icon_result=":mega:"
+        ;;
+   "Melvor Idle")
+        icon_result=":melvor_idle:"
+        ;;
+   "Melvor Idle 2" | "Melvor2")
+        icon_result=":melvor_idle_2:"
         ;;
    "Messages" | "信息" | "Nachrichten" | "メッセージ" | "Повідомлення" | "Сообщения")
         icon_result=":messages:"
@@ -1176,6 +1236,9 @@ function __icon_map() {
    "Otty")
         icon_result=":otty:"
         ;;
+   "Output Hub")
+        icon_result=":output_hub:"
+        ;;
    "Overcast")
         icon_result=":overcast:"
         ;;
@@ -1187,6 +1250,9 @@ function __icon_map() {
         ;;
    "Pages" | "Pages 文稿")
         icon_result=":pages:"
+        ;;
+   "Paper")
+        icon_result=":paper:"
         ;;
    "Parallels Desktop")
         icon_result=":parallels:"
@@ -1229,6 +1295,9 @@ function __icon_map() {
         ;;
    "pgAdmin 4")
         icon_result=":pgadmin:"
+        ;;
+   "Phi" | "Phi Canary")
+        icon_result=":phi_browser:"
         ;;
    "Phoenix Slides")
         icon_result=":phoenix_slides:"
@@ -1389,6 +1458,12 @@ function __icon_map() {
    "REAPER")
         icon_result=":reaper:"
         ;;
+   "Recordly")
+        icon_result=":recordly:"
+        ;;
+   "Reddit")
+        icon_result=":reddit:"
+        ;;
    "Reeder")
         icon_result=":reeder5:"
         ;;
@@ -1412,6 +1487,9 @@ function __icon_map() {
         ;;
    "Resilio Sync")
         icon_result=":resilio_sync:"
+        ;;
+   "Rex" | "Rex Beta" | "Rex Server")
+        icon_result=":rex:"
         ;;
    "Rider" | "JetBrains Rider")
         icon_result=":rider:"
@@ -1538,6 +1616,12 @@ function __icon_map() {
         ;;
    "Sparkle")
         icon_result=":sparkle:"
+        ;;
+   "Speediness")
+        icon_result=":speediness:"
+        ;;
+   "Splice")
+        icon_result=":splice:"
         ;;
    "Spotify")
         icon_result=":spotify:"
@@ -1668,11 +1752,23 @@ function __icon_map() {
    "Timing")
         icon_result=":timingapp:"
         ;;
+   "Tinycast")
+        icon_result=":tinycast:"
+        ;;
+   "TinyHand")
+        icon_result=":tinyhand:"
+        ;;
    "Tiny RDM")
         icon_result=":tinyrdm:"
         ;;
    "Tips")
         icon_result=":tips:"
+        ;;
+   "tldraw")
+        icon_result=":tldraw:"
+        ;;
+   "Task Manager TMOG" | "tmog")
+        icon_result=":tmog:"
         ;;
    "Todoist")
         icon_result=":todoist:"
@@ -1707,17 +1803,29 @@ function __icon_map() {
    "Tuple")
         icon_result=":tuple:"
         ;;
+   "Tuta" | "Tuta Mail" | "Tutanota Desktop")
+        icon_result=":tuta_mail:"
+        ;;
    "Twingate")
         icon_result=":twingate:"
         ;;
    "Tweetbot" | "Twitter")
         icon_result=":twitter:"
         ;;
+   "UA Connect")
+        icon_result=":ua_connect:"
+        ;;
    "UGREEN NAS")
         icon_result=":ugreen-nas:"
         ;;
+   "UJAM")
+        icon_result=":ujam:"
+        ;;
    "Unity" | "Unity Hub")
         icon_result=":unity:"
+        ;;
+   "UAD Console" | "UAD Meter & Control Panel")
+        icon_result=":universal_audio:"
         ;;
    "Usenapp")
         icon_result=":usenapp:"
@@ -1758,11 +1866,17 @@ function __icon_map() {
    "Vorta")
         icon_result=":vorta:"
         ;;
+   "Vowen")
+        icon_result=":vowen:"
+        ;;
    "VSCodium")
         icon_result=":vscodium:"
         ;;
    "Warp")
         icon_result=":warp:"
+        ;;
+   "Waves Central")
+        icon_result=":waves_central:"
         ;;
    "Wave")
         icon_result=":waveterm:"
@@ -1815,13 +1929,16 @@ function __icon_map() {
    "WorkBuddy" | "Workbuddy")
         icon_result=":workbuddy:"
         ;;
+   "X")
+        icon_result=":x:"
+        ;;
    "xemu")
         icon_result=":xbox:"
         ;;
    "Xcode")
         icon_result=":xcode:"
         ;;
-   "XMind")
+   "XMind" | "Xmind")
         icon_result=":xmind:"
         ;;
    "Yaak")
@@ -1835,6 +1952,9 @@ function __icon_map() {
         ;;
    "Yazi" | "yazi")
         icon_result=":yazi:"
+        ;;
+   "Youlean Loudness Meter"*)
+        icon_result=":youlean_loudness_meter:"
         ;;
    "YouTube")
         icon_result=":youtube:"
@@ -1853,6 +1973,9 @@ function __icon_map() {
         ;;
    "Zed" | "Zed Preview")
         icon_result=":zed:"
+        ;;
+   "Zellij")
+        icon_result=":zellij:"
         ;;
    "Zen" | "Zen Browser" | "Twilight")
         icon_result=":zen_browser:"

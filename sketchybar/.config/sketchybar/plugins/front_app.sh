@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Per-monitor front-app indicator with MRU state cache.
-# $NAME = front_app.<mon>. Script runs for every front_app.* item on each
-# front_app_switched / aerospace_workspace_change event:
+# $NAME = front_app.<mon>, where <mon> is AeroSpace's
+# %{monitor-appkit-nsscreen-screens-id} (the numbering sketchybar's `display=`
+# uses). Script runs for every front_app.* item on each front_app_refresh
+# (AeroSpace focus-changed) / aerospace_workspace_change event:
 #   1. Refresh cache from globally focused window (monitor, workspace, app).
-#      Also runs on front_app_refresh (AeroSpace on-focus-changed).
 #      Idempotent — multiple invocations for the same event write the same key.
 #   2. Render this item's monitor from its (monitor, workspace) cache entry,
 #      falling back to first window in the workspace if no entry exists or the
@@ -17,7 +18,7 @@ STATE_DIR="${TMPDIR:-/tmp}/sketchybar-front-app-${USER}"
 mkdir -p "$STATE_DIR"
 
 # --- 1. Refresh cache from current global focus ---------------------------
-FOCUSED=$(aerospace list-windows --focused --format '%{monitor-id}%{tab}%{workspace}%{tab}%{app-name}' 2>/dev/null)
+FOCUSED=$(aerospace list-windows --focused --format '%{monitor-appkit-nsscreen-screens-id}%{tab}%{workspace}%{tab}%{app-name}' 2>/dev/null)
 if [ -n "$FOCUSED" ]; then
   IFS=$'\t' read -r FMON FWS FAPP <<<"$FOCUSED"
   if [ -n "$FMON" ] && [ -n "$FWS" ] && [ -n "$FAPP" ]; then
@@ -26,8 +27,11 @@ if [ -n "$FOCUSED" ]; then
 fi
 
 # --- 2. Render this monitor -----------------------------------------------
+# `list-workspaces --monitor N` takes AeroSpace's spatial monitor-id, not the
+# NSScreen index, so filter the --all listing instead.
 MON="${NAME##*.}"
-VIS=$(aerospace list-workspaces --monitor "$MON" --visible 2>/dev/null | head -n 1)
+VIS=$(aerospace list-workspaces --all --format '%{monitor-appkit-nsscreen-screens-id}%{tab}%{workspace-is-visible}%{tab}%{workspace}' 2>/dev/null |
+  awk -F'\t' -v mon="$MON" '$1 == mon && $2 == "true" { print $3; exit }')
 if [ -z "$VIS" ]; then
   sketchybar --set "$NAME" drawing=off
   exit 0

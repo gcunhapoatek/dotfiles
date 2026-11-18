@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
-# Polls now-playing via nowplaying-cli (macOS 26 deprecated the media_change event).
-# Single CLI call: `get title artist` returns both, one per line.
+# Polls now-playing via media-control (macOS 26 deprecated the media_change
+# event, and nowplaying-cli returns null there). `get` prints `null` when
+# nothing is playing, otherwise a JSON object with title/artist/playing.
+# Toggles media_sep together with this item so the separator never dangles.
 source "$CONFIG_DIR/colors.sh"
 
-if ! command -v nowplaying-cli >/dev/null 2>&1; then
-  sketchybar --set "$NAME" drawing=off
+hide() {
+  sketchybar --set "$NAME" drawing=off --set media_sep drawing=off
   exit 0
+}
+
+if ! command -v media-control >/dev/null 2>&1 || ! command -v jq >/dev/null 2>&1; then
+  hide
 fi
 
-# nowplaying-cli is XPC-backed and can wedge (seconds-long stall), which would
-# block sketchybar's script runner. Cap it via gtimeout/timeout when present;
-# fall back to an unguarded call so a missing coreutils never breaks the item.
+# media-control spawns a perl adapter over private MediaRemote APIs, which can
+# stall and would block sketchybar's script runner. Cap it via gtimeout/timeout
+# when present; fall back to an unguarded call so a missing coreutils never
+# breaks the item.
 TIMEOUT="$(command -v gtimeout || command -v timeout || true)"
 if [ -n "$TIMEOUT" ]; then
-  NP=("$TIMEOUT" 2 nowplaying-cli get title artist)
+  MC=("$TIMEOUT" 2 media-control get --no-artwork)
 else
-  NP=(nowplaying-cli get title artist)
+  MC=(media-control get --no-artwork)
 fi
 
 TITLE=""
@@ -23,14 +30,13 @@ ARTIST=""
 {
   IFS= read -r TITLE
   IFS= read -r ARTIST
-} < <("${NP[@]}" 2>/dev/null)
+} < <("${MC[@]}" 2>/dev/null | jq -r 'select(. != null) | (.title // ""), (.artist // "")' 2>/dev/null)
 
-if [ -z "$TITLE" ] || [ "$TITLE" = "null" ]; then
-  sketchybar --set "$NAME" drawing=off
-  exit 0
+if [ -z "$TITLE" ]; then
+  hide
 fi
 
-if [ -n "$ARTIST" ] && [ "$ARTIST" != "null" ]; then
+if [ -n "$ARTIST" ]; then
   LABEL="$ARTIST — $TITLE"
 else
   LABEL="$TITLE"
@@ -39,4 +45,5 @@ fi
 sketchybar --set "$NAME" drawing=on \
   icon="󰎈" \
   icon.color=$MAUVE \
-  label="$LABEL"
+  label="$LABEL" \
+  --set media_sep drawing=on

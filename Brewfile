@@ -42,8 +42,9 @@ cask "aerospace"                    # tiling window manager → aerospace/ packa
 cask "ghostty"                      # terminal emulator → ghostty/ package
 brew "sketchybar"                   # macOS status bar → sketchybar/ package
 brew "borders"                      # JankyBorders — focused-window borders, launched by aerospace after-startup-command
-brew "nowplaying-cli"               # used by sketchybar media plugin (media_change event deprecated on macOS 26)
-brew "coreutils"                    # gtimeout — caps the XPC-backed nowplaying-cli call in sketchybar media plugin
+brew "media-control"                # now-playing source for sketchybar media plugin (nowplaying-cli returns null on macOS 26)
+brew "jq"                           # parses media-control JSON in sketchybar media plugin
+brew "coreutils"                    # gtimeout — caps the media-control call in sketchybar media plugin
 
 # ----- Fonts (referenced by ghostty/.config/ghostty/config) -----
 cask "font-fira-code-nerd-font"

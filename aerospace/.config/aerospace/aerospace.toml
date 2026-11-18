@@ -8,23 +8,14 @@ config-version = 2
 # You can use it to add commands that run after AeroSpace startup.
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 # JankyBorders draws focused-window borders. Catppuccin Mocha lavender / surface1.
+# aerospace_events.sh bridges `aerospace subscribe` (workspace, focus, window,
+# monitor events) to sketchybar triggers — it replaces the exec-on-workspace-change,
+# on-focus-changed and on-window-detected callbacks. Not re-run by reload-config;
+# restart AeroSpace after changing it.
 after-startup-command = [
-    'exec-and-forget borders active_color=0xffb4befe inactive_color=0xff45475a width=1.0 style=round'
+    'exec-and-forget borders active_color=0xffb4befe inactive_color=0xff45475a width=1.0 style=round',
+    'exec-and-forget ~/.config/sketchybar/plugins/aerospace_events.sh',
 ]
-
-# Notify sketchybar on workspace change.
-# https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
-]
-
-# Refresh only the front-app items on focus change — a focus move changes the
-# focused window but not the workspace pills, so the heavier pill recompute is
-# skipped here. Pills still recompute on workspace switch (exec-on-workspace-change)
-# and new windows (on-window-detected).
-# Tradeoff: AeroSpace has no on-window-closed callback, so a closed window's icon
-# lingers in its pill until the next workspace switch / window detect (self-heals).
-on-focus-changed = ['exec-and-forget sketchybar --trigger front_app_refresh']
 
 # Start AeroSpace at login
 start-at-login = true
@@ -51,12 +42,7 @@ default-root-container-orientation = 'auto'
 # See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
 # See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
-on-focused-monitor-changed = [
-    'move-mouse monitor-lazy-center',
-    # Second hot-plug detection path: poke sketchybar's monitor watcher so it
-    # re-checks the monitor count when focus lands on a (possibly new) monitor.
-    'exec-and-forget sketchybar --trigger monitor_change',
-]
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
@@ -67,29 +53,16 @@ automatically-unhide-macos-hidden-apps = false
 # even when they are invisible.
 # This config version is only available since 'config-version = 2'
 # Fallback value (if you omit the key): persistent-workspaces = []
+# Must mirror WORKSPACES in sketchybar/.config/sketchybar/workspaces.sh (one pill each).
+# No C/E/I/N/U: alt-c/e/i/n/u are left free for macOS accent dead keys (ç ´ ˆ ˜ ¨).
 persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                         "A", "B", "C", "D", "E", "F", "G", "I", "M", "N", "O",
-                         "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+                         "A", "B", "D", "F", "G", "M", "O",
+                         "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"]
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 on-mode-changed = []
-
-# Refresh workspace pills when a new window is detected (covers app launch /
-# new window). Catch-all rule (`if = 'true'` matches every window) that runs
-# only the sketchybar trigger so window placement defaults stay unchanged.
-# Since 0.21.0 an explicit `if` is mandatory — omitting it is a hard error.
-# `check-further-callbacks` is unneeded: this is the only callback.
-# Must stay above the [mode.*] tables: a bare top-level key placed after a
-# table header would be parsed as a member of that table.
-# See: https://nikitabobko.github.io/AeroSpace/guide#on-window-detected-callback
-on-window-detected = [
-    {
-        if = 'true',
-        run = ['exec-and-forget sketchybar --trigger aerospace_workspace_change'],
-    },
-]
 
 # Possible values: (qwerty|dvorak|colemak)
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
@@ -198,21 +171,16 @@ on-window-detected = [
     alt-0 = 'workspace 10' # workspace 10 lives on the secondary monitor
     alt-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
     alt-b = 'workspace B'
-    alt-c = 'workspace C'
     alt-d = 'workspace D'
-    alt-e = 'workspace E'
     alt-f = 'workspace F'
     alt-g = 'workspace G'
-    alt-i = 'workspace I'
     alt-m = 'workspace M'
-    alt-n = 'workspace N'
     alt-o = 'workspace O'
     alt-p = 'workspace P'
     alt-q = 'workspace Q'
     alt-r = 'workspace R'
     alt-s = 'workspace S'
     alt-t = 'workspace T'
-    alt-u = 'workspace U'
     alt-v = 'workspace V'
     alt-w = 'workspace W'
     alt-x = 'workspace X'
@@ -232,21 +200,16 @@ on-window-detected = [
     alt-shift-0 = 'move-node-to-workspace 10'
     alt-shift-a = 'move-node-to-workspace A'
     alt-shift-b = 'move-node-to-workspace B'
-    alt-shift-c = 'move-node-to-workspace C'
     alt-shift-d = 'move-node-to-workspace D'
-    alt-shift-e = 'move-node-to-workspace E'
     alt-shift-f = 'move-node-to-workspace F'
     alt-shift-g = 'move-node-to-workspace G'
-    alt-shift-i = 'move-node-to-workspace I'
     alt-shift-m = 'move-node-to-workspace M'
-    alt-shift-n = 'move-node-to-workspace N'
     alt-shift-o = 'move-node-to-workspace O'
     alt-shift-p = 'move-node-to-workspace P'
     alt-shift-q = 'move-node-to-workspace Q'
     alt-shift-r = 'move-node-to-workspace R'
     alt-shift-s = 'move-node-to-workspace S'
     alt-shift-t = 'move-node-to-workspace T'
-    alt-shift-u = 'move-node-to-workspace U'
     alt-shift-v = 'move-node-to-workspace V'
     alt-shift-w = 'move-node-to-workspace W'
     alt-shift-x = 'move-node-to-workspace X'

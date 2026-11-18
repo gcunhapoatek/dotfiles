@@ -3,7 +3,8 @@
 # (space.*.$mon, front_app.$mon) are recreated for the new display layout.
 #
 # Subscribed to display_change (active-display switch) and monitor_change
-# (AeroSpace on-focused-monitor-changed). Both fire often, so a reload is gated
+# (AeroSpace focused-monitor-changed, bridged by plugins/aerospace_events.sh).
+# Both fire often, so a reload is gated
 # on the monitor count actually differing from the cached value — a routine
 # focus switch between existing monitors is a no-op.
 #

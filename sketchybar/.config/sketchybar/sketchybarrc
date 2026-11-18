@@ -4,6 +4,7 @@
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 source "$CONFIG_DIR/colors.sh"
+source "$CONFIG_DIR/workspaces.sh"
 
 FONT="FiraCode Nerd Font"
 
@@ -44,11 +45,16 @@ default=(
 sketchybar --default "${default[@]}"
 
 ##### AeroSpace Workspaces #####
-# Driven by `exec-on-workspace-change` in aerospace.toml.
+# Driven by plugins/aerospace_events.sh (`aerospace subscribe` bridge, launched
+# by aerospace.toml's after-startup-command).
 # Per-monitor pills: bar default display=all paints on every monitor; each
 # space.$sid.$mon item is scoped via `display=$mon` so each bar shows only its
-# monitor's workspaces. Plugin recomputes assignment + visible workspace per
-# monitor on every event.
+# monitor's workspaces. $mon is AeroSpace's %{monitor-appkit-nsscreen-screens-id}
+# (NSScreen order, matching sketchybar's display numbering) — the plugins use
+# that index, never AeroSpace's spatial %{monitor-id}. Plugin recomputes
+# assignment + visible workspace per monitor on every event.
+# Pills come from workspaces.sh; a pill draws only when its workspace is visible
+# or has windows.
 # Docs: https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
 sketchybar --add event aerospace_workspace_change
 
@@ -60,7 +66,8 @@ MON_COUNT=$(aerospace list-monitors --count 2>/dev/null || echo 1)
 # This invisible item watches for layout changes and reloads only when the
 # monitor count actually changed (see plugins/monitor_watcher.sh for the guard).
 # display_change fires on active-display switch; monitor_change is triggered by
-# AeroSpace's on-focused-monitor-changed callback — two detection paths.
+# AeroSpace's focused-monitor-changed event (via plugins/aerospace_events.sh) —
+# two detection paths.
 sketchybar --add event monitor_change
 sketchybar --add item monitor_watcher left \
            --set monitor_watcher drawing=off \
@@ -68,7 +75,7 @@ sketchybar --add item monitor_watcher left \
            --subscribe monitor_watcher display_change monitor_change
 
 for mon in $(seq 1 "$MON_COUNT"); do
-  for sid in 1 2 3 4 5 6 7 8 9 10; do
+  for sid in $WORKSPACES; do
     sketchybar --add item space.$sid.$mon left \
                --set space.$sid.$mon \
                   display=$mon \
@@ -108,9 +115,11 @@ sketchybar --add item space_sep left \
 # Per-monitor front_app: each bar shows first window of its visible workspace.
 # AeroSpace orders windows by tiling tree, not MRU — accuracy caveat documented
 # in plugin script.
-# front_app_refresh is fired by aerospace.toml's on-focus-changed: a focus move
-# changes the front app but NOT the workspace pills, so it refreshes only these
-# items — not the heavier aerospace_controller pill recompute.
+# front_app_refresh is fired on AeroSpace focus-changed (via
+# plugins/aerospace_events.sh): a focus move changes the front app but NOT the
+# workspace pills, so it refreshes only these items — not the heavier
+# aerospace_controller pill recompute. It also covers app switches, so the
+# built-in front_app_switched is not subscribed (it would double every refresh).
 sketchybar --add event front_app_refresh
 for mon in $(seq 1 "$MON_COUNT"); do
   sketchybar --add item front_app.$mon left \
@@ -120,7 +129,7 @@ for mon in $(seq 1 "$MON_COUNT"); do
                 icon.color=$MAUVE \
                 label.color=$TEXT \
                 script="$PLUGIN_DIR/front_app.sh" \
-             --subscribe front_app.$mon front_app_switched aerospace_workspace_change front_app_refresh
+             --subscribe front_app.$mon aerospace_workspace_change front_app_refresh
 done
 
 # Separator between the front_app group and now playing.
@@ -131,13 +140,14 @@ sketchybar --add item media_sep left \
                            label.drawing=off
 
 # Now playing — left side, right after the front app. Single item (no display),
-# so it shows once per bar. Icon color is set by the plugin.
+# so it shows once per bar. Icon color and media_sep visibility are set by the
+# plugin.
 sketchybar --add item media left \
            --set media update_freq=25 \
                        drawing=off \
                        label.max_chars=30 \
                        scroll_texts=on \
-                       click_script="nowplaying-cli togglePlayPause" \
+                       click_script="media-control toggle-play-pause" \
                        script="$PLUGIN_DIR/media.sh"
 
 ##### Right Items (rendered right-to-left in declaration order) #####
