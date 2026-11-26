@@ -1,0 +1,71 @@
+{
+  "version": 3,
+  "skills": {
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "76a98a285cb0434f3d39e1a873823556330e398b",
+      "installedAt": "2026-04-30T14:27:14.184Z",
+      "updatedAt": "2026-07-13T17:13:14.302Z"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "skillFolderHash": "d79e2a5bb4df4a386c2adcdd9ab8709bba28c3f6",
+      "pluginName": "example-skills",
+      "installedAt": "2026-06-24T20:38:30.714Z",
+      "updatedAt": "2026-11-25T15:02:08.168Z",
+      "commit": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba"
+    },
+    "angular-developer": {
+      "source": "angular/angular",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/angular/angular.git",
+      "skillPath": "skills/dev-skills/angular-developer/SKILL.md",
+      "skillFolderHash": "e3c937cb89b58606003f30ef14e42a395c14810e",
+      "installedAt": "2026-06-24T20:39:46.528Z",
+      "updatedAt": "2026-11-25T15:02:08.859Z",
+      "commit": "568c48b79651c98ea519e51f9ebeed1104cabaed"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "skillFolderHash": "343db72180d05814949fef7d46be96b5c6ee86b3",
+      "installedAt": "2026-06-30T19:03:17.703Z",
+      "updatedAt": "2026-06-30T19:03:17.703Z"
+    },
+    "no-ai-slop": {
+      "source": "petergyang/no-ai-slop",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/petergyang/no-ai-slop.git",
+      "skillPath": "skills/no-ai-slop/SKILL.md",
+      "skillFolderHash": "3d8be37cd59f6601cbc33676ecaf5b42865daf63",
+      "installedAt": "2026-09-17T19:58:02.052Z",
+      "updatedAt": "2026-09-17T19:58:02.052Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "cline",
+    "codex",
+    "cursor",
+    "droid",
+    "gemini-cli",
+    "github-copilot",
+    "kilo",
+    "kimi-code-cli",
+    "opencode",
+    "warp",
+    "zed",
+    "claude-code"
+  ]
+}
