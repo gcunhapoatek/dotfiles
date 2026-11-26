@@ -83,6 +83,7 @@ How I work. Defaults for any project. Project-level rules override these.
 - Run the relevant test/lint/typecheck command for every touched file before declaring a change done. If a project skill (e.g. `test-runner`) codifies the matrix, follow it; otherwise infer from the toolchain.
 - Prefer adding a failing test first when fixing a bug, then making it pass. Skip only when the bug is config/infra (no meaningful unit to assert on).
 - Manual verification beats "looks right" for UI/CLI work — run the thing.
+- Test a GitHub Actions `run:` block by extracting it and running it under `bash` with the runner's options (`set -euo pipefail`), not in zsh.
 
 ## Git
 
@@ -111,3 +112,4 @@ How I work. Defaults for any project. Project-level rules override these.
 - Neovim is my primary editor (config under `~/.config/nvim`).
 - macOS workstation; tools installed via Homebrew where possible.
 - `cp`/`mv` are interactive-aliased (`-i`) in my shell — use `/bin/cp -f` (or `command cp`) for scripted, non-interactive overwrites.
+- The shell is zsh: write `${var}:path` (zsh reads `$var:c…` as a modifier), never name a variable `status` (read-only), and run multi-line scripts with `bash -c`.

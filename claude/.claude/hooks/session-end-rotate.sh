@@ -1,31 +1,17 @@
 #!/usr/bin/env bash
-# Global SessionEnd hook. Fires once when a session terminates, so it prunes
-# unbounded Claude Code storage exactly once per session — no throttle marker
-# needed (the old Stop-hook version ran on every turn and self-throttled to
-# 24h via a marker file). Prunes:
-#   - ~/.claude/file-history/*       older than 14 days
-#   - ~/.claude/backups/*            older than 14 days
-#   - ~/.claude/paste-cache/*        older than 7 days
-#   - ~/.claude/shell-snapshots/*    older than 7 days
-#   - ~/.claude/telemetry/*          older than 7 days
-#   - ~/.claude/tasks/*              older than 30 days
-#   - ~/.claude/projects/*/handover/**/*.md older than 7 days (curated, short-lived)
+# Global SessionEnd hook. Prunes the Claude Code storage that the built-in
+# `cleanupPeriodDays` (settings.json) does not cover. The built-in cleanup
+# already handles file-history, backups, paste-cache, shell-snapshots, tasks,
+# plans, debug logs and transcripts. This hook prunes:
+#   - ~/.claude/telemetry/*                    older than 7 days
+#   - ~/.claude/projects/*/handover/**/*.md     older than 7 days (curated, short-lived)
 # Best-effort: failures swallowed so they never block session teardown.
 
 set -uo pipefail
 
-prune() {
-  local dir="$1" days="$2"
-  [[ -d "$dir" ]] || return 0
-  find "$dir" -mindepth 1 -maxdepth 1 -mtime "+${days}" -exec rm -rf {} + 2>/dev/null || true
-}
-
-prune "$HOME/.claude/file-history" 14
-prune "$HOME/.claude/backups" 14
-prune "$HOME/.claude/paste-cache" 7
-prune "$HOME/.claude/shell-snapshots" 7
-prune "$HOME/.claude/telemetry" 7
-prune "$HOME/.claude/tasks" 30
+if [[ -d "$HOME/.claude/telemetry" ]]; then
+  find "$HOME/.claude/telemetry" -mindepth 1 -maxdepth 1 -mtime +7 -exec rm -rf {} + 2>/dev/null || true
+fi
 
 # Handover files (live + consumed/) live under each per-project dir.
 # Path match covers both projects/X/handover/foo.md and

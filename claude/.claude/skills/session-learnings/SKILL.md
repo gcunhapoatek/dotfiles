@@ -34,10 +34,10 @@ Pick the narrowest scope that still captures the lesson:
 | Project convention, applies across all sessions in this repo  | `<project>/CLAUDE.md` (append; respect existing structure)        |
 | Repeatable workflow for a tool used in this project           | `<project>/.claude/skills/<name>/SKILL.md` (new or extend)        |
 | A skill you *used* this session misled, lacked a step, or mis-triggered | That skill's `SKILL.md` — fix the body, or tune the `description` if it's a trigger problem. **Resolve the real source first** (see restraint rules): a stowed/global skill under `~/.claude/skills/` is a symlink into its dotfiles package — edit there, not a copy |
-| Stable fact about this project's state, goals, or stakeholders | Auto-memory: `~/.claude/projects/<project>/memory/` as `project_*.md` |
-| Correction-shaped feedback for the user's collaboration style  | Auto-memory as `feedback_*.md`                                    |
-| Pointer to external system (Linear, Slack channel, dashboard)  | Auto-memory as `reference_*.md`                                   |
-| User role / expertise detail                                   | Auto-memory as `user_*.md`                                        |
+| Stable fact about this project's state, goals, or stakeholders | Auto-memory (`~/.claude/projects/<project>/memory/`), `metadata.type: project` |
+| Correction-shaped feedback for the user's collaboration style  | Auto-memory, `metadata.type: feedback`                            |
+| Pointer to external system (Linear, Slack channel, dashboard)  | Auto-memory, `metadata.type: reference`                           |
+| User role / expertise detail                                   | Auto-memory, `metadata.type: user`                                |
 | One-shot trivia that won't recur                              | **Drop it.** Not every observation is worth persisting.            |
 
 When in doubt: narrower scope wins. A rule in project `CLAUDE.md` is cheaper to maintain than a global one that doesn't always apply.
@@ -52,7 +52,7 @@ When in doubt: narrower scope wins. A rule in project `CLAUDE.md` is cheaper to 
    - Edits to `CLAUDE.md` files: append under the most relevant existing section, one line, imperative.
    - Edits to skills: extend the existing `SKILL.md` or create a new one with the standard frontmatter.
    - Skill-quality fixes (input #6): correct the stale body, add the missing step, or tune the `description` for trigger problems. Resolve the real source file first (see restraint rules).
-   - Auto-memory: follow the format described in the auto memory section of the system prompt (frontmatter + body, link via `[[name]]`, update `MEMORY.md` index).
+   - Auto-memory: follow the format described in the auto memory section of the system prompt (frontmatter `name` slug + `description` + `metadata.type`, body, link via `[[name]]`, update `MEMORY.md` index). The type lives in frontmatter, not the filename.
 5. **Confirm.** Report what was written, where, and one-line summary per change.
 
 ## Rules of restraint

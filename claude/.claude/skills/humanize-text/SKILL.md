@@ -21,7 +21,7 @@ Run this whenever you are about to:
 4. Break the statistical smoothness (see **Burstiness**) — spread the variance across the whole message, not one paragraph.
 5. Surface real specifics where they exist (see **Specificity**) — this is what beats meaning-level detection, not just statistical detection.
 6. Read it out loud in your head. If a real person wouldn't say it that way to that reader, rewrite.
-7. For Slack: show the humanized draft and confirm before sending. Sending is outward-facing — don't fire without a go-ahead.
+7. For Slack: only ever create a draft (`slack_send_message_draft`). `pre-tool-use-slack.sh` puts it behind a permission prompt, so the user sees the final text before it lands in their drafts, and sends it themselves.
 
 **Why three passes.** Cutting AI-tell phrases removes vocabulary an AI would use. It does not remove the *shape* (detectors score perplexity and burstiness per sentence, not just per document) or the *emptiness* (generic text has nothing specific to say). A draft with zero "delve" or "It's worth noting" can still read as AI if every sentence runs the same length and every claim stays comfortably general. Steps 4 and 5 exist to fix those two, separately.
 
@@ -142,4 +142,4 @@ When the reader is external, keep the structure above but raise polish: fewer fr
 - Zero or one em-dash in the whole message, not per sentence?
 - **Specificity check:** is there at least one real name, number, or detail that a generic model couldn't have guessed? If every claim is still safely general, go back and ask for or add the concrete detail before calling it done.
 
-If yes, send. If the message is going out via Slack MCP, show the final text and confirm first.
+If yes, it's ready. Via Slack MCP that means creating the draft; the user sends it.

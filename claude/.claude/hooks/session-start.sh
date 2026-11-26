@@ -31,9 +31,10 @@ else
   ctx="branch: ${branch} | last: ${sha} ${subject} | cwd: ${cwd}"
 fi
 
-# Surface most recent handover for this cwd (slug = cwd with / and . → -).
+# Surface most recent handover for this cwd (slug = cwd with every
+# non-alphanumeric → -, matching Claude Code's project dirs).
 # Window: 48h. Older handovers are stale; user must request explicitly.
-slug="$(printf '%s' "$cwd" | sed 's|[/.]|-|g')"
+slug="$(printf '%s' "$cwd" | sed 's/[^A-Za-z0-9]/-/g')"
 handover_dir="$HOME/.claude/projects/$slug/handover"
 if [[ -d "$handover_dir" ]]; then
   latest="$(find "$handover_dir" -maxdepth 1 -type f -name '*.md' -mtime -2 2>/dev/null | sort | tail -n 1)"

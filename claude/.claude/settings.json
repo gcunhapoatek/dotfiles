@@ -11,29 +11,27 @@
   },
   "permissions": {
     "allow": [
-      "Bash(ls:*)",
-      "Bash(pwd)",
-      "Bash(cat:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(wc:*)",
       "Bash(file:*)",
-      "Bash(stat:*)",
-      "Bash(which:*)",
       "Bash(tree:*)",
       "Bash(jq:*)",
       "Bash(rg:*)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git show:*)",
-      "Bash(git branch:*)",
-      "Bash(git remote:*)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch -vv)",
+      "Bash(git branch --list *)",
+      "Bash(git branch --show-current)",
+      "Bash(git remote)",
+      "Bash(git remote -v)",
       "Bash(git rev-parse:*)",
       "Bash(git blame:*)",
       "Bash(git stash list:*)"
+    ],
+    "ask": [
+      "Bash(rg *--pre*)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -42,21 +40,28 @@
       "Read(~/.ssh/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.aws/credentials*)",
-      "Read(**/.env)",
-      "Read(**/.env.local)",
-      "Read(**/.env.*.local)",
-      "Read(**/*.pem)",
-      "Read(**/*id_rsa*)",
-      "Read(**/*id_ed25519*)",
-      "Read(**/*.key)",
+      "Read(~/.zshrc.local)",
+      "Read(~/.zprofile.local)",
+      "Read(//**/.env)",
+      "Read(//**/.env.local)",
+      "Read(//**/.env.*.local)",
+      "Read(//**/.env.production)",
+      "Read(//**/.env.prod)",
+      "Read(//**/.env.staging)",
+      "Read(//**/.env.development)",
+      "Read(//**/.env.dev)",
+      "Read(//**/*.pem)",
+      "Read(//**/*id_rsa*)",
+      "Read(//**/*id_ed25519*)",
+      "Read(//**/*.key)",
       "Read(~/.config/gh/hosts.yml)",
-      "Read(~/.netrc)",
-      "Read(**/.netrc)",
+      "Read(//**/.netrc)",
       "Read(~/.npmrc)",
       "Read(~/.kube/**)",
       "Read(~/.docker/config.json)"
     ]
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -80,7 +85,7 @@
         ]
       },
       {
-        "matcher": "mcp__claude_ai_Slack__slack_send_message|mcp__claude_ai_Slack__slack_send_message_draft|mcp__claude_ai_Slack__slack_schedule_message",
+        "matcher": "mcp__claude_ai_Slack__slack_send_message|mcp__claude_ai_Slack__slack_send_message_draft|mcp__claude_ai_Slack__slack_schedule_message|mcp__claude_ai_Slack__slack_create_canvas|mcp__claude_ai_Slack__slack_update_canvas|mcp__claude_ai_Slack__slack_add_reaction",
         "hooks": [
           {
             "type": "command",
@@ -104,7 +109,6 @@
     ],
     "SessionStart": [
       {
-        "matcher": "startup|resume|compact|clear",
         "hooks": [
           {
             "type": "command",
@@ -134,8 +138,7 @@
   },
   "enabledPlugins": {
     "caveman@caveman": true,
-    "codex@openai-codex": false,
-    "lua-lsp@claude-plugins-official": false
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -143,20 +146,11 @@
         "source": "github",
         "repo": "JuliusBrussee/caveman"
       }
-    },
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
-      }
     }
   },
   "sandbox": {
     "enabled": true,
     "filesystem": {
-      "allowWrite": [
-        "~/.gnupg"
-      ],
       "denyRead": [
         "~/.ssh",
         "~/.aws",
@@ -164,17 +158,21 @@
       ]
     },
     "excludedCommands": [
-      "gh *"
+      "gh *",
+      "git commit *"
     ]
   },
+  "cleanupPeriodDays": 14,
   "effortLevel": "medium",
   "modelSettings": {
     "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
       "effortLevel": "high"
     }
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-ansi",
-  "model": "opus"
+  "theme": "dark-ansi"
 }

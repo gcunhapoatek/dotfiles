@@ -29,3 +29,5 @@ claude/.claude/*
 !claude/.claude/statusline.sh
 claude/.claude/settings.local.json
 claude/.claude/**/*.log
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
