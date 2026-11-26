@@ -21,14 +21,15 @@ Write to:
 ~/.claude/projects/<proj-slug>/handover/<YYYY-MM-DDTHHMMSS>.md
 ```
 
-Where `<proj-slug>` is the current working directory with `/` and `.` replaced by `-`. For example, `pwd` of `/Users/gabrieldacunha/Developer/dotfiles` → `-Users-gabrieldacunha-Developer-dotfiles`. Derive with:
+Where `<proj-slug>` is the current working directory with every character other than a letter or digit replaced by `-` (Claude Code's own project-dir rule). For example, `pwd` of `/Users/gabrieldacunha/Developer/dotfiles` → `-Users-gabrieldacunha-Developer-dotfiles`. Derive the path with:
 
 ```bash
-slug="$(pwd | sed 's|[/.]|-|g')"
-mkdir -p "$HOME/.claude/projects/$slug/handover"
+slug="$(pwd | sed 's/[^A-Za-z0-9]/-/g')"
 stamp="$(date -u +%Y-%m-%dT%H%M%S)"
-out="$HOME/.claude/projects/$slug/handover/$stamp.md"
+echo "$HOME/.claude/projects/$slug/handover/$stamp.md"
 ```
+
+Then create the file with the **Write tool**, which makes the parent directories. Don't `mkdir`/redirect from Bash: the sandbox blocks Bash writes under `~/.claude/projects`.
 
 One file per handover. Do not overwrite prior handovers.
 
