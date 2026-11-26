@@ -57,6 +57,7 @@
       "Read(~/.docker/config.json)"
     ]
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -171,10 +172,12 @@
   "modelSettings": {
     "claude-opus-5": {
       "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
     }
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark-ansi",
-  "model": "opus"
+  "theme": "dark-ansi"
 }
