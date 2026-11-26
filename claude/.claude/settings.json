@@ -109,7 +109,6 @@
     ],
     "SessionStart": [
       {
-        "matcher": "startup|resume|compact|clear",
         "hooks": [
           {
             "type": "command",
@@ -170,6 +169,7 @@
       "git commit *"
     ]
   },
+  "cleanupPeriodDays": 14,
   "effortLevel": "medium",
   "modelSettings": {
     "claude-opus-5": {
