@@ -28,6 +28,7 @@ brew "ripgrep"                      # required by snacks.picker grep + vim grepp
 # ----- Lint / validation (local mirror of .github/workflows/lint.yml) -----
 brew "shellcheck"                   # shell script linter, per CLAUDE.md validation matrix
 brew "stylua"                       # lua formatter for nvim/ — `stylua --check`
+brew "lua-language-server"          # on PATH for Claude Code's lua-lsp plugin (nvim uses mason's copy)
 
 # ----- Git stack -----
 brew "gh"                           # github cli, → gh/ package

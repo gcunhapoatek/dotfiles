@@ -138,20 +138,13 @@
   },
   "enabledPlugins": {
     "caveman@caveman": true,
-    "codex@openai-codex": false,
-    "lua-lsp@claude-plugins-official": false
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
       }
     }
   },
