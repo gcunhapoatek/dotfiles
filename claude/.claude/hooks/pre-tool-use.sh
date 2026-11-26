@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 # Global PreToolUse hook (matcher: Bash). Blocks:
-#   - rm -rf against /, $HOME, ~, or the actual user home path
+#   - rm with recursive + force flags whose target IS root or home
+#     (/, /*, ~, ~/*, $HOME, the literal home path) — not paths under them
 #   - classic fork bomb
 #   - mkfs invocations
 #   - dd writing to /dev
-#   - force-push to protected branches (main/master/release/prod[uction])
-#   - curl|wget piped directly into a shell interpreter
+#   - force-push to protected branches (main/master/release/prod[uction]),
+#     including a bare `git push -f` while one of them is checked out
+#   - curl/wget piped (or process-substituted) into a shell interpreter
 # Exits 2 (blocks tool call) and prints reason on stderr.
 #
-# Pattern checks run against a sanitized copy of the command with heredoc
-# bodies stripped, so dangerous tokens that appear inside commit messages,
-# documentation strings, or other data passed via `<<EOF ... EOF` don't
-# false-positive. Quoted strings are NOT stripped: that would let
-# `bash -c "rm -rf /"` slip past.
+# Checks run against a sanitized copy of the command with heredoc bodies
+# stripped, so dangerous tokens inside commit messages or other `<<EOF` data
+# don't false-positive. Quotes are removed but quoted strings are kept, so
+# `bash -c "rm -rf /"` is still caught. The rm and git push checks run per
+# simple command (split on ; && || | & newlines and subshell delimiters) so
+# flags from one command don't leak into another.
+#
+# Must stay bash 3.2 compatible: macOS /bin/bash is what `env bash` resolves to.
 
 set -euo pipefail
 
@@ -21,15 +26,10 @@ cmd="$(printf '%s' "$payload" | jq -r '.tool_input.command // empty')"
 [[ -z "$cmd" ]] && exit 0
 
 # Strip heredoc bodies (<<DELIM ... DELIM, including <<'DELIM', <<"DELIM",
-# and <<-DELIM with tab-indented terminators). Falls back to the raw cmd if
-# perl is unavailable (macOS ships perl by default, so this is belt-and-braces).
-if command -v perl >/dev/null 2>&1; then
-  scan="$(printf '%s' "$cmd" | perl -0777 -pe '
-		s/<<-?\s*([\x27"]?)(\w+)\1[^\n]*\n.*?\n\s*\2\s*(\n|\z)//smg;
-	' 2>/dev/null)" || scan="$cmd"
-else
-  scan="$cmd"
-fi
+# and <<-DELIM with tab-indented terminators).
+scan="$(printf '%s' "$cmd" | perl -0777 -pe '
+  s/<<-?\s*([\x27"]?)(\w+)\1[^\n]*\n.*?\n\s*\2\s*(\n|\z)//smg;
+' 2>/dev/null)" || scan="$cmd"
 
 block() {
   printf 'Blocked by ~/.claude/hooks/pre-tool-use.sh: %s\n' "$1" >&2
@@ -37,20 +37,11 @@ block() {
   exit 2
 }
 
-# rm with recursive AND force flags targeting root or home. Handles combined
-# (-rf) and separated (-r -f) flag forms in either order. Quotes are stripped
-# by a normalized copy of the command for matching.
-norm_cmd="$(printf '%s' "$scan" | tr -d "\"'")"
-home_esc="$(printf '%s' "$HOME" | sed 's/[\/.]/\\&/g')"
-target_re="(/|~|\\\$HOME|\\\$\\{HOME\\}|${home_esc})([[:space:]/]|$)"
+lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
 
-if printf '%s' "$norm_cmd" | grep -Eq "(^|[[:space:]])rm([[:space:]]+(-[a-zA-Z]+|--[[:space:]]))+[[:space:]]*${target_re}"; then
-  has_r="$(printf '%s' "$norm_cmd" | grep -Eo '(^|[[:space:]])rm([[:space:]]+-[a-zA-Z]+)+' | grep -Eo '\-[a-zA-Z]+' | grep -E '[rR]' || true)"
-  has_f="$(printf '%s' "$norm_cmd" | grep -Eo '(^|[[:space:]])rm([[:space:]]+-[a-zA-Z]+)+' | grep -Eo '\-[a-zA-Z]+' | grep -E '[fF]' || true)"
-  if [[ -n "$has_r" && -n "$has_f" ]]; then
-    block "rm -rf against root or home directory"
-  fi
-fi
+home_lc="$(lower "${HOME%/}")"
+
+# --- Whole-command checks ---------------------------------------------------
 
 if printf '%s' "$scan" | grep -Eq ':[[:space:]]*\(\)[[:space:]]*\{[[:space:]]*:[[:space:]]*\|[[:space:]]*:[[:space:]]*&[[:space:]]*\}[[:space:]]*;[[:space:]]*:'; then
   block "fork bomb pattern detected"
@@ -64,22 +55,137 @@ if printf '%s' "$scan" | grep -Eq 'dd[[:space:]]+if=.*[[:space:]]+of=/dev/'; the
   block "dd writing to a device node"
 fi
 
-if printf '%s' "$scan" | grep -Eq 'git[[:space:]]+push([[:space:]]|$)' &&
-  printf '%s' "$scan" | grep -Eq '(^|[[:space:]])(-f|--force(-with-lease|-if-includes)?)([[:space:]]|=|$)' &&
-  printf '%s' "$scan" | grep -Eq '(^|[[:space:]:/])(main|master|release|production|prod)([[:space:]:]|$)'; then
-  block "force-push to a protected branch"
-fi
-if printf '%s' "$scan" | grep -Eq 'git[[:space:]]+push([[:space:]]|$)' &&
-  printf '%s' "$scan" | grep -Eq '[[:space:]]\+(main|master|release|production|prod)([[:space:]:]|$)'; then
-  block "force-push (+refspec) to a protected branch"
-fi
-
-# Curl/wget piped into a shell interpreter. Catches:
-#   curl ... | sh
-#   curl ... | bash -s
-#   wget -qO- ... | sudo sh
-if printf '%s' "$scan" | grep -Eq '(curl|wget)[[:space:]][^|]*\|[[:space:]]*(sudo[[:space:]]+)?(sh|bash|zsh|ksh|fish|dash)([[:space:]]|$|-)'; then
+shells='(sh|bash|zsh|ksh|fish|dash)'
+if printf '%s' "$scan" | grep -Eq "(curl|wget)[[:space:]][^|]*\|[[:space:]]*(sudo[[:space:]]+)?${shells}([[:space:]]|\$|-)"; then
   block "curl/wget piped into a shell interpreter"
 fi
+if printf '%s' "$scan" | grep -Eq "(^|[[:space:]])(${shells}|source|\.)[[:space:]]+<\([[:space:]]*(curl|wget)[[:space:]]"; then
+  block "curl/wget process-substituted into a shell interpreter"
+fi
+
+# --- Per-command checks -----------------------------------------------------
+
+# True when an rm operand names root or home itself (optionally with a
+# trailing / or /*), not something beneath it.
+is_root_or_home() {
+  local t="$1"
+  t="${t%/\*}"
+  while [[ "$t" == */ && "$t" != "/" ]]; do t="${t%/}"; done
+  # shellcheck disable=SC2016 # matching the literal, unexpanded token
+  case "$t" in
+  "" | / | "~" | '$HOME') return 0 ;;
+  esac
+  [[ "$(lower "$t")" == "$home_lc" ]]
+}
+
+check_rm() {
+  local has_r=0 has_f=0 end_opts=0 tok danger=0
+  for tok in "$@"; do
+    if [[ $end_opts -eq 0 ]]; then
+      case "$tok" in
+      --) end_opts=1; continue ;;
+      --recursive) has_r=1; continue ;;
+      --force) has_f=1; continue ;;
+      --*) continue ;;
+      -*)
+        [[ "$tok" == *[rR]* ]] && has_r=1
+        [[ "$tok" == *f* ]] && has_f=1
+        continue
+        ;;
+      esac
+    fi
+    is_root_or_home "$tok" && danger=1
+  done
+  if [[ $has_r -eq 1 && $has_f -eq 1 && $danger -eq 1 ]]; then
+    block "rm -rf against root or home directory"
+  fi
+}
+
+is_protected() {
+  local ref="${1#+}"
+  ref="${ref#refs/heads/}"
+  case "$ref" in
+  main | master | release | production | prod) return 0 ;;
+  esac
+  return 1
+}
+
+check_push() {
+  local force=0 all=0 tok dst positional=0 skip=0 named=0
+  local -a refspecs=()
+  for tok in "$@"; do
+    if [[ $skip -eq 1 ]]; then
+      skip=0
+      continue
+    fi
+    case "$tok" in
+    -f | --force | --force-with-lease* | --force-if-includes) force=1 ;;
+    --all | --mirror) all=1 ;;
+    -o | --push-option | --repo | --receive-pack | --exec) skip=1 ;;
+    --*) ;;
+    -*) [[ "$tok" == *f* ]] && force=1 ;;
+    *)
+      positional=$((positional + 1))
+      # First positional is the remote; the rest are refspecs.
+      [[ $positional -ge 2 ]] && refspecs+=("$tok")
+      ;;
+    esac
+  done
+
+  if [[ ${#refspecs[@]} -gt 0 ]]; then
+    for tok in "${refspecs[@]}"; do
+      named=1
+      dst="${tok##*:}"
+      [[ "$tok" == +* ]] && is_protected "$dst" && block "force-push (+refspec) to a protected branch"
+      [[ "$dst" == HEAD ]] && dst="$(git branch --show-current 2>/dev/null || true)"
+      [[ $force -eq 1 ]] && is_protected "$dst" && block "force-push to a protected branch"
+    done
+  fi
+
+  [[ $force -eq 1 ]] || return 0
+  [[ $all -eq 1 ]] && block "force-push with --all/--mirror includes protected branches"
+  if [[ $named -eq 0 ]]; then
+    dst="$(git branch --show-current 2>/dev/null || true)"
+    is_protected "$dst" && block "force-push while a protected branch is checked out"
+  fi
+  return 0
+}
+
+# Quotes removed, ${VAR} → $VAR (so braces can delimit groups), then one
+# simple command per line.
+segments="$(printf '%s' "$scan" | tr -d "\"'" | perl -pe 's/\$\{(\w+)\}/\$$1/g; s/\|\||&&|[;|&(){}`]|\$\(/\n/g')"
+
+while IFS= read -r seg; do
+  [[ -z "${seg//[[:space:]]/}" ]] && continue
+  read -ra toks <<<"$seg"
+  n=${#toks[@]}
+  i=0
+  while [[ $i -lt $n ]]; do
+    word="${toks[$i]##*/}"
+    rest=("${toks[@]:$((i + 1))}")
+    if [[ "$word" == rm ]]; then
+      [[ ${#rest[@]} -gt 0 ]] && check_rm "${rest[@]}"
+    elif [[ "$word" == git ]]; then
+      # Skip git's own options (-C dir, -c k=v, --no-pager, ...) to find the subcommand.
+      j=$((i + 1))
+      while [[ $j -lt $n ]]; do
+        case "${toks[$j]}" in
+        -C | -c) j=$((j + 2)) ;;
+        -*) j=$((j + 1)) ;;
+        *) break ;;
+        esac
+      done
+      if [[ $j -lt $n && "${toks[$j]}" == push ]]; then
+        args=("${toks[@]:$((j + 1))}")
+        if [[ ${#args[@]} -gt 0 ]]; then
+          check_push "${args[@]}"
+        else
+          check_push
+        fi
+      fi
+    fi
+    i=$((i + 1))
+  done
+done <<<"$segments"
 
 exit 0
