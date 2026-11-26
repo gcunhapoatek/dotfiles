@@ -81,7 +81,7 @@
         ]
       },
       {
-        "matcher": "mcp__claude_ai_Slack__slack_send_message|mcp__claude_ai_Slack__slack_send_message_draft|mcp__claude_ai_Slack__slack_schedule_message",
+        "matcher": "mcp__claude_ai_Slack__slack_send_message|mcp__claude_ai_Slack__slack_send_message_draft|mcp__claude_ai_Slack__slack_schedule_message|mcp__claude_ai_Slack__slack_create_canvas|mcp__claude_ai_Slack__slack_update_canvas|mcp__claude_ai_Slack__slack_add_reaction",
         "hooks": [
           {
             "type": "command",

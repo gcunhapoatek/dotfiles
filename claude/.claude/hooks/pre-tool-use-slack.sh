@@ -1,32 +1,35 @@
 #!/usr/bin/env bash
-# Global PreToolUse hook (matcher: Slack MCP send/draft/schedule tools).
+# Global PreToolUse hook (matcher: Slack MCP write tools).
 # Policy: every Slack message MUST go out as a draft — direct send and
-# schedule are hard-blocked. The draft tool is allowed, with a reminder to
-# apply the humanize-text skill to the body first.
+# schedule are hard-blocked. Anything else that writes to Slack (drafts,
+# canvases, reactions) returns "ask" so the user sees the normal permission
+# prompt; drafts also get a reminder to apply the humanize-text skill first.
 #
-# Output schema (PreToolUse): permissionDecision "deny"|"allow" +
-# additionalContext / permissionDecisionReason, wrapped by Claude Code in a
-# system reminder next to the tool result.
+# Output schema (PreToolUse): permissionDecision "deny"|"ask"|"allow" +
+# permissionDecisionReason / additionalContext.
 
 set -euo pipefail
 
 payload="$(cat)"
 tool="$(printf '%s' "$payload" | jq -r '.tool_name // empty')"
 
+decide() {
+  jq -nc --arg d "$1" --arg r "$2" --arg ctx "${3:-}" \
+    '{hookSpecificOutput:({hookEventName:"PreToolUse", permissionDecision:$d, permissionDecisionReason:$r}
+      + (if $ctx == "" then {} else {additionalContext:$ctx} end))}'
+  exit 0
+}
+
 case "$tool" in
 *slack_send_message | *slack_schedule_message)
-  reason="Blocked: Slack messages must always go out as a draft. Use mcp__claude_ai_Slack__slack_send_message_draft instead of ${tool} — never send or schedule directly. The user reviews and sends the draft themselves."
-  jq -nc \
-    --arg r "$reason" \
-    '{hookSpecificOutput:{hookEventName:"PreToolUse", permissionDecision:"deny", permissionDecisionReason:$r}}'
-  exit 0
+  decide deny "Blocked: Slack messages must always go out as a draft. Use mcp__claude_ai_Slack__slack_send_message_draft instead of ${tool} — never send or schedule directly. The user reviews and sends the draft themselves."
   ;;
 *slack_send_message_draft)
-  msg="Outbound Slack draft via ${tool}. Apply the humanize-text skill to the message body first — cut AI tells, match tone to the reader (internal teammate vs manager/leadership). Draft only; the user reviews and sends it."
-  jq -nc \
-    --arg ctx "$msg" \
-    '{hookSpecificOutput:{hookEventName:"PreToolUse", permissionDecision:"allow", additionalContext:$ctx}}'
-  exit 0
+  decide ask "Slack draft — review before it lands in your drafts." \
+    "Outbound Slack draft via ${tool}. Apply the humanize-text skill to the message body first — cut AI tells, match tone to the reader (internal teammate vs manager/leadership). Draft only; the user reviews and sends it."
+  ;;
+*slack_create_canvas | *slack_update_canvas | *slack_add_reaction)
+  decide ask "${tool##*__} writes to Slack and is visible to others — confirm."
   ;;
 *)
   exit 0
