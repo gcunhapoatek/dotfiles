@@ -18,19 +18,19 @@ case "$path" in
 *.sh | *.bash | *.zsh) is_shell=1 ;;
 esac
 if [[ $is_shell -eq 0 ]]; then
-	read -r shebang <"$path" || true
-	case "$shebang" in
-	'#!'*/sh | '#!'*/bash | '#!'*/zsh | '#!'*/dash | '#!'*/ksh) is_shell=1 ;;
-	'#!/usr/bin/env sh' | '#!/usr/bin/env bash' | '#!/usr/bin/env zsh' | '#!/usr/bin/env dash' | '#!/usr/bin/env ksh') is_shell=1 ;;
-	esac
+  read -r shebang <"$path" || true
+  case "$shebang" in
+  '#!'*/sh | '#!'*/bash | '#!'*/zsh | '#!'*/dash | '#!'*/ksh) is_shell=1 ;;
+  '#!/usr/bin/env sh' | '#!/usr/bin/env bash' | '#!/usr/bin/env zsh' | '#!/usr/bin/env dash' | '#!/usr/bin/env ksh') is_shell=1 ;;
+  esac
 fi
 [[ $is_shell -eq 1 ]] || exit 0
 
 if ! err="$(bash -n "$path" 2>&1)"; then
-	jq -nc \
-		--arg c "bash -n failed for ${path}:
+  jq -nc \
+    --arg c "bash -n failed for ${path}:
 ${err}" \
-		'{hookSpecificOutput:{hookEventName:"PostToolUse", additionalContext:$c}}'
+    '{hookSpecificOutput:{hookEventName:"PostToolUse", additionalContext:$c}}'
 fi
 
 exit 0
