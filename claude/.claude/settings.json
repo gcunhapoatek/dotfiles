@@ -155,9 +155,6 @@
   "sandbox": {
     "enabled": true,
     "filesystem": {
-      "allowWrite": [
-        "~/.gnupg"
-      ],
       "denyRead": [
         "~/.ssh",
         "~/.aws",
@@ -165,7 +162,8 @@
       ]
     },
     "excludedCommands": [
-      "gh *"
+      "gh *",
+      "git commit *"
     ]
   },
   "effortLevel": "medium",
