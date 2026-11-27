@@ -15,7 +15,9 @@ source "$CONFIG_DIR/colors.sh"
 source "$CONFIG_DIR/icon_map.sh"
 source "$CONFIG_DIR/workspaces.sh"
 
-MON_COUNT=$(aerospace list-monitors --count 2>/dev/null || echo 1)
+# Same source as sketchybarrc, so this loop matches the items that exist.
+MON_COUNT=$(sketchybar --query displays 2>/dev/null | jq length 2>/dev/null)
+MON_COUNT=${MON_COUNT:-1}
 
 # Only workspaces with a pill item; ad-hoc ones would --set nonexistent items.
 is_tracked() {

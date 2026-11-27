@@ -58,7 +58,10 @@ sketchybar --default "${default[@]}"
 # Docs: https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
 sketchybar --add event aerospace_workspace_change
 
-MON_COUNT=$(aerospace list-monitors --count 2>/dev/null || echo 1)
+# Counted by sketchybar itself, not AeroSpace: the brew service can start before
+# the AeroSpace server answers at login, and these are the bars `display=` targets.
+MON_COUNT=$(sketchybar --query displays 2>/dev/null | jq length 2>/dev/null)
+MON_COUNT=${MON_COUNT:-1}
 
 ##### Monitor hot-plug watcher #####
 # Per-monitor items (space.*.$mon, front_app.$mon) are created from MON_COUNT at

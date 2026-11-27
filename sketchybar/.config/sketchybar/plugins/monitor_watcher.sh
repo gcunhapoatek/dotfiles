@@ -12,9 +12,11 @@
 # monitor without moving focus/mouse to it may not fire either event until you
 # do; if pills look stale after a hot-plug, switch to the new monitor once (or
 # run `sketchybar --reload`). Bash 3.2 compatible.
-STATE="/tmp/sketchybar-mon-count-${USER}"
+STATE="${TMPDIR:-/tmp}/sketchybar-mon-count-${USER}"
 
-CUR=$(aerospace list-monitors --count 2>/dev/null || echo 1)
+# Same source as sketchybarrc's MON_COUNT, so the comparison is like-for-like.
+CUR=$(sketchybar --query displays 2>/dev/null | jq length 2>/dev/null)
+CUR=${CUR:-1}
 PREV=""
 [ -f "$STATE" ] && PREV=$(cat "$STATE" 2>/dev/null)
 
