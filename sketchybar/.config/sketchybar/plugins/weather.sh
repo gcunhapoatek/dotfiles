@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Fetch current temperature + condition from wttr.in (auto-IP location).
-# Cache last good result to /tmp so an offline poll keeps the previous reading.
+# Fetch current temperature, condition, sunrise and sunset from wttr.in
+# (auto-IP location). Cache last good result so an offline poll keeps the
+# previous reading.
 
 source "$CONFIG_DIR/colors.sh"
 
 CACHE="${TMPDIR:-/tmp}/sketchybar_weather.cache"
 
-DATA="$(curl -fsS --max-time 4 'https://wttr.in/?format=%t|%C' 2>/dev/null)"
+DATA="$(curl -fsS --max-time 4 'https://wttr.in/?format=%t|%C|%S|%s' 2>/dev/null)"
 
 if [ -n "$DATA" ] && [[ "$DATA" == *"|"* ]]; then
   printf '%s' "$DATA" >"$CACHE"
@@ -15,47 +16,59 @@ elif [ -r "$CACHE" ]; then
 fi
 
 if [ -z "$DATA" ]; then
-  sketchybar --set "$NAME" icon="" icon.color=$OVERLAY0 label="--"
+  sketchybar --set "$NAME" icon="󰖐" icon.color=$OVERLAY0 label="--"
   exit 0
 fi
 
-TEMP="${DATA%%|*}"
-COND="${DATA##*|}"
+IFS='|' read -r TEMP COND SUNRISE SUNSET <<<"$DATA"
 TEMP="${TEMP## }"
 TEMP="${TEMP%% }"
+TEMP="${TEMP#+}"
+
+# wttr.in capitalises only the first word ("Patchy rain nearby"), so match
+# lower-cased. Most specific first: "Light rain, mist" must read as rain.
+COND="$(printf '%s' "$COND" | tr '[:upper:]' '[:lower:]')"
+
+# Sunrise/sunset are in the location's local time, which auto-IP makes ours.
+NOW="$(date +%H:%M:%S)"
+NIGHT=
+if [ -n "$SUNRISE" ] && [ -n "$SUNSET" ] && { [[ "$NOW" < "$SUNRISE" ]] || [[ "$NOW" > "$SUNSET" ]]; }; then
+  NIGHT=1
+fi
 
 case "$COND" in
-*Sunny* | *Clear*)
-  ICON="󰖙"
-  COLOR=$YELLOW
-  ;;
-*Partly*)
-  ICON="󰖕"
-  COLOR=$SUBTEXT0
-  ;;
-*Cloudy* | *Overcast*)
-  ICON="󰖐"
-  COLOR=$OVERLAY2
-  ;;
-*Mist* | *Fog* | *Haze*)
-  ICON="󰖑"
-  COLOR=$OVERLAY1
-  ;;
-*Thunder*)
+*thunder*)
   ICON="󰖓"
   COLOR=$MAUVE
   ;;
-*Snow* | *Blizzard* | *Sleet*)
+*snow* | *blizzard* | *sleet* | *ice*)
   ICON="󰼶"
   COLOR=$SKY
   ;;
-*Rain* | *Drizzle* | *Shower*)
+*rain* | *drizzle* | *shower*)
   ICON="󰖖"
   COLOR=$BLUE
   ;;
+*mist* | *fog* | *haze*)
+  ICON="󰖑"
+  COLOR=$OVERLAY1
+  ;;
+*partly*)
+  ICON="󰖕"
+  COLOR=$SUBTEXT0
+  ;;
+*cloudy* | *overcast*)
+  ICON="󰖐"
+  COLOR=$OVERLAY2
+  ;;
 *)
-  ICON="󰖙"
-  COLOR=$YELLOW
+  if [ -n "$NIGHT" ]; then
+    ICON="󰖔"
+    COLOR=$LAVENDER
+  else
+    ICON="󰖙"
+    COLOR=$YELLOW
+  fi
   ;;
 esac
 
