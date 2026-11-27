@@ -2,8 +2,8 @@
 # Per-monitor front-app indicator with MRU state cache.
 # $NAME = front_app.<mon>, where <mon> is AeroSpace's
 # %{monitor-appkit-nsscreen-screens-id} (the numbering sketchybar's `display=`
-# uses). Script runs for every front_app.* item on each front_app_refresh
-# (AeroSpace focus-changed) / aerospace_workspace_change event:
+# uses). Script runs for every front_app.* item on each
+# aerospace_workspace_change event (AeroSpace workspace/focus/window changes):
 #   1. Refresh cache from globally focused window (monitor, workspace, app).
 #      Idempotent — multiple invocations for the same event write the same key.
 #   2. Render this item's monitor from its (monitor, workspace) cache entry,

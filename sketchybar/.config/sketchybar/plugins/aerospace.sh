@@ -7,7 +7,7 @@
 # the numbering sketchybar's `display=` uses. AeroSpace's %{monitor-id} is
 # spatial (left-to-right) and disagrees when a secondary sits left of main.
 # Subscribed to aerospace_workspace_change (fired by plugins/aerospace_events.sh
-# on workspace switch and window detection).
+# on workspace switch, window detection and focus change).
 #
 # Bash 3.2 (system default) compatible — no associative arrays, so
 # per-workspace state lives in dynamic variables: icons_<ws>, mon_<ws>, vis_<ws>.

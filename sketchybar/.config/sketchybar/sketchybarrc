@@ -115,12 +115,9 @@ sketchybar --add item space_sep left \
 # Per-monitor front_app: each bar shows first window of its visible workspace.
 # AeroSpace orders windows by tiling tree, not MRU — accuracy caveat documented
 # in plugin script.
-# front_app_refresh is fired on AeroSpace focus-changed (via
-# plugins/aerospace_events.sh): a focus move changes the front app but NOT the
-# workspace pills, so it refreshes only these items — not the heavier
-# aerospace_controller pill recompute. It also covers app switches, so the
-# built-in front_app_switched is not subscribed (it would double every refresh).
-sketchybar --add event front_app_refresh
+# aerospace_workspace_change also fires on AeroSpace focus-changed (via
+# plugins/aerospace_events.sh), which covers app switches, so the built-in
+# front_app_switched is not subscribed (it would double every refresh).
 for mon in $(seq 1 "$MON_COUNT"); do
   sketchybar --add item front_app.$mon left \
              --set front_app.$mon \
@@ -129,7 +126,7 @@ for mon in $(seq 1 "$MON_COUNT"); do
                 icon.color=$MAUVE \
                 label.color=$TEXT \
                 script="$PLUGIN_DIR/front_app.sh" \
-             --subscribe front_app.$mon aerospace_workspace_change front_app_refresh
+             --subscribe front_app.$mon aerospace_workspace_change
 done
 
 # Separator between the front_app group and now playing.

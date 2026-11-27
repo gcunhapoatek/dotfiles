@@ -6,18 +6,15 @@
 #
 # Stream is JSON lines, e.g. {"_event":"focus-changed","windowId":75,...}.
 # Only the event name matters, so match it with `case` instead of parsing JSON.
-# AeroSpace has no window-closed event: a closed window's icon lingers in its
-# pill until the next workspace switch / window detect (self-heals).
+# focus-changed refreshes the pills too: AeroSpace has no window-closed or
+# window-moved event, and move-node-to-workspace / closing a window only move
+# focus — without it the moved/closed window's icon lingers in its old pill.
 
 aerospace subscribe focused-workspace-changed window-detected focus-changed focused-monitor-changed |
   while IFS= read -r line; do
     case "$line" in
-    *'"_event":"focused-workspace-changed"'* | *'"_event":"window-detected"'*)
+    *'"_event":"focused-workspace-changed"'* | *'"_event":"window-detected"'* | *'"_event":"focus-changed"'*)
       sketchybar --trigger aerospace_workspace_change
-      ;;
-    *'"_event":"focus-changed"'*)
-      # Focus moves don't change the pills, so only the front_app items refresh.
-      sketchybar --trigger front_app_refresh
       ;;
     *'"_event":"focused-monitor-changed"'*)
       # Second hot-plug detection path for plugins/monitor_watcher.sh.
