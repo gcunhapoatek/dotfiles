@@ -5,6 +5,7 @@ background-opacity = 0.8
 font-family = FiraCode Nerd Font
 
 # Window Settings
+# Initial size only. AeroSpace resizes tiled windows, so this applies to floating ones.
 window-height = 34
 window-width = 140
 window-decoration = none
@@ -15,6 +16,6 @@ macos-window-shadow = false
 # Cursor Settings
 cursor-style = block
 shell-integration-features = no-cursor
-# Blinking forces a full GPU redraw at display refresh rate; on this 120Hz
-# ProMotion panel that alone is ~10-15% idle CPU. ghostty-org/ghostty#10397
+# Blinking was reported at ~10-15% idle CPU on 120Hz ProMotion panels
+# (ghostty-org/ghostty discussion #10397, unconfirmed upstream).
 cursor-style-blink = false
