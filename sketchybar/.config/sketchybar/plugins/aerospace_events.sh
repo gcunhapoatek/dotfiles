@@ -10,9 +10,15 @@
 # window-moved event, and move-node-to-workspace / closing a window only move
 # focus — without it the moved/closed window's icon lingers in its old pill.
 
-aerospace subscribe focused-workspace-changed window-detected focus-changed focused-monitor-changed |
+aerospace subscribe focused-workspace-changed window-detected focus-changed focused-monitor-changed mode-changed |
   while IFS= read -r line; do
     case "$line" in
+    *'"_event":"mode-changed"'*)
+      # {"_event":"mode-changed","mode":"service"} — also sent once on connect.
+      mode="${line#*\"mode\":\"}"
+      mode="${mode%%\"*}"
+      sketchybar --trigger aerospace_mode_change MODE="$mode"
+      ;;
     *'"_event":"focused-workspace-changed"'* | *'"_event":"window-detected"'* | *'"_event":"focus-changed"'*)
       sketchybar --trigger aerospace_workspace_change
       ;;

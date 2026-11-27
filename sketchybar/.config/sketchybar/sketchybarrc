@@ -58,6 +58,20 @@ sketchybar --default "${default[@]}"
 # Docs: https://nikitabobko.github.io/AeroSpace/goodies#show-aerospace-workspaces-in-sketchybar
 sketchybar --add event aerospace_workspace_change
 
+##### AeroSpace binding mode #####
+# Red pill at the far left while a non-main binding mode (e.g. service) is
+# active. Fed by mode-changed via plugins/aerospace_events.sh.
+sketchybar --add event aerospace_mode_change
+sketchybar --add item aerospace_mode left \
+           --set aerospace_mode drawing=off \
+                                icon.drawing=off \
+                                label.color=$CRUST \
+                                label.padding_left=8 \
+                                background.color=$RED \
+                                background.drawing=on \
+                                script="$PLUGIN_DIR/aerospace_mode.sh" \
+           --subscribe aerospace_mode aerospace_mode_change
+
 # Counted by sketchybar itself, not AeroSpace: the brew service can start before
 # the AeroSpace server answers at login, and these are the bars `display=` targets.
 MON_COUNT=$(sketchybar --query displays 2>/dev/null | jq length 2>/dev/null)
