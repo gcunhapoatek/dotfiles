@@ -17,6 +17,10 @@ after-startup-command = [
 # Start AeroSpace at login
 start-at-login = true
 
+# Reload the config when the file is saved (0.21.0+). Takes one manual
+# reload-config after enabling to start watching.
+auto-reload-config = true
+
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
