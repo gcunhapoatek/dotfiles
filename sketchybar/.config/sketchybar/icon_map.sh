@@ -63,7 +63,7 @@ function __icon_map() {
    "Alacritty")
         icon_result=":alacritty:"
         ;;
-   "Alfred")
+   "Alfred" | "Alfred Preferences")
         icon_result=":alfred:"
         ;;
    "AltTab")
@@ -111,11 +111,14 @@ function __icon_map() {
    "Apple Configurator")
         icon_result=":apple_configurator:"
         ;;
-   "TV")
+   "TV" | "Videos")
         icon_result=":apple_tv:"
         ;;
    "Arc")
         icon_result=":arc:"
+        ;;
+   "Ardia")
+        icon_result=":ardia:"
         ;;
    "Arduino" | "Arduino IDE")
         icon_result=":arduino:"
@@ -269,6 +272,9 @@ function __icon_map() {
         ;;
    "calibre" | "E-book Viewer")
         icon_result=":calibre:"
+        ;;
+   "Canary Mail")
+        icon_result=":canary_mail:"
         ;;
    "Capacities")
         icon_result=":capacities:"
@@ -477,6 +483,9 @@ function __icon_map() {
    "Double Commander")
         icon_result=":doublecmd:"
         ;;
+   "Dove")
+        icon_result=":dove:"
+        ;;
    "Downie 4")
         icon_result=":downie:"
         ;;
@@ -630,7 +639,7 @@ function __icon_map() {
    "GarageBand")
         icon_result=":garageband:"
         ;;
-   "System Preferences" | "System Settings" | "系统设置" | "Réglages Système" | "システム設定" | "Systemeinstellungen" | "System­einstellungen" | "Системні параметри" | "Системные настройки")
+   "System Preferences" | "System Settings" | "系统设置" | "Réglages Système" | "システム設定" | "Systemeinstellungen" | "System­einstellungen" | "Системні параметри" | "Системные настройки" | "Réglages Système")
         icon_result=":gear:"
         ;;
    "Gemini" | "Google Gemini")
@@ -645,8 +654,11 @@ function __icon_map() {
    "GIMP")
         icon_result=":gimp:"
         ;;
-   "GitHub Desktop" | "GitHub Copilot" | "GitHub")
+   "GitHub Desktop" | "GitHub")
         icon_result=":github:"
+        ;;
+   "GitHub Copilot")
+        icon_result=":github_copilot:"
         ;;
    "GitKraken")
         icon_result=":gitkraken:"
@@ -714,8 +726,14 @@ function __icon_map() {
    "Hermes" | "Hermes Agent" | "Hermes Agent Desktop" | "Hermes Agent"*)
         icon_result=":hermes_agent:"
         ;;
+   "Hex")
+        icon_result=":hex:"
+        ;;
    "Hex Fiend")
         icon_result=":hex_fiend:"
+        ;;
+   "HEY")
+        icon_result=":hey:"
         ;;
    "Home")
         icon_result=":home:"
@@ -876,8 +894,14 @@ function __icon_map() {
    "Kodi")
         icon_result=":kodi:"
         ;;
+   "KofeFlow")
+        icon_result=":kofeflow:"
+        ;;
    "Krita" | "krita")
         icon_result=":krita:"
+        ;;
+   "Ladybird")
+        icon_result=":ladybird:"
         ;;
    "LanguageTool for Desktop")
         icon_result=":languagetool_for_desktop:"
@@ -957,8 +981,11 @@ function __icon_map() {
    "Magnifier")
         icon_result=":magnifier:"
         ;;
-   "Canary Mail" | "HEY" | "Mail" | "Mailspring" | "MailMate" | "Superhuman" | "Spark" | "Spark Mail" | "邮件" | "メール" | "Пошта" | "Почта")
+   "Mail" | "MailMate" | "邮件" | "メール" | "Пошта" | "Почта")
         icon_result=":mail:"
+        ;;
+   "Mailspring")
+        icon_result=":mailspring:"
         ;;
    "MakeMKV")
         icon_result=":makemkv:"
@@ -977,6 +1004,9 @@ function __icon_map() {
         ;;
    "Marta")
         icon_result=":marta:"
+        ;;
+   "Mastodon")
+        icon_result=":mastodon:"
         ;;
    "Matlab" | "MATLAB" | "MATLABWindow" | "MATLAB_R2024b" | "MATLAB_R2024a" | "MATLAB_R2023b" | "MATLAB_R2023a" | "MATLAB_R2022b" | "MATLAB_R2022a" | "MATLAB_R2021b" | "MATLAB_R2021a")
         icon_result=":matlab:"
@@ -1007,6 +1037,9 @@ function __icon_map() {
         ;;
    "Messenger")
         icon_result=":messenger:"
+        ;;
+   "Microsoft 365 Copilot")
+        icon_result=":microsoft_copilot:"
         ;;
    "Microsoft Edge")
         icon_result=":microsoft_edge:"
@@ -1040,6 +1073,9 @@ function __icon_map() {
         ;;
    "Minecraft" | "Minecraft Launcher")
         icon_result=":minecraft:"
+        ;;
+   "Miniflux")
+        icon_result=":miniflux:"
         ;;
    "Miro")
         icon_result=":miro:"
@@ -1131,6 +1167,9 @@ function __icon_map() {
    "Nimble Commander" | "NimbleCommander-Unsigned")
         icon_result=":nimble_commander:"
         ;;
+   "Nod")
+        icon_result=":nod:"
+        ;;
    "Noodl" | "Noodl Editor")
         icon_result=":noodl:"
         ;;
@@ -1154,6 +1193,9 @@ function __icon_map() {
         ;;
    "Numbers" | "Numbers 表格")
         icon_result=":numbers:"
+        ;;
+   "Nuvio")
+        icon_result=":nuvio:"
         ;;
    "nvALT")
         icon_result=":nvalt:"
@@ -1296,6 +1338,9 @@ function __icon_map() {
    "pgAdmin 4")
         icon_result=":pgadmin:"
         ;;
+   "Phanpy")
+        icon_result=":phanpy:"
+        ;;
    "Phi" | "Phi Canary")
         icon_result=":phi_browser:"
         ;;
@@ -1346,6 +1391,9 @@ function __icon_map() {
         ;;
    "Podcasts" | "播客" | "Подкасти" | "Подкасты")
         icon_result=":podcasts:"
+        ;;
+   "Podman Desktop")
+        icon_result=":podman_desktop:"
         ;;
    "PomoDone App")
         icon_result=":pomodone:"
@@ -1445,6 +1493,9 @@ function __icon_map() {
         ;;
    "Raindrop.io")
         icon_result=":raindrop_io:"
+        ;;
+   "Rascal")
+        icon_result=":rascal:"
         ;;
    "Raspberry Pi Imager" | "Raspberry Pi Connect")
         icon_result=":raspberry_pi:"
@@ -1611,7 +1662,7 @@ function __icon_map() {
    "Sourcetree")
         icon_result=":sourcetree:"
         ;;
-   "Spark Desktop")
+   "Spark Desktop" | "Spark" | "Spark Mail")
         icon_result=":spark:"
         ;;
    "Sparkle")
@@ -1644,6 +1695,9 @@ function __icon_map() {
    "Stremio")
         icon_result=":stremio:"
         ;;
+   "Strimr")
+        icon_result=":strimr:"
+        ;;
    "Studio 3T")
         icon_result=":studio_3t:"
         ;;
@@ -1659,11 +1713,20 @@ function __icon_map() {
    "Super Productivity" | "superProductivity")
         icon_result=":super_productivity:"
         ;;
+   "Superhuman")
+        icon_result=":superhuman:"
+        ;;
+   "Superhuman Docs")
+        icon_result=":superhuman_docs:"
+        ;;
    "Surfshark")
         icon_result=":surfshark:"
         ;;
    "Swift Playground")
         icon_result=":swift_playground:"
+        ;;
+   "Swiftcord")
+        icon_result=":swiftcord:"
         ;;
    "Synergy")
         icon_result=":synergy:"
@@ -1671,7 +1734,7 @@ function __icon_map() {
    "System Information" | "System Profiler")
         icon_result=":system_information:"
         ;;
-   "T3 Code" | "T3 Code (Alpha)" | "T3 Code (Nightly)")
+   "T3 Code" | "T3 Code (Alpha)" | "T3 Code (Nightly)" | "T3 Code (Beta)")
         icon_result=":t3_code:"
         ;;
    "T3 Chat")
@@ -1752,7 +1815,7 @@ function __icon_map() {
    "Timing")
         icon_result=":timingapp:"
         ;;
-   "Tinycast")
+   "Tinycast" | "Tinycast Beta")
         icon_result=":tinycast:"
         ;;
    "TinyHand")
@@ -1841,6 +1904,9 @@ function __icon_map() {
         ;;
    "Viber")
         icon_result=":viber:"
+        ;;
+   "VidHub")
+        icon_result=":vidhub:"
         ;;
    "MacVim" | "Vim" | "VimR")
         icon_result=":vim:"
