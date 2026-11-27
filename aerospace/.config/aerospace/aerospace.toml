@@ -102,7 +102,11 @@ on-mode-changed = []
     inner.vertical =   10
     outer.left =       10
     outer.bottom =     10
-    outer.top =        [{ monitor.secondary = 48 }, 20]
+    # Top gap clears sketchybar, keyed on notch rather than main/secondary so a
+    # docked lid-closed setup still works. Menu bar auto-hides: on the notched
+    # built-in display macOS keeps windows below the notch strip the bar sits in;
+    # external displays start at the top edge, so 36 bar + 6 y_offset + 6 gap.
+    outer.top =        [{ monitor."built-in" = 20 }, 48]
     outer.right =      10
 
 # 'main' binding mode declaration
