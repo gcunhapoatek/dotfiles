@@ -96,6 +96,10 @@ check: ## Dry-run stow + check Brewfile dependencies
 	@brew bundle check --file=$(DOTFILES_DIR)/Brewfile --verbose \
 		&& printf "  $(OK) all dependencies present\n" \
 		|| printf "  $(YELLOW)!$(C_RESET) missing dependencies — run $(C_BOLD)make brew$(C_RESET)\n"
+	$(call banner,Workspace parity)
+	@$(DOTFILES_DIR)/scripts/check-aerospace-workspaces.sh \
+		&& printf "  $(OK) aerospace persistent-workspaces match sketchybar pills\n" \
+		|| { printf "  $(FAIL) aerospace.toml and sketchybar workspaces.sh differ\n"; exit 1; }
 
 status: ## List discovered packages
 	$(call banner,Status)
