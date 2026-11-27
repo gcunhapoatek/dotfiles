@@ -141,14 +141,17 @@ sketchybar --add item media_sep left \
 
 # Now playing — left side, right after the front app. Single item (no display),
 # so it shows once per bar. Icon color and media_sep visibility are set by the
-# plugin.
+# plugin. Event-driven: plugins/media_stream.sh (single-instance, started below)
+# streams media-control changes and fires media_update.
+sketchybar --add event media_update
 sketchybar --add item media left \
-           --set media update_freq=25 \
-                       drawing=off \
+           --set media drawing=off \
                        label.max_chars=30 \
                        scroll_texts=on \
                        click_script="media-control toggle-play-pause" \
-                       script="$PLUGIN_DIR/media.sh"
+                       script="$PLUGIN_DIR/media.sh" \
+           --subscribe media media_update
+"$PLUGIN_DIR/media_stream.sh" >/dev/null 2>&1 &
 
 ##### Right Items (rendered right-to-left in declaration order) #####
 # https://felixkratz.github.io/SketchyBar/config/events
