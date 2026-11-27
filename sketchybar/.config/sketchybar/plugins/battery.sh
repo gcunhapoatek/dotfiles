@@ -32,10 +32,6 @@ case "$PERCENTAGE" in
   ICON="󰁻"
   COLOR=$PEACH
   ;;
-[0-9])
-  ICON="󰂃"
-  COLOR=$RED
-  ;;
 *)
   ICON="󰂃"
   COLOR=$RED
