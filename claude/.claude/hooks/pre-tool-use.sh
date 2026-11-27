@@ -8,6 +8,9 @@
 #   - force-push to protected branches (main/master/release/prod[uction]),
 #     including a bare `git push -f` while one of them is checked out
 #   - curl/wget piped (or process-substituted) into a shell interpreter
+#   - `git commit` / `gh` chained with other commands in a sandboxed call
+#     (sandbox.excludedCommands only matches when every command in the call
+#     matches, so a chained commit runs sandboxed and GPG signing fails)
 # Exits 2 (blocks tool call) and prints reason on stderr.
 #
 # Checks run against a sanitized copy of the command with heredoc bodies
@@ -187,5 +190,54 @@ while IFS= read -r seg; do
     i=$((i + 1))
   done
 done <<<"$segments"
+
+# --- Sandbox-excluded commands must run alone -------------------------------
+# `git commit *` and `gh *` are in sandbox.excludedCommands, which applies only
+# when the whole call matches: `git add x && git commit …`, `cd … && gh …`, a
+# pipe, or a $(…) substitution all keep the call sandboxed. Skipped when the
+# call already opts out of the sandbox.
+
+sandbox_off="$(printf '%s' "$payload" | jq -r '.tool_input.dangerouslyDisableSandbox // false')"
+if [[ "$sandbox_off" != true ]]; then
+  # Unlike $segments, blank quoted strings first so `-m "fix(scope): a && b"`
+  # stays one command; a quoted $(…) or backtick still counts as a command.
+  # Redirections like 2>&1 and &> are not separators.
+  strict="$(printf '%s' "$scan" | perl -0777 -ne '
+    my ($s, $o) = ($_, "");
+    while (length $s) {
+      if    ($s =~ s/^\x27[^\x27]*\x27//)          { $o .= "Q" }
+      elsif ($s =~ s/^"((?:[^"\\]|\\.)*)"//s)      { $o .= ($1 =~ /\$\(|`/) ? "Q\nSUBST\n" : "Q" }
+      elsif ($s =~ s/^\\.//s)                      { $o .= "E" }
+      else  { $s =~ s/^(.)//s; $o .= $1 }
+    }
+    $o =~ s/[0-9]*[<>]&[0-9-]*|&>>?/ R /g;
+    $o =~ s/\|\||&&|\|&|[;|&(){}`\n]|\$\(/\n/g;
+    print $o;
+  ')"
+
+  count=0
+  excluded=""
+  while IFS= read -r seg; do
+    [[ -z "${seg//[[:space:]]/}" ]] && continue
+    count=$((count + 1))
+    read -ra toks <<<"$seg"
+    # Skip shell keywords so `for …; do gh …` still finds `gh`.
+    k=0
+    while [[ $k -lt ${#toks[@]} ]]; do
+      case "${toks[$k]}" in
+      do | then | else | elif | if | while | until | time | !) k=$((k + 1)) ;;
+      *) break ;;
+      esac
+    done
+    case "${toks[$k]:-}" in
+    gh | */gh) excluded="gh" ;;
+    git | */git) [[ "${toks[$((k + 1))]:-}" == commit ]] && excluded="git commit" ;;
+    esac
+  done <<<"$strict"
+
+  if [[ -n "$excluded" && $count -gt 1 ]]; then
+    block "\`$excluded\` chained with other commands stays sandboxed (excludedCommands needs the whole call to match), so GPG/gh credentials are unreachable. Run it as its own Bash call: stage or cd in an earlier call, and pass the message with repeated -m flags instead of \$(...)."
+  fi
+fi
 
 exit 0
