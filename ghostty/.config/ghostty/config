@@ -1,6 +1,8 @@
 # Appearance
 theme = catppuccin-mocha.conf
 background-opacity = 0.8
+# macOS 26 Liquid Glass behind the translucent background.
+background-blur = macos-glass-regular
 # Non-Mono variant: Mono squeezes Nerd Font icons into a single cell.
 font-family = FiraCode Nerd Font
 
@@ -11,11 +13,20 @@ window-width = 140
 window-decoration = none
 window-padding-x = 10
 window-padding-y = 10
+window-padding-balance = equal
 macos-window-shadow = false
+
+# Input
+# Left Option sends Alt; right Option still types special characters.
+macos-option-as-alt = left
+
+# Shell Integration
+# no-cursor keeps the block cursor at the prompt (integration forces a bar).
+# ssh-* install Ghostty's terminfo on remotes, falling back to xterm-256color.
+shell-integration-features = no-cursor,ssh-env,ssh-terminfo
 
 # Cursor Settings
 cursor-style = block
-shell-integration-features = no-cursor
 # Blinking was reported at ~10-15% idle CPU on 120Hz ProMotion panels
 # (ghostty-org/ghostty discussion #10397, unconfirmed upstream).
 cursor-style-blink = false
