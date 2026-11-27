@@ -1,7 +1,8 @@
 # Appearance
 theme = catppuccin-mocha.conf
 background-opacity = 0.8
-font-family = FiraCode Nerd Font Mono
+# Non-Mono variant: Mono squeezes Nerd Font icons into a single cell.
+font-family = FiraCode Nerd Font
 
 # Window Settings
 window-height = 34
